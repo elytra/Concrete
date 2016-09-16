@@ -1,7 +1,7 @@
 # Concrete
 A compact and clean wrapper for custom payload packets in Forge.
 
-## Depending on LambdaNetwork
+## Depending on Concrete
 Concrete must be shaded into the jar, and will throw an exception at runtime if
 it is not properly shaded. The best way to do this is with the Gradle Shadow
 plugin:
