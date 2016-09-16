@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.primitives.Ints;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
@@ -148,6 +149,12 @@ public class DefaultMarshallers {
 		put(DOUBLE, "f64", "double");
 		
 		put(VARINT, "varint");
+		
+		put(NBT, "nbt");
+		
+		put(BLOCKPOS, "blockpos");
+		
+		put(STRING, "string", "str", "utf8");
 	}
 	
 	private static void put(Marshaller<?> m, String... names) {
@@ -217,6 +224,45 @@ public class DefaultMarshallers {
 
 	}
 	
+	private static class EnumMarshaller<T extends Enum<T>> implements Marshaller<T> {
+		private final Class<T> clazz;
+		private final T[] constants;
+		
+		public EnumMarshaller(Class<T> clazz) {
+			this.clazz = clazz;
+			this.constants = clazz.getEnumConstants();
+		}
+		
+		@Override
+		public T unmarshal(ByteBuf in) {
+			int ordinal;
+			if (constants.length < 256) {
+				ordinal = in.readUnsignedByte();
+			} else if (constants.length < 65536) {
+				ordinal = in.readUnsignedShort();
+			} else if (constants.length < 16777216) {
+				ordinal = in.readUnsignedMedium();
+			} else {
+				ordinal = Ints.checkedCast(in.readUnsignedInt());
+			}
+			return constants[ordinal];
+		}
+
+		@Override
+		public void marshal(ByteBuf out, T t) {
+			if (constants.length < 256) {
+				out.writeByte(t.ordinal());
+			} else if (constants.length < 65536) {
+				out.writeShort(t.ordinal());
+			} else if (constants.length < 16777216) {
+				out.writeMedium(t.ordinal());
+			} else {
+				out.writeInt(t.ordinal());
+			}
+		}
+
+	}
+	
 	
 	private static <T> Marshaller<T> weld(Serializer<T> serializer, Deserializer deserializer) {
 		return new Marshaller<T>() {
@@ -239,7 +285,18 @@ public class DefaultMarshallers {
 	}
 	
 	public static <T> Marshaller<T> getByName(String name) {
-		return (Marshaller<T>)byName.get(name.toLowerCase(Locale.ROOT));
+		if (name.endsWith("-list")) {
+			name = name.substring(0, name.length()-5);
+			// lists of lists!
+			Marshaller<T> m = getByName(name);
+			if (m != null) {
+				return new ListMarshaller(m);
+			} else {
+				return null;
+			}
+		} else {
+			return (Marshaller<T>)byName.get(name.toLowerCase(Locale.ROOT));
+		}
 	}
 
 	public static <T> Marshaller<T> getByType(Class<T> type) {
@@ -249,6 +306,8 @@ public class DefaultMarshallers {
 			return (Marshaller<T>)BLOCKPOS;
 		} else if (NBTTagCompound.class.isAssignableFrom(type)) {
 			return (Marshaller<T>)NBT;
+		} else if (type.isEnum()) {
+			return new EnumMarshaller(type);
 		}
 		return null;
 	}
