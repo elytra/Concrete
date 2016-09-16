@@ -2,13 +2,15 @@ package io.github.elytra.concrete;
 
 import java.io.IOException;
 import java.util.List;
-
+import java.util.Map;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Maps;
 import io.github.elytra.concrete.annotation.type.Asynchronous;
 import io.github.elytra.concrete.annotation.type.ReceivedOn;
 import io.github.elytra.concrete.exception.BadMessageException;
 import io.github.elytra.concrete.exception.WrongSideException;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,22 +29,40 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class Message {
-	private final NetworkContext ctx;
+	private static final class ClassInfo {
+		public final boolean async;
+		public final Side side;
+		public ClassInfo(boolean async, Side side) {
+			this.async = async;
+			this.side = side;
+		}
+	}
+	private static final Map<Class<?>, ClassInfo> classInfo = Maps.newHashMap();
 	
-	private final Side side;
-	private final boolean async;
+	
+	private transient final NetworkContext ctx;
+	
+	private transient final Side side;
+	private transient final boolean async;
 	
 	public Message(NetworkContext ctx) {
 		this.ctx = ctx;
 		
-		ReceivedOn ro = getClass().getDeclaredAnnotation(ReceivedOn.class);
-		if (ro == null) {
-			throw new BadMessageException("Must specify @ReceivedOn");
+		ClassInfo ci = classInfo.get(getClass());
+		if (ci == null) {
+			ReceivedOn ro = getClass().getDeclaredAnnotation(ReceivedOn.class);
+			if (ro == null) {
+				throw new BadMessageException("Must specify @ReceivedOn");
+			} else {
+				side = ro.value();
+			}
+			
+			async = getClass().getDeclaredAnnotation(Asynchronous.class) != null;
+			ci = new ClassInfo(async, side);
 		} else {
-			side = ro.value();
+			async = ci.async;
+			side = ci.side;
 		}
-		
-		async = getClass().getDeclaredAnnotation(Asynchronous.class) != null;
 		
 	}
 	
@@ -57,7 +77,7 @@ public abstract class Message {
 		}
 	}
 	
-	void doHandleServer(EntityPlayerMP sender) {
+	void doHandleServer(EntityPlayer sender) {
 		if (async) {
 			handle(sender);
 		} else {
@@ -68,6 +88,10 @@ public abstract class Message {
 	}
 	
 	protected abstract void handle(EntityPlayer sender);
+	
+	Side getSide() {
+		return side;
+	}
 	
 	/**
 	 * For use on the server-side. Sends this Message to the given player.
@@ -210,7 +234,9 @@ public abstract class Message {
 	@SideOnly(Side.CLIENT)
 	public final void sendToServer() {
 		if (side.isClient()) wrongSide();
-		Minecraft.getMinecraft().getConnection().sendPacket(toServerboundVanillaPacket());
+		NetHandlerPlayClient conn = Minecraft.getMinecraft().getConnection();
+		if (conn == null) throw new IllegalStateException("Cannot send a message while not connected");
+		conn.sendPacket(toServerboundVanillaPacket());
 	}
 	
 	/**

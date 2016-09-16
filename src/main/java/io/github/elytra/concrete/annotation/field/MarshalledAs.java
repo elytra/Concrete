@@ -14,4 +14,10 @@ import java.lang.annotation.Target;
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MarshalledAs {}
+public @interface MarshalledAs {
+	/**
+	 * Should be a name of a default marshaller, such as "u8", "uint8", etc, or
+	 * a fully qualified class name of a custom marshaller.
+	 */
+	String value();
+}
