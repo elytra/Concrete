@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import com.google.common.primitives.Ints;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -125,6 +126,11 @@ public class DefaultMarshallers {
 	 */
 	public static final Marshaller<String> STRING = weld(ByteBufUtils::writeUTF8String, ByteBufUtils::readUTF8String);
 	
+	/**
+	 * Packed ItemStack.
+	 */
+	public static final Marshaller<ItemStack> ITEMSTACK = weld(ByteBufUtils::writeItemStack, ByteBufUtils::readItemStack);
+	
 	
 	
 	private static final Map<String, Marshaller<?>> byName = Maps.newHashMap();
@@ -155,6 +161,8 @@ public class DefaultMarshallers {
 		put(BLOCKPOS, "blockpos");
 		
 		put(STRING, "string", "str", "utf8");
+		
+		put(ITEMSTACK, "item", "stack", "itemstack");
 	}
 	
 	private static void put(Marshaller<?> m, String... names) {
@@ -308,6 +316,8 @@ public class DefaultMarshallers {
 			return (Marshaller<T>)NBT;
 		} else if (type.isEnum()) {
 			return new EnumMarshaller(type);
+		} else if (ItemStack.class.isAssignableFrom(type)) {
+			return (Marshaller<T>)ITEMSTACK;
 		}
 		return null;
 	}
