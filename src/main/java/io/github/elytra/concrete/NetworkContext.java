@@ -76,11 +76,12 @@ public class NetworkContext {
 	private int nextPacketId = 0;
 	
 	private NetworkContext(String channel) {
-		if (NetworkContext.class.getName().startsWith(DEFAULT_PACKAGE)
-				&& !((Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment"))) {
-			throw new RuntimeException("Concrete is designed to be shaded and must not be left in the default package! (Offending mod: "+Loader.instance().activeModContainer().getName()+")");
-		} else {
-			log.warn("Concrete is in the default package. This is not a fatal error, as you are in a development environment, but remember to repackage it!");
+		if (NetworkContext.class.getName().startsWith(DEFAULT_PACKAGE)) {
+			if (!((Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment"))) {
+				throw new RuntimeException("Concrete is designed to be shaded and must not be left in the default package! (Offending mod: "+Loader.instance().activeModContainer().getName()+")");
+			} else {
+				log.warn("Concrete is in the default package. This is not a fatal error, as you are in a development environment, but remember to repackage it!");
+			}
 		}
 		this.channel = channel;
 		NetworkRegistry.INSTANCE.newEventDrivenChannel(channel).register(this);;

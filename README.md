@@ -22,7 +22,7 @@ jar {
 
 shadowJar {
 	classifier = ''
-	relocate 'io.github.elytra.concrete', "me.mymod.repackage.io.github.elytra.concrete"
+	relocate 'io.github.elytra.concrete', 'me.mymod.repackage.io.github.elytra.concrete'
 	configurations = [project.configurations.shadow]
 }
 
@@ -37,8 +37,8 @@ artifacts {
 }
 
 dependencies {
-	compile 'io.github.elytra:concrete:0.0.2'
-	shadow 'io.github.elytra:concrete:0.0.2'
+	compile 'io.github.elytra:concrete:0.0.4'
+	shadow 'io.github.elytra:concrete:0.0.4'
 }
 ```
 
