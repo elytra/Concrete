@@ -71,8 +71,12 @@ public abstract class Message {
 		if (async) {
 			handle(Minecraft.getMinecraft().thePlayer);
 		} else {
-			Minecraft.getMinecraft().addScheduledTask(() -> {
-				handle(Minecraft.getMinecraft().thePlayer);
+			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+				@Override
+				@SideOnly(Side.CLIENT)
+				public void run() {
+					handle(Minecraft.getMinecraft().thePlayer);
+				}
 			});
 		}
 	}
