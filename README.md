@@ -23,6 +23,7 @@ jar {
 shadowJar {
 	classifier = ''
 	relocate 'io.github.elytra.concrete', "me.mymod.repackage.io.github.elytra.concrete"
+	configurations = [project.configurations.shadow]
 }
 
 reobf {
