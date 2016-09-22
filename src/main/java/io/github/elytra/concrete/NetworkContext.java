@@ -40,6 +40,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class NetworkContext {
 	static final Logger log = LogManager.getLogger("Concrete");
 	
+	private static final String DEFAULT_PACKAGE;
+		
+	static {
+		// we have to do this so the shadow plugin doesn't remap the string
+		char[] c = {
+				'i','o','.','g','i','t','h','u','b','.','e','l','y','t','r','a','.','c','o','n','c','r','e','t','e'
+		};
+		DEFAULT_PACKAGE = new String(c);
+	}
+	
 	protected static final Instanciator instanciator;
 	
 	static {
@@ -66,7 +76,7 @@ public class NetworkContext {
 	private int nextPacketId = 0;
 	
 	private NetworkContext(String channel) {
-		if (NetworkContext.class.getName().startsWith("io.github.elytra.concrete")
+		if (NetworkContext.class.getName().startsWith(DEFAULT_PACKAGE)
 				&& !((Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment"))) {
 			throw new RuntimeException("Concrete is designed to be shaded and must not be left in the default package! (Offending mod: "+Loader.instance().activeModContainer().getName()+")");
 		} else {
