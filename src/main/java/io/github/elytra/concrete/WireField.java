@@ -1,39 +1,24 @@
 package io.github.elytra.concrete;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 import com.google.common.base.Throwables;
 
+import io.github.elytra.concrete.accessor.Accessor;
+import io.github.elytra.concrete.accessor.Accessors;
 import io.github.elytra.concrete.annotation.field.MarshalledAs;
 import io.github.elytra.concrete.exception.BadMessageException;
 import io.netty.buffer.ByteBuf;
 
 class WireField<T> {
-	private static final boolean methodHandlesAvailable;
-	static {
-		boolean hasMethodHandles;
-		try {
-			Class.forName("java.lang.invoke.MethodHandles");
-			hasMethodHandles = true;
-		} catch (Exception e) {
-			hasMethodHandles = false;
-		}
-		methodHandlesAvailable = hasMethodHandles;
-	}
 	private Accessor<T> accessor;
 	private Marshaller<T> marshaller;
 	private Class<T> type;
 	
 	public WireField(Field f) {
 		f.setAccessible(true);
-		if (methodHandlesAvailable) {
-			accessor = new MethodHandlesAccessor<>(f);
-		} else {
-			accessor = new ReflectionAccessor<>(f);
-		}
+		accessor = Accessors.from(f);
 		try {
 			type = (Class<T>) f.getType();
 		} catch (Exception e) {
@@ -95,62 +80,5 @@ class WireField<T> {
 	
 	public Class<? extends T> getType() {
 		return type;
-	}
-	
-	
-	public interface Accessor<T> {
-		T get(Object owner);
-		void set(Object owner, T value);
-	}
-	public static class MethodHandlesAccessor<T> implements Accessor<T> {
-		private MethodHandle getter;
-		private MethodHandle setter;
-		public MethodHandlesAccessor(Field f) {
-			try {
-				f.setAccessible(true);
-				getter = MethodHandles.lookup().unreflectGetter(f);
-				setter = MethodHandles.lookup().unreflectSetter(f);
-			} catch (IllegalAccessException e) {
-				Throwables.propagate(e);
-			}
-		}
-		@Override
-		public T get(Object owner) {
-			try {
-				return (T)getter.invoke(owner);
-			} catch (Throwable e) {
-				throw Throwables.propagate(e);
-			}
-		}
-		@Override
-		public void set(Object owner, T value) {
-			try {
-				setter.invoke(owner, value);
-			} catch (Throwable e) {
-				throw Throwables.propagate(e);
-			}
-		}
-	}
-	public static class ReflectionAccessor<T> implements Accessor<T> {
-		private Field f;
-		public ReflectionAccessor(Field f) {
-			this.f = f;
-		}
-		@Override
-		public T get(Object owner) {
-			try {
-				return (T)f.get(owner);
-			} catch (Exception e) {
-				throw Throwables.propagate(e);
-			}
-		}
-		@Override
-		public void set(Object owner, T value) {
-			try {
-				f.set(owner, value);
-			} catch (Exception e) {
-				throw Throwables.propagate(e);
-			}
-		}
 	}
 }

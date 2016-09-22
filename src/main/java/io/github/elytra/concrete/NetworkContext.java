@@ -66,7 +66,7 @@ public class NetworkContext {
 	private int nextPacketId = 0;
 	
 	private NetworkContext(String channel) {
-		if (NetworkContext.class.getPackage().getName().equals("io.github.elytra.concrete")
+		if (NetworkContext.class.getName().startsWith("io.github.elytra.concrete")
 				&& !((Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment"))) {
 			throw new RuntimeException("Concrete is designed to be shaded and must not be left in the default package! (Offending mod: "+Loader.instance().activeModContainer().getName()+")");
 		} else {
