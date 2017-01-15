@@ -195,7 +195,7 @@ public class DefaultMarshallers {
 			}
 			return li;
 		}
-		
+
 		@Override
 		public void marshal(ByteBuf out, List<T> li) {
 			if (li == null) {
@@ -211,31 +211,31 @@ public class DefaultMarshallers {
 	}
 	
 	private static class BlockPosMarshaller implements Marshaller<BlockPos> {
-		
+
 		@Override
 		public BlockPos unmarshal(ByteBuf in) {
 			return BlockPos.fromLong(in.readLong());
 		}
-		
+
 		@Override
 		public void marshal(ByteBuf out, BlockPos t) {
 			out.writeLong(t.toLong());
 		}
-		
+
 	}
 	
 	private static class VarIntMarshaller implements Marshaller<Number> {
-		
+
 		@Override
 		public Number unmarshal(ByteBuf in) {
 			return ByteBufUtils.readVarInt(in, 5);
 		}
-		
+
 		@Override
 		public void marshal(ByteBuf out, Number t) {
 			ByteBufUtils.writeVarInt(out, t.intValue(), 5);
 		}
-		
+
 	}
 	
 	private static class EnumMarshaller<T extends Enum<T>> implements Marshaller<T> {
@@ -261,7 +261,7 @@ public class DefaultMarshallers {
 			}
 			return constants[ordinal];
 		}
-		
+
 		@Override
 		public void marshal(ByteBuf out, T t) {
 			if (constants.length < 256) {
@@ -333,7 +333,7 @@ public class DefaultMarshallers {
 			return (Marshaller<T>)byName.get(name.toLowerCase(Locale.ROOT));
 		}
 	}
-	
+
 	public static <T> Marshaller<T> getByType(Class<T> type) {
 		if (String.class.isAssignableFrom(type)) {
 			return (Marshaller<T>)STRING;
