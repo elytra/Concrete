@@ -37,8 +37,8 @@ artifacts {
 }
 
 dependencies {
-	compile 'io.github.elytra:concrete:0.0.6'
-	shadow 'io.github.elytra:concrete:0.0.6'
+	compile 'io.github.elytra:concrete:0.0.7'
+	shadow 'io.github.elytra:concrete:0.0.7'
 }
 ```
 
