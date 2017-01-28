@@ -132,6 +132,12 @@ public class DefaultMarshallers {
 	public static final Marshaller<ItemStack> ITEMSTACK = weld(ByteBufUtils::writeItemStack, ByteBufUtils::readItemStack);
 	
 	
+	/**
+	 * A bytebuf, only writes the readable bytes.
+	 */
+	public static final Marshaller<? extends ByteBuf> BYTEBUF = new ByteBufMarshaller();
+	
+	
 	
 	private static final Map<String, Marshaller<?>> byName = Maps.newHashMap();
 	
@@ -268,7 +274,28 @@ public class DefaultMarshallers {
 				out.writeInt(t.ordinal());
 			}
 		}
-
+		
+	}
+	
+	private static class ByteBufMarshaller implements Marshaller<ByteBuf> {
+		
+		@Override
+		public ByteBuf unmarshal(ByteBuf in) {
+			int length = ByteBufUtils.readVarInt(in, 5);
+			
+			return in.readBytes(length);
+		}
+		
+		@Override
+		public void marshal(ByteBuf out, ByteBuf t) {
+			if (t != null) {
+				ByteBufUtils.writeVarInt(out, t.readableBytes(), 5);
+				out.writeBytes(t.readBytes(t.readableBytes()));
+			} else {
+				ByteBufUtils.writeVarInt(out, 0, 5);
+			}
+		}
+		
 	}
 	
 	
@@ -318,6 +345,8 @@ public class DefaultMarshallers {
 			return new EnumMarshaller(type);
 		} else if (ItemStack.class.isAssignableFrom(type)) {
 			return (Marshaller<T>)ITEMSTACK;
+		} else if (ByteBuf.class.isAssignableFrom(type)) {
+			return (Marshaller<T>)BYTEBUF;
 		}
 		return null;
 	}
