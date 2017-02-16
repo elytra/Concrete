@@ -25,7 +25,7 @@ public class MethodHandlesInvoker implements Invoker {
 		joined[0] = owner;
 		System.arraycopy(args, 0, joined, 1, args.length);
 		try {
-			return handle.invoke(joined);
+			return handle.invokeWithArguments(joined);
 		} catch (Throwable e) {
 			throw Throwables.propagate(e);
 		}
