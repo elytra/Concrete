@@ -4,11 +4,14 @@ import java.lang.reflect.Field;
 
 import com.google.common.base.Throwables;
 
-class ReflectionAccessor<T> implements Accessor<T> {
+class ReflectionFieldAccessor<T> implements Accessor<T> {
 	private Field f;
-	public ReflectionAccessor(Field f) {
+	
+	public ReflectionFieldAccessor(Field f) {
+		f.setAccessible(true);
 		this.f = f;
 	}
+	
 	@Override
 	public T get(Object owner) {
 		try {
@@ -17,6 +20,7 @@ class ReflectionAccessor<T> implements Accessor<T> {
 			throw Throwables.propagate(e);
 		}
 	}
+	
 	@Override
 	public void set(Object owner, T value) {
 		try {

@@ -3,6 +3,7 @@ package io.github.elytra.concrete.accessor;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import com.google.common.base.Throwables;
 
@@ -18,6 +19,18 @@ class MethodHandlesAccessor<T> implements Accessor<T> {
 			Throwables.propagate(e);
 		}
 	}
+	
+	public MethodHandlesAccessor(Method get, Method set) {
+		try {
+			get.setAccessible(true);
+			set.setAccessible(true);
+			getter = MethodHandles.lookup().unreflect(get);
+			setter = MethodHandles.lookup().unreflect(set);
+		} catch (IllegalAccessException e) {
+			Throwables.propagate(e);
+		}
+	}
+	
 	@Override
 	public T get(Object owner) {
 		try {

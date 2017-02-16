@@ -1,6 +1,7 @@
 package io.github.elytra.concrete.accessor;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public final class Accessors {
 	private static final boolean methodHandlesAvailable;
@@ -19,7 +20,15 @@ public final class Accessors {
 		if (methodHandlesAvailable) {
 			return new MethodHandlesAccessor<>(f);
 		} else {
-			return new ReflectionAccessor<>(f);
+			return new ReflectionFieldAccessor<>(f);
+		}
+	}
+	
+	public static <T> Accessor<T> from(Method get, Method set) {
+		if (methodHandlesAvailable) {
+			return new MethodHandlesAccessor<>(get, set);
+		} else {
+			return new ReflectionMethodAccessor<>(get, set);
 		}
 	}
 	
