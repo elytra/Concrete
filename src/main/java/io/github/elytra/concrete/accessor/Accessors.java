@@ -3,6 +3,8 @@ package io.github.elytra.concrete.accessor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+
 public final class Accessors {
 	private static final boolean methodHandlesAvailable;
 	static {
@@ -22,6 +24,10 @@ public final class Accessors {
 		} else {
 			return new ReflectionFieldAccessor<>(f);
 		}
+	}
+	
+	public static <T> Accessor<T> findField(Class<?> clazz, String... names) {
+		return from(ReflectionHelper.findField(clazz, names));
 	}
 	
 	public static <T> Accessor<T> from(Method get, Method set) {

@@ -8,8 +8,10 @@ import java.lang.reflect.Method;
 import com.google.common.base.Throwables;
 
 class MethodHandlesAccessor<T> implements Accessor<T> {
+	
 	private MethodHandle getter;
 	private MethodHandle setter;
+	
 	public MethodHandlesAccessor(Field f) {
 		try {
 			f.setAccessible(true);
@@ -39,6 +41,7 @@ class MethodHandlesAccessor<T> implements Accessor<T> {
 			throw Throwables.propagate(e);
 		}
 	}
+	
 	@Override
 	public void set(Object owner, T value) {
 		try {
