@@ -23,7 +23,7 @@ apply plugin: 'maven'
 
 group = "io.github.elytra"
 archivesBaseName = "Concrete"
-version = "0.0.7"
+version = "0.0.8"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
