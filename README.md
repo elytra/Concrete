@@ -1,5 +1,7 @@
 # Concrete
-A compact and clean wrapper for custom payload packets in Forge.
+A compact and clean wrapper for custom payload packets in Forge. Also contains a
+few utilities for using MethodHandles and gracefully falling back to reflection
+on older JVMs.
 
 ## Depending on Concrete
 Concrete must be shaded into the jar, and will throw an exception at runtime if
@@ -12,7 +14,7 @@ plugins {
 
 repositories {
 	maven {
-		url = 'http://unascribed.com/maven/releases'
+		url = 'http://repo.elytradev.com'
 	}
 }
 
@@ -22,7 +24,7 @@ jar {
 
 shadowJar {
 	classifier = ''
-	relocate 'io.github.elytra.concrete', 'me.mymod.repackage.io.github.elytra.concrete'
+	relocate 'com.elytradev.concrete', 'me.mymod.repackage.com.elytradev.concrete'
 	configurations = [project.configurations.shadow]
 }
 
@@ -37,8 +39,8 @@ artifacts {
 }
 
 dependencies {
-	compile 'io.github.elytra:concrete:0.0.9'
-	shadow 'io.github.elytra:concrete:0.0.9'
+	compile 'com.elytradev:concrete:0.1.0'
+	shadow 'com.elytradev:concrete:0.1.0'
 }
 ```
 

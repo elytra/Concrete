@@ -21,9 +21,9 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'maven'
 
-group = "io.github.elytra"
+group = "com.elytradev"
 archivesBaseName = "Concrete"
-version = "0.0.9"
+version = "0.1.0"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -41,8 +41,8 @@ dependencies {
 }
 
 minecraft {
-	version = "1.10.2-12.18.1.2066"
-	mappings = "snapshot_20160817"
+	version = "1.11.2-13.20.0.2226"
+	mappings = "snapshot_20170205"
 
 	runDir = "eclipse"
 }
@@ -80,8 +80,8 @@ uploadArchives {
 	repositories.mavenDeployer {
 		configuration = configurations.deploy
 		pom.artifactId = 'concrete'
-		repository(url: "scp://"+priv.scpHost+priv.scpPath+"/releases") {
-			authentication(userName: priv.scpUser, privateKey: file(priv.scpKey))
+		repository(url: "sftp://"+priv.sftpHost+priv.sftpPath) {
+			authentication(userName: priv.sftpUser, privateKey: file(priv.sftpKey))
 		}
 	}
 }
