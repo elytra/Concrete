@@ -3,7 +3,7 @@ package com.elytradev.concrete.reflect.accessor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public final class Accessors {
 	private static final boolean methodHandlesAvailable;

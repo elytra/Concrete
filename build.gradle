@@ -12,18 +12,18 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+		classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
 		classpath 'me.tatarka:gradle-retrolambda:3.2.0'
 	}
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'forge'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'maven'
 
 group = "com.elytradev"
 archivesBaseName = "Concrete"
-version = "0.1.0"
+version = "i.0.1"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -41,8 +41,8 @@ dependencies {
 }
 
 minecraft {
-	version = "1.11.2-13.20.0.2226"
-	mappings = "snapshot_20170205"
+	version = "1.7.10-10.13.4.1614-1.7.10"
+	mappings = "snapshot_20140925"
 
 	runDir = "eclipse"
 }

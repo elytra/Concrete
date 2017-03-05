@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import net.minecraftforge.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.Side;
 
 /**
  * Specifies the side that a Message will be received on.

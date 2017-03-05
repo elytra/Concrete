@@ -14,8 +14,7 @@ import com.google.common.primitives.Ints;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.network.ByteBufUtils;
 
 /**
  * A set of default marshallers for common data types.
@@ -119,12 +118,6 @@ public class DefaultMarshallers {
 	
 	
 	/**
-	 * 64-bit packed BlockPos.
-	 */
-	public static final Marshaller<BlockPos> BLOCKPOS = new BlockPosMarshaller();
-	
-	
-	/**
 	 * UTF-8 varint-length-prefixed string.
 	 */
 	public static final Marshaller<String> STRING = weld(ByteBufUtils::writeUTF8String, ByteBufUtils::readUTF8String);
@@ -166,8 +159,6 @@ public class DefaultMarshallers {
 		put(VARINT, "varint");
 		
 		put(NBT, "nbt");
-		
-		put(BLOCKPOS, "blockpos");
 		
 		put(STRING, "string", "str", "utf8");
 		
@@ -211,20 +202,6 @@ public class DefaultMarshallers {
 			}
 		}
 		
-	}
-	
-	private static class BlockPosMarshaller implements Marshaller<BlockPos> {
-
-		@Override
-		public BlockPos unmarshal(ByteBuf in) {
-			return BlockPos.fromLong(in.readLong());
-		}
-
-		@Override
-		public void marshal(ByteBuf out, BlockPos t) {
-			out.writeLong(t.toLong());
-		}
-
 	}
 	
 	private static class VarIntMarshaller implements Marshaller<Number> {
@@ -367,8 +344,6 @@ public class DefaultMarshallers {
 	public static <T> Marshaller<T> getByType(Class<T> type) {
 		if (String.class.isAssignableFrom(type)) {
 			return (Marshaller<T>)STRING;
-		} else if (BlockPos.class.isAssignableFrom(type)) {
-			return (Marshaller<T>)BLOCKPOS;
 		} else if (NBTTagCompound.class.isAssignableFrom(type)) {
 			return (Marshaller<T>)NBT;
 		} else if (type.isEnum()) {

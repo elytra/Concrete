@@ -12,12 +12,15 @@ import com.google.common.base.Throwables;
 import io.netty.buffer.ByteBuf;
 
 class WireField<T> {
+	private Field f;
 	private Accessor<T> accessor;
 	private Marshaller<T> marshaller;
 	private Class<T> type;
+	private boolean optional;
 	
 	public WireField(Field f) {
 		f.setAccessible(true);
+		this.f = f;
 		accessor = Accessors.from(f);
 		try {
 			type = (Class<T>) f.getType();
@@ -32,12 +35,13 @@ class WireField<T> {
 		} else {
 			marshaller = DefaultMarshallers.getByType(type);
 		}
+		optional = f.getAnnotation(Optional.class) != null;
 		if (marshaller == null && type != Boolean.TYPE) {
 			String annot = "";
 			if (ma != null) {
 				annot = "@MarshalledAs(\""+ma.value().replace("\"", "\\\"")+"\") ";
 			}
-			if (f.getAnnotation(Optional.class) != null) {
+			if (optional) {
 				annot = annot+"@Optional ";
 			}
 			throw new BadMessageException("Cannot find an appropriate marshaller for field "+annot+type+" "+f.getDeclaringClass().getName()+"."+f.getName());
@@ -54,10 +58,17 @@ class WireField<T> {
 	
 	
 	public void marshal(Object owner, ByteBuf out) {
-		marshaller.marshal(out, accessor.get(owner));
+		T value = accessor.get(owner);
+		if (value == null) throw new BadMessageException("Wire fields cannot be null (in "+type+" "+f.getDeclaringClass().getName()+"."+f.getName()+")");
+		marshaller.marshal(out, value);
 	}
 	public void unmarshal(Object owner, ByteBuf in) {
 		accessor.set(owner, marshaller.unmarshal(in));
+	}
+	
+	
+	public boolean isOptional() {
+		return optional;
 	}
 	
 	

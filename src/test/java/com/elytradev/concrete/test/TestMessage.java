@@ -3,14 +3,12 @@ package com.elytradev.concrete.test;
 import com.elytradev.concrete.Message;
 import com.elytradev.concrete.NetworkContext;
 import com.elytradev.concrete.annotation.field.MarshalledAs;
-import com.elytradev.concrete.annotation.type.Asynchronous;
 import com.elytradev.concrete.annotation.type.ReceivedOn;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.Side;
 
 @ReceivedOn(Side.SERVER)
-@Asynchronous
 public class TestMessage extends Message {
 
 	public boolean true1 = true;

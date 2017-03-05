@@ -2,7 +2,7 @@ package com.elytradev.concrete.reflect.invoker;
 
 import java.lang.reflect.Method;
 
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public final class Invokers {
 	private static final boolean methodHandlesAvailable;

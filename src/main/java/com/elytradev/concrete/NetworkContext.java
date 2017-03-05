@@ -6,10 +6,13 @@ import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.elytradev.concrete.annotation.field.Optional;
 import com.elytradev.concrete.exception.BadMessageException;
 import com.elytradev.concrete.exception.WrongSideException;
 import com.elytradev.concrete.reflect.instanciator.Instanciator;
@@ -21,20 +24,21 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multiset;
+import com.google.common.collect.Sets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
-import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class NetworkContext {
 	static final Logger log = LogManager.getLogger("Concrete");
@@ -54,6 +58,7 @@ public class NetworkContext {
 	protected final BiMap<Class<? extends Message>, Integer> packetIds = HashBiMap.create();
 	protected final Map<Class<? extends Message>, List<WireField<?>>> marshallers = Maps.newHashMap();
 	protected final Multiset<Class<? extends Message>> booleanCount = HashMultiset.create();
+	protected final Multiset<Class<? extends Message>> optionalCount = HashMultiset.create();
 	
 	protected final String channel;
 	
@@ -85,6 +90,9 @@ public class NetworkContext {
 					if (f.getType() == Boolean.TYPE) {
 						booleanCount.add(clazz);
 					}
+					if (f.getAnnotation(Optional.class) != null) {
+						optionalCount.add(clazz);
+					}
 					WireField<?> wf = new WireField<>(f);
 					fields.add(wf);
 				}
@@ -106,15 +114,20 @@ public class NetworkContext {
 		if (!packetIds.containsKey(m.getClass())) throw new BadMessageException(m.getClass()+" is not registered");
 		PacketBuffer payload = new PacketBuffer(Unpooled.buffer());
 		payload.writeByte(packetIds.get(m.getClass()));
-		int bools = booleanCount.count(m.getClass());
+		int bools = booleanCount.count(m.getClass())+optionalCount.count(m.getClass());
 		if (bools > 0) {
-			Iterator<WireField<Boolean>> iter = (Iterator)Iterators.filter(marshallers.get(m.getClass()).iterator(), (it) -> it.getType() == Boolean.TYPE);
-			List<WireField<Boolean>> li = Lists.newArrayList(iter);
+			List<Boolean> li = Lists.newArrayListWithCapacity(bools);
+			for (WireField<?> wf : marshallers.get(m.getClass())) {
+				if (wf.getType() == Boolean.TYPE) {
+					li.add((Boolean)wf.get(m));
+				} else if (wf.isOptional()) {
+					li.add(wf.get(m) != null);
+				}
+			}
 			for (int i = 0; i < (bools+7)/8; i++) {
 				int by = 0;
 				for (int j = i*8; j < Math.min(li.size(), i+8); j++) {
-					WireField<Boolean> wf = li.get(j);
-					if (wf.get(m)) {
+					if (li.get(j)) {
 						by |= (1 << j);
 					}
 				}
@@ -132,15 +145,15 @@ public class NetworkContext {
 
 	@SubscribeEvent
 	public void onServerCustomPacket(ServerCustomPacketEvent e) {
-		ByteBuf payload = e.getPacket().payload();
+		ByteBuf payload = e.packet.payload();
 		Message m = readPacket(e.side(), payload);
-		m.doHandleServer(((NetHandlerPlayServer)e.getHandler()).player);
+		m.doHandleServer(((NetHandlerPlayServer)e.handler).playerEntity);
 	}
 	
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onClientCustomPacket(ClientCustomPacketEvent e) {
-		ByteBuf payload = e.getPacket().payload();
+		ByteBuf payload = e.packet.payload();
 		Message m = readPacket(e.side(), payload);
 		m.doHandleClient();
 	}
@@ -165,22 +178,38 @@ public class NetworkContext {
 		if (m.getSide() != side) {
 			throw new WrongSideException("Cannot receive packet of type "+clazz+" on side "+side);
 		}
-		int bools = booleanCount.count(clazz);
+		Set<WireField<?>> present = Sets.newHashSetWithExpectedSize(marshallers.get(m.getClass()).size());
+		int bools = booleanCount.count(m.getClass())+optionalCount.count(m.getClass());
 		if (bools > 0) {
-			Iterator<WireField<Boolean>> iter = (Iterator)Iterators.filter(marshallers.get(m.getClass()).iterator(), (it) -> it.getType() == Boolean.TYPE);
-			List<WireField<Boolean>> li = Lists.newArrayList(iter);
+			List<Consumer<Boolean>> li = Lists.newArrayListWithCapacity(bools);
+			for (WireField<?> wf : marshallers.get(m.getClass())) {
+				if (wf.getType() == Boolean.TYPE) {
+					li.add((b) -> ((WireField<Boolean>)wf).set(m, b));
+					present.add(wf);
+				} else if (wf.isOptional()) {
+					li.add((b) -> { if (b) { present.add(wf); } });
+				} else {
+					present.add(wf);
+				}
+			}
 			for (int i = 0; i < (bools+7)/8; i++) {
 				int by = payload.readUnsignedByte();
 				for (int j = i*8; j < Math.min(li.size(), i+8); j++) {
 					boolean val = (by & (1 << (j-i))) != 0;
-					li.get(j).set(m, val);
+					li.get(j).accept(val);
 				}
+			}
+		} else {
+			for (WireField<?> wf : marshallers.get(m.getClass())) {
+				present.add(wf);
 			}
 		}
 		Iterator<WireField<?>> iter = Iterators.filter(marshallers.get(m.getClass()).iterator(), (it) -> it.getType() != Boolean.TYPE);
 		while (iter.hasNext()) {
 			WireField<?> wf = iter.next();
-			wf.unmarshal(m, payload);
+			if (present.contains(wf)) {
+				wf.unmarshal(m, payload);
+			}
 		}
 		return m;
 	}
