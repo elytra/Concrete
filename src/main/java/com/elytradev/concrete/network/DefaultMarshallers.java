@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.elytradev.concrete.exception.BadMessageException;
+import com.elytradev.concrete.network.exception.BadMessageException;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.primitives.Ints;

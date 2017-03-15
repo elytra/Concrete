@@ -1,10 +1,10 @@
 package com.elytradev.concrete.test;
 
-import com.elytradev.concrete.annotation.field.MarshalledAs;
-import com.elytradev.concrete.annotation.type.Asynchronous;
-import com.elytradev.concrete.annotation.type.ReceivedOn;
 import com.elytradev.concrete.network.Message;
 import com.elytradev.concrete.network.NetworkContext;
+import com.elytradev.concrete.network.annotation.field.MarshalledAs;
+import com.elytradev.concrete.network.annotation.type.Asynchronous;
+import com.elytradev.concrete.network.annotation.type.ReceivedOn;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;

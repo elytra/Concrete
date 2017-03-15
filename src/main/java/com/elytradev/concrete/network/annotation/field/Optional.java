@@ -1,4 +1,4 @@
-package com.elytradev.concrete.annotation.field;
+package com.elytradev.concrete.network.annotation.field;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
