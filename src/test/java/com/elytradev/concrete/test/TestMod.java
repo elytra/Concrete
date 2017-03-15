@@ -1,6 +1,6 @@
 package com.elytradev.concrete.test;
 
-import com.elytradev.concrete.NetworkContext;
+import com.elytradev.concrete.network.NetworkContext;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;

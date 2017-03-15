@@ -1,4 +1,4 @@
-package com.elytradev.concrete;
+package com.elytradev.concrete.network;
 
 import java.io.IOException;
 import java.util.List;

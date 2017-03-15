@@ -1,4 +1,4 @@
-package com.elytradev.concrete;
+package com.elytradev.concrete.network;
 
 import io.netty.buffer.ByteBuf;
 
