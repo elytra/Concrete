@@ -1,6 +1,6 @@
 package com.elytradev.concrete.network;
 
-import com.elytradev.concrete.exception.BadMessageException;
+import com.elytradev.concrete.network.exception.BadMessageException;
 
 import io.netty.buffer.ByteBuf;
 

@@ -1,4 +1,4 @@
-package com.elytradev.concrete.exception;
+package com.elytradev.concrete.network.exception;
 
 public class WrongSideException extends RuntimeException {
 	private static final long serialVersionUID = 7985887528709688970L;

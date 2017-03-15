@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import com.elytradev.concrete.annotation.type.Asynchronous;
-import com.elytradev.concrete.annotation.type.ReceivedOn;
-import com.elytradev.concrete.exception.BadMessageException;
-import com.elytradev.concrete.exception.WrongSideException;
+import com.elytradev.concrete.network.annotation.type.Asynchronous;
+import com.elytradev.concrete.network.annotation.type.ReceivedOn;
+import com.elytradev.concrete.network.exception.BadMessageException;
+import com.elytradev.concrete.network.exception.WrongSideException;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
 

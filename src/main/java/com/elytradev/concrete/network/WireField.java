@@ -2,9 +2,9 @@ package com.elytradev.concrete.network;
 
 import java.lang.reflect.Field;
 
-import com.elytradev.concrete.annotation.field.MarshalledAs;
-import com.elytradev.concrete.annotation.field.Optional;
-import com.elytradev.concrete.exception.BadMessageException;
+import com.elytradev.concrete.network.annotation.field.MarshalledAs;
+import com.elytradev.concrete.network.annotation.field.Optional;
+import com.elytradev.concrete.network.exception.BadMessageException;
 import com.elytradev.concrete.reflect.accessor.Accessor;
 import com.elytradev.concrete.reflect.accessor.Accessors;
 import com.google.common.base.Throwables;

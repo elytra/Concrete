@@ -1,4 +1,4 @@
-package com.elytradev.concrete.annotation.type;
+package com.elytradev.concrete.network.annotation.type;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

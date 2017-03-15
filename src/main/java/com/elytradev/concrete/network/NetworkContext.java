@@ -12,9 +12,9 @@ import java.util.function.Consumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.elytradev.concrete.annotation.field.Optional;
-import com.elytradev.concrete.exception.BadMessageException;
-import com.elytradev.concrete.exception.WrongSideException;
+import com.elytradev.concrete.network.annotation.field.Optional;
+import com.elytradev.concrete.network.exception.BadMessageException;
+import com.elytradev.concrete.network.exception.WrongSideException;
 import com.elytradev.concrete.reflect.instanciator.Instanciator;
 import com.elytradev.concrete.reflect.instanciator.Instanciators;
 import com.google.common.collect.BiMap;
