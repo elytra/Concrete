@@ -10,6 +10,11 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.fml.common.FMLContainer;
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.InjectedModContainer;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 
 import java.util.Optional;
 import java.util.Random;
@@ -60,6 +65,24 @@ public class ConcreteBlock extends Block {
         this.expDropBehaviour = expDropBehaviour;
 
         this.setRegistryName(identifier);
+        this.setUnlocalizedName(this.fetchModid(identifier));
+    }
+
+    // Based on IForgeRegistryEntry.Impl#setRegistryName(String)
+    private String fetchModid(String identifier) {
+        final int index = identifier.lastIndexOf(':');
+        final String oldPrefix = index == -1 ? "" : identifier.substring(0, index);
+        identifier = index == -1 ? identifier : identifier.substring(index + 1);
+
+        final ModContainer mc = Loader.instance().activeModContainer();
+        String prefix = mc == null || (mc instanceof InjectedModContainer &&
+                ((InjectedModContainer) mc).wrappedContainer instanceof FMLContainer) ? "minecraft" : mc.getModId().toLowerCase();
+        if (!oldPrefix.equals(prefix) && oldPrefix.length() > 0) {
+            FMLLog.bigWarning("Dangerous alternative prefix `%s` for name `%s`, expected `%s` invalid registry invocation/invalid name?",
+                    oldPrefix, identifier, prefix);
+            prefix = oldPrefix;
+        }
+        return prefix;
     }
 
     @Override
@@ -92,7 +115,6 @@ public class ConcreteBlock extends Block {
 
     public static class Builder {
 
-        private Optional<String> modid = Optional.empty();
         private String identifier;
         private Optional<CreativeTabs> creativeTab = Optional.empty();
         private Material material = Material.ROCK;
@@ -108,11 +130,6 @@ public class ConcreteBlock extends Block {
 
         public Builder preset(Consumer<Builder> preset) {
             preset.accept(this);
-            return this;
-        }
-
-        public Builder modid(String modid) {
-            this.modid = Optional.of(modid);
             return this;
         }
 
@@ -172,7 +189,6 @@ public class ConcreteBlock extends Block {
 
             final ConcreteBlock block = constructionBehaviour.construct(this.identifier, this.material, this.drop, this.itemDropBehaviour,
                     this.expDropBehaviour);
-            this.modid.ifPresent(mod -> block.setUnlocalizedName(mod + "." + this.identifier));
             this.creativeTab.ifPresent(block::setCreativeTab);
             this.hardness.ifPresent(block::setHardness);
             this.resistance.ifPresent(block::setResistance);
