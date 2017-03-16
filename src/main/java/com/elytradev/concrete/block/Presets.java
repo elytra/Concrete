@@ -28,4 +28,7 @@ public final class Presets {
             .hardness(0.3f)
             .resistance(1.0f);
 
+    private Presets() {
+    }
+
 }

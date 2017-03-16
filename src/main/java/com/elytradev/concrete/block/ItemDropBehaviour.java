@@ -5,7 +5,7 @@ import net.minecraft.util.math.MathHelper;
 import java.util.Random;
 
 /**
- * An interface used to describe the behaviour for item drops for an {@link ConcreteBlock}.
+ * An interface used to describe the behaviour for item drops for a {@link ConcreteBlock}.
  */
 public interface ItemDropBehaviour {
 
