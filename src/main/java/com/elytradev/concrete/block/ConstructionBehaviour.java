@@ -14,7 +14,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.function.Supplier;
 
 /**
- * A interface used to describe the behaviour for constructing a {@link ConcreteBlock}.
+ * A interface used to define the behaviour that will be used to construct a {@link ConcreteBlock},
+ * from the Concrete block builder system.
+ *
+ * This allows for an extended {@link ConcreteBlock} in special cases where such functionality may
+ * be desired, such as glass.
  */
 public interface ConstructionBehaviour {
 
@@ -24,7 +28,7 @@ public interface ConstructionBehaviour {
     ConstructionBehaviour DEFAULT = ConcreteBlock::new;
 
     /**
-     * The construction behaviour for ores.
+     * The construction behaviour for glass blocks.
      */
     ConstructionBehaviour GLASS = new ConstructionBehaviour() {
         @Override
