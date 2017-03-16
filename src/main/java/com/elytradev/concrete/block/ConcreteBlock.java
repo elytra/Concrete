@@ -31,24 +31,6 @@ import java.util.function.Supplier;
  */
 public class ConcreteBlock extends Block {
 
-    /**
-     * A preset for a block builder with ore properties, such as the fortune drop behaviour.
-     *
-     * @see Builder#preset(Consumer)
-     */
-    public static Consumer<Builder> ORE_PRESET = builder -> builder.drop(ItemDropBehaviour.Fortune.DEFAULT);
-
-    /**
-     * A preset for a block builder with glass properties, such as the hardness, and resistance.
-     *
-     * @see Builder#preset(Consumer)
-     */
-    public static Consumer<Builder> GLASS_PRESET = builder -> builder.material(Material.GLASS)
-            .soundType(SoundType.GLASS)
-            .drop(ItemDropBehaviour.DROP_NONE)
-            .hardness(0.3f)
-            .resistance(1.0f);
-
     public static Builder builder() {
         return new Builder();
     }
