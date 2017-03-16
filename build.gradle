@@ -74,14 +74,16 @@ def parseConfig(File config) {
 	}
 }
 
-ext.priv = parseConfig(file('private.properties'))
+if (file('private.properties').exists()) {
+	ext.priv = parseConfig(file('private.properties'))
 
-uploadArchives {
-	repositories.mavenDeployer {
-		configuration = configurations.deploy
-		pom.artifactId = 'concrete'
-		repository(url: "sftp://"+priv.sftpHost+priv.sftpPath) {
-			authentication(userName: priv.sftpUser, privateKey: file(priv.sftpKey))
+	uploadArchives {
+		repositories.mavenDeployer {
+			configuration = configurations.deploy
+			pom.artifactId = 'concrete'
+			repository(url: "sftp://"+priv.sftpHost+priv.sftpPath) {
+				authentication(userName: priv.sftpUser, privateKey: file(priv.sftpKey))
+			}
 		}
 	}
 }
