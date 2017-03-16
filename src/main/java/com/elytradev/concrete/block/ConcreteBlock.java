@@ -13,12 +13,40 @@ import net.minecraft.world.IBlockAccess;
 
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * An extension of {@link Block} used by all blocks in Unnamed.
+ * An extension of {@link Block} used by the Concrete block builder system, to allow for
+ * the create of blocks through said system.
+ *
+ * This is accomplished by overriding necessary methods from {@link Block}, and replacing
+ * them with the various behaviours that are defined by the user or the ones provided by
+ * Concrete.
  */
 public class ConcreteBlock extends Block {
+
+    /**
+     * A preset for a block builder with ore properties, such as the fortune drop behaviour.
+     *
+     * @see Builder#preset(Consumer)
+     */
+    public static Consumer<Builder> ORE_PRESET = builder -> builder.drop(ItemDropBehaviour.Fortune.DEFAULT);
+
+    /**
+     * A preset for a block builder with glass properties, such as the hardness, and resistance.
+     *
+     * @see Builder#preset(Consumer)
+     */
+    public static Consumer<Builder> GLASS_PRESET = builder -> builder.material(Material.GLASS)
+            .soundType(SoundType.GLASS)
+            .drop(ItemDropBehaviour.DROP_NONE)
+            .hardness(0.3f)
+            .resistance(1.0f);
+
+    public static Builder builder() {
+        return new Builder();
+    }
 
     protected final Supplier<Item> dropped;
     protected final ItemDropBehaviour itemDropBehaviour;
@@ -62,27 +90,8 @@ public class ConcreteBlock extends Block {
         return super.setSoundType(sound);
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static Builder oreBuilder() {
-        return new Builder()
-                .drop(ItemDropBehaviour.Ore.DEFAULT);
-    }
-
-    public static Builder glassBuilder() {
-        return new Builder(ConstructionBehaviour.GLASS)
-                .material(Material.GLASS)
-                .soundType(SoundType.GLASS)
-                .drop(ItemDropBehaviour.DROP_NONE)
-                .hardness(0.3f)
-                .resistance(1.0f);
-    }
-
     public static class Builder {
 
-        private final ConstructionBehaviour defaultConstructionBehaviour;
         private Optional<String> modid = Optional.empty();
         private String identifier;
         private Optional<CreativeTabs> creativeTab = Optional.empty();
@@ -95,11 +104,11 @@ public class ConcreteBlock extends Block {
         private Optional<Float> resistance = Optional.empty();
 
         private Builder() {
-            this(ConstructionBehaviour.DEFAULT);
         }
 
-        private Builder(ConstructionBehaviour defaultConstructionBehaviour) {
-            this.defaultConstructionBehaviour = defaultConstructionBehaviour;
+        public Builder preset(Consumer<Builder> preset) {
+            preset.accept(this);
+            return this;
         }
 
         public Builder modid(String modid) {
@@ -173,7 +182,7 @@ public class ConcreteBlock extends Block {
         }
 
         public ConcreteBlock build() {
-            return this.build(this.defaultConstructionBehaviour);
+            return this.build(ConstructionBehaviour.DEFAULT);
         }
 
     }

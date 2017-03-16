@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 import java.util.Random;
 
 /**
- * An interface used to describe the behaviour for exp drops for an {@link ConcreteBlock}.
+ * A interface used to describe the behaviour for exp drops for an {@link ConcreteBlock}.
  */
 public interface ExpDropBehaviour {
 

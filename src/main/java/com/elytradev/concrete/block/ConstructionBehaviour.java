@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.function.Supplier;
 
 /**
- * An interface used to describe the behaviour for constructing a {@link ConcreteBlock}.
+ * A interface used to describe the behaviour for constructing a {@link ConcreteBlock}.
  */
 public interface ConstructionBehaviour {
 

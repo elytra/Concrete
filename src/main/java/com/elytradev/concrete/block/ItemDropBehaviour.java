@@ -5,7 +5,7 @@ import net.minecraft.util.math.MathHelper;
 import java.util.Random;
 
 /**
- * An interface used to describe the behaviour for item drops for an {@link ConcreteBlock}.
+ * A interface used to describe the behaviour for item drops for an {@link ConcreteBlock}.
  */
 public interface ItemDropBehaviour {
 
@@ -59,36 +59,39 @@ public interface ItemDropBehaviour {
         return this.getQuantityDropped(random);
     }
 
-    interface Ore extends ItemDropBehaviour {
+    /**
+     * A {@link ItemDropBehaviour} to be used to apply fortune. This allows for ore-like functionality.
+     */
+    interface Fortune extends ItemDropBehaviour {
 
         /**
          * A drop behaviour for dropping no items.
          */
-        Ore DROP_NONE = of(0);
+        Fortune DROP_NONE = of(0);
 
         /**
          * The default drop behaviour.
          */
-        Ore DEFAULT = of(1);
+        Fortune DEFAULT = of(1);
 
         /**
-         * Creates a drop behaviour that drops the given item quantity for an ore.
+         * Creates a drop behaviour that drops the given item quantity
          *
          * @param quantity The quantity of items to drop
          * @return The drop behaviour
          */
-        static Ore of(int quantity) {
+        static Fortune of(int quantity) {
             return (random) -> quantity;
         }
 
         /**
-         * Creates a drop behaviour that drops based on given item quantity range for an ore.
+         * Creates a drop behaviour that drops based on given item quantity range.
          *
          * @param minimum The minimum quantity of items to drop
          * @param maximum The maximum quantity of items to drop
          * @return The drop behaviour
          */
-        static Ore of(int minimum, int maximum) {
+        static Fortune of(int minimum, int maximum) {
             return (random) -> MathHelper.getInt(random, minimum, maximum);
         }
 
