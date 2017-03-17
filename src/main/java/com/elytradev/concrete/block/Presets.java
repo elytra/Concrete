@@ -15,7 +15,7 @@ public final class Presets {
      *
      * @see ConcreteBlock.Builder#preset(Consumer)
      */
-    public static Consumer<ConcreteBlock.Builder> ORE= builder -> builder.drop(ItemDropBehaviour.Fortune.DEFAULT);
+    public static Consumer<ConcreteBlock.Builder> ORE = builder -> builder.drop(ItemDropBehaviour.Fortune.DEFAULT);
 
     /**
      * A preset for a block builder with glass properties, such as the hardness, and resistance.
@@ -26,7 +26,8 @@ public final class Presets {
             .soundType(SoundType.GLASS)
             .drop(ItemDropBehaviour.DROP_NONE)
             .hardness(0.3f)
-            .resistance(1.0f);
+            .resistance(1.0f)
+            .translucent();
 
     private Presets() {
     }

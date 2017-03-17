@@ -8,13 +8,13 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.fml.common.FMLContainer;
-import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.common.InjectedModContainer;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Optional;
 import java.util.Random;
@@ -29,7 +29,7 @@ import java.util.function.Supplier;
  * them with the various behaviours that are defined by the user or the ones provided by
  * Concrete.
  */
-public class ConcreteBlock extends Block {
+public abstract class ConcreteBlock extends Block {
 
     public static Builder builder() {
         return new Builder();
@@ -39,7 +39,7 @@ public class ConcreteBlock extends Block {
     protected final ItemDropBehaviour itemDropBehaviour;
     protected final ExpDropBehaviour expDropBehaviour;
 
-    public ConcreteBlock(String identifier, Material materialIn, Supplier<Item> dropped,
+    private ConcreteBlock(String identifier, Material materialIn, Supplier<Item> dropped,
             ItemDropBehaviour itemDropBehaviour, ExpDropBehaviour expDropBehaviour) {
         super(materialIn);
         this.dropped = dropped;
@@ -47,24 +47,7 @@ public class ConcreteBlock extends Block {
         this.expDropBehaviour = expDropBehaviour;
 
         this.setRegistryName(identifier);
-        this.setUnlocalizedName(this.fetchModid(identifier));
-    }
-
-    // Based on IForgeRegistryEntry.Impl#setRegistryName(String)
-    private String fetchModid(String identifier) {
-        final int index = identifier.lastIndexOf(':');
-        final String oldPrefix = index == -1 ? "" : identifier.substring(0, index);
-        identifier = index == -1 ? identifier : identifier.substring(index + 1);
-
-        final ModContainer mc = Loader.instance().activeModContainer();
-        String prefix = mc == null || (mc instanceof InjectedModContainer &&
-                ((InjectedModContainer) mc).wrappedContainer instanceof FMLContainer) ? "minecraft" : mc.getModId().toLowerCase();
-        if (!oldPrefix.equals(prefix) && oldPrefix.length() > 0) {
-            FMLLog.bigWarning("Dangerous alternative prefix `%s` for name `%s`, expected `%s` invalid registry invocation/invalid name?",
-                    oldPrefix, identifier, prefix);
-            prefix = oldPrefix;
-        }
-        return prefix;
+        this.setUnlocalizedName(Loader.instance().activeModContainer().getModId().toLowerCase() + "." + identifier);
     }
 
     @Override
@@ -100,6 +83,7 @@ public class ConcreteBlock extends Block {
         private String identifier;
         private Optional<CreativeTabs> creativeTab = Optional.empty();
         private Material material = Material.ROCK;
+        private boolean translucent = false;
         private Optional<SoundType> soundType = Optional.empty();
         private Supplier<Item> drop;
         private ItemDropBehaviour itemDropBehaviour = ItemDropBehaviour.DEFAULT;
@@ -127,6 +111,11 @@ public class ConcreteBlock extends Block {
 
         public Builder material(Material material) {
             this.material = material;
+            return this;
+        }
+
+        public Builder translucent() {
+            this.translucent = true;
             return this;
         }
 
@@ -166,21 +155,51 @@ public class ConcreteBlock extends Block {
             return this;
         }
 
-        public ConcreteBlock build(ConstructionBehaviour constructionBehaviour) {
+        public ConcreteBlock build() {
             checkNotNull(this.identifier, "An identifier is required to build a block!");
 
-            final ConcreteBlock block = constructionBehaviour.construct(this.identifier, this.material, this.drop, this.itemDropBehaviour,
-                    this.expDropBehaviour);
+            final ConcreteBlock block;
+            if (this.translucent) {
+                block = new ConcreteBlock(this.identifier, this.material, this.drop, this.itemDropBehaviour, this.expDropBehaviour) {
+                    @SideOnly(Side.CLIENT)
+                    public BlockRenderLayer getBlockLayer() {
+                        return BlockRenderLayer.TRANSLUCENT;
+                    }
+
+                    @Override
+                    public boolean isFullCube(IBlockState state) {
+                        return false;
+                    }
+
+                    @Override
+                    protected boolean canSilkHarvest() {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean isOpaqueCube(IBlockState state) {
+                        return false;
+                    }
+
+                    // adapted from BlockGlass#shouldSideBeRendered(IBlockState, IBlockAccess, BlockPos, EnumFacing)
+                    @SideOnly(Side.CLIENT)
+                    public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+                        final IBlockState iblockstate = blockAccess.getBlockState(pos.offset(side));
+                        final Block block = iblockstate.getBlock();
+
+                        return blockState != iblockstate || block != this && super.shouldSideBeRendered(blockState, blockAccess, pos, side);
+                    }
+                };
+            } else {
+                block = new ConcreteBlock(this.identifier, this.material, this.drop, this.itemDropBehaviour, this.expDropBehaviour) {};
+            }
+
             this.creativeTab.ifPresent(block::setCreativeTab);
             this.hardness.ifPresent(block::setHardness);
             this.resistance.ifPresent(block::setResistance);
             this.soundType.ifPresent(block::setSoundType);
 
             return block;
-        }
-
-        public ConcreteBlock build() {
-            return this.build(ConstructionBehaviour.DEFAULT);
         }
 
     }
