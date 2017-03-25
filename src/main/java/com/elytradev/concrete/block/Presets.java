@@ -27,7 +27,8 @@ public final class Presets {
             .drop(ItemDropBehaviour.DROP_NONE)
             .hardness(0.3f)
             .resistance(1.0f)
-            .translucent();
+            .translucent()
+            .silkHarvest();
 
     private Presets() {
     }

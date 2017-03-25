@@ -36,14 +36,16 @@ public final class ConcreteBlock extends Block {
     }
 
     private final boolean concreteTranslucent; // Minecraft has its own translucent field
+    private final boolean silkHarvest;
     private final Supplier<Item> dropped;
     private final ItemDropBehaviour itemDropBehaviour;
     private final ExpDropBehaviour expDropBehaviour;
 
-    private ConcreteBlock(String identifier, Material materialIn, boolean translucent, Supplier<Item> dropped,
-            ItemDropBehaviour itemDropBehaviour, ExpDropBehaviour expDropBehaviour) {
+    private ConcreteBlock(String identifier, Material materialIn, boolean translucent, boolean silkHarvest,
+            Supplier<Item> dropped, ItemDropBehaviour itemDropBehaviour, ExpDropBehaviour expDropBehaviour) {
         super(materialIn);
         this.concreteTranslucent = translucent;
+        this.silkHarvest = silkHarvest;
         this.dropped = dropped;
         this.itemDropBehaviour = itemDropBehaviour;
         this.expDropBehaviour = expDropBehaviour;
@@ -75,6 +77,11 @@ public final class ConcreteBlock extends Block {
         return this.expDropBehaviour.getQuantityDropped(state, world, pos, fortune);
     }
 
+    @Override
+    protected boolean canSilkHarvest() {
+        return this.silkHarvest;
+    }
+
     @Override // this is needed for its public access modifier
     public Block setSoundType(SoundType sound) {
         return super.setSoundType(sound);
@@ -98,15 +105,6 @@ public final class ConcreteBlock extends Block {
             return false;
         } else {
             return super.isFullCube(state);
-        }
-    }
-
-    @Override
-    protected boolean canSilkHarvest() {
-        if (this.concreteTranslucent) {
-            return true;
-        } else {
-            return super.canSilkHarvest();
         }
     }
 
@@ -141,6 +139,7 @@ public final class ConcreteBlock extends Block {
         private Optional<CreativeTabs> creativeTab = Optional.empty();
         private Material material = Material.ROCK;
         private boolean translucent = false;
+        private boolean silkHarvest = false;
         private Optional<SoundType> soundType = Optional.empty();
         private Supplier<Item> drop;
         private ItemDropBehaviour itemDropBehaviour = ItemDropBehaviour.DEFAULT;
@@ -173,6 +172,11 @@ public final class ConcreteBlock extends Block {
 
         public Builder translucent() {
             this.translucent = true;
+            return this;
+        }
+
+        public Builder silkHarvest() {
+            this.silkHarvest = true;
             return this;
         }
 
@@ -215,8 +219,8 @@ public final class ConcreteBlock extends Block {
         public ConcreteBlock build() {
             checkNotNull(this.identifier, "An identifier is required to build a block!");
 
-            final ConcreteBlock block = new ConcreteBlock(this.identifier, this.material, this.translucent, this.drop, this.itemDropBehaviour,
-                    this.expDropBehaviour);
+            final ConcreteBlock block = new ConcreteBlock(this.identifier, this.material, this.translucent, this.silkHarvest,
+                    this.drop, this.itemDropBehaviour, this.expDropBehaviour);
 
             this.creativeTab.ifPresent(block::setCreativeTab);
             this.hardness.ifPresent(block::setHardness);
