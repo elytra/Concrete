@@ -23,25 +23,27 @@ import java.util.function.Supplier;
 
 /**
  * An extension of {@link Block} used by the Concrete block builder system, to allow for
- * the create of blocks through said system.
+ * the creation of blocks through said system.
  *
  * This is accomplished by overriding necessary methods from {@link Block}, and replacing
  * them with the various behaviours that are defined by the user or the ones provided by
  * Concrete.
  */
-public abstract class ConcreteBlock extends Block {
+public final class ConcreteBlock extends Block {
 
     public static Builder builder() {
         return new Builder();
     }
 
-    protected final Supplier<Item> dropped;
-    protected final ItemDropBehaviour itemDropBehaviour;
-    protected final ExpDropBehaviour expDropBehaviour;
+    private final boolean concreteTranslucent; // Minecraft has its own translucent field
+    private final Supplier<Item> dropped;
+    private final ItemDropBehaviour itemDropBehaviour;
+    private final ExpDropBehaviour expDropBehaviour;
 
-    private ConcreteBlock(String identifier, Material materialIn, Supplier<Item> dropped,
+    private ConcreteBlock(String identifier, Material materialIn, boolean translucent, Supplier<Item> dropped,
             ItemDropBehaviour itemDropBehaviour, ExpDropBehaviour expDropBehaviour) {
         super(materialIn);
+        this.concreteTranslucent = translucent;
         this.dropped = dropped;
         this.itemDropBehaviour = itemDropBehaviour;
         this.expDropBehaviour = expDropBehaviour;
@@ -77,6 +79,61 @@ public abstract class ConcreteBlock extends Block {
     public Block setSoundType(SoundType sound) {
         return super.setSoundType(sound);
     }
+
+    // Translucent: Start
+    /////////////////////
+
+    @SideOnly(Side.CLIENT)
+    public BlockRenderLayer getBlockLayer() {
+        if (this.concreteTranslucent) {
+            return BlockRenderLayer.TRANSLUCENT;
+        } else {
+            return super.getBlockLayer();
+        }
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state) {
+        if (this.concreteTranslucent) {
+            return false;
+        } else {
+            return super.isFullCube(state);
+        }
+    }
+
+    @Override
+    protected boolean canSilkHarvest() {
+        if (this.concreteTranslucent) {
+            return true;
+        } else {
+            return super.canSilkHarvest();
+        }
+    }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state) {
+        if (this.concreteTranslucent) {
+            return false;
+        } else {
+            return super.isOpaqueCube(state);
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+        if (this.concreteTranslucent) {
+            // adapted from BlockGlass#shouldSideBeRendered(IBlockState, IBlockAccess, BlockPos, EnumFacing)
+            final IBlockState iblockstate = blockAccess.getBlockState(pos.offset(side));
+            final Block block = iblockstate.getBlock();
+
+            return blockState != iblockstate || block != this && super.shouldSideBeRendered(blockState, blockAccess, pos, side);
+        } else {
+            return super.shouldSideBeRendered(blockState, blockAccess, pos, side);
+        }
+    }
+
+    // Translucent: End
+    ///////////////////
 
     public static class Builder {
 
@@ -158,41 +215,8 @@ public abstract class ConcreteBlock extends Block {
         public ConcreteBlock build() {
             checkNotNull(this.identifier, "An identifier is required to build a block!");
 
-            final ConcreteBlock block;
-            if (this.translucent) {
-                block = new ConcreteBlock(this.identifier, this.material, this.drop, this.itemDropBehaviour, this.expDropBehaviour) {
-                    @SideOnly(Side.CLIENT)
-                    public BlockRenderLayer getBlockLayer() {
-                        return BlockRenderLayer.TRANSLUCENT;
-                    }
-
-                    @Override
-                    public boolean isFullCube(IBlockState state) {
-                        return false;
-                    }
-
-                    @Override
-                    protected boolean canSilkHarvest() {
-                        return true;
-                    }
-
-                    @Override
-                    public boolean isOpaqueCube(IBlockState state) {
-                        return false;
-                    }
-
-                    // adapted from BlockGlass#shouldSideBeRendered(IBlockState, IBlockAccess, BlockPos, EnumFacing)
-                    @SideOnly(Side.CLIENT)
-                    public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-                        final IBlockState iblockstate = blockAccess.getBlockState(pos.offset(side));
-                        final Block block = iblockstate.getBlock();
-
-                        return blockState != iblockstate || block != this && super.shouldSideBeRendered(blockState, blockAccess, pos, side);
-                    }
-                };
-            } else {
-                block = new ConcreteBlock(this.identifier, this.material, this.drop, this.itemDropBehaviour, this.expDropBehaviour) {};
-            }
+            final ConcreteBlock block = new ConcreteBlock(this.identifier, this.material, this.translucent, this.drop, this.itemDropBehaviour,
+                    this.expDropBehaviour);
 
             this.creativeTab.ifPresent(block::setCreativeTab);
             this.hardness.ifPresent(block::setHardness);
