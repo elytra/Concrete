@@ -19,7 +19,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * An extension of {@link Block} used by the Concrete block builder system, to allow for
@@ -37,16 +36,14 @@ public final class ConcreteBlock extends Block {
 
     private final boolean concreteTranslucent; // Minecraft has its own translucent field
     private final boolean silkHarvest;
-    private final Supplier<Item> dropped;
     private final ItemDropBehaviour itemDropBehaviour;
     private final ExpDropBehaviour expDropBehaviour;
 
     private ConcreteBlock(String identifier, Material materialIn, boolean translucent, boolean silkHarvest,
-            Supplier<Item> dropped, ItemDropBehaviour itemDropBehaviour, ExpDropBehaviour expDropBehaviour) {
+            ItemDropBehaviour itemDropBehaviour, ExpDropBehaviour expDropBehaviour) {
         super(materialIn);
         this.concreteTranslucent = translucent;
         this.silkHarvest = silkHarvest;
-        this.dropped = dropped;
         this.itemDropBehaviour = itemDropBehaviour;
         this.expDropBehaviour = expDropBehaviour;
 
@@ -56,8 +53,8 @@ public final class ConcreteBlock extends Block {
 
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-        if (this.dropped != null) {
-            return this.dropped.get();
+        if (this.itemDropBehaviour.getDrop().isPresent()) {
+            return this.itemDropBehaviour.getDrop().get().get();
         }
         return super.getItemDropped(state, rand, fortune);
     }
@@ -141,7 +138,7 @@ public final class ConcreteBlock extends Block {
         private boolean translucent = false;
         private boolean silkHarvest = false;
         private Optional<SoundType> soundType = Optional.empty();
-        private Supplier<Item> drop;
+        //private Supplier<Item> drop;
         private ItemDropBehaviour itemDropBehaviour = ItemDropBehaviour.DEFAULT;
         private ExpDropBehaviour expDropBehaviour = ExpDropBehaviour.DEFAULT;
         private Optional<Float> hardness = Optional.empty();
@@ -185,11 +182,6 @@ public final class ConcreteBlock extends Block {
             return this;
         }
 
-        public Builder drop(Supplier<Item> drop) {
-            this.drop = drop;
-            return this;
-        }
-
         public Builder drop(ItemDropBehaviour dropBehaviour) {
             this.itemDropBehaviour = dropBehaviour;
             return this;
@@ -197,12 +189,6 @@ public final class ConcreteBlock extends Block {
 
         public Builder drop(ExpDropBehaviour dropBehaviour) {
             this.expDropBehaviour = dropBehaviour;
-            return this;
-        }
-
-        public Builder drop(Supplier<Item> drop, ItemDropBehaviour dropBehaviour) {
-            this.drop = drop;
-            this.itemDropBehaviour = dropBehaviour;
             return this;
         }
 
@@ -220,7 +206,7 @@ public final class ConcreteBlock extends Block {
             checkNotNull(this.identifier, "An identifier is required to build a block!");
 
             final ConcreteBlock block = new ConcreteBlock(this.identifier, this.material, this.translucent, this.silkHarvest,
-                    this.drop, this.itemDropBehaviour, this.expDropBehaviour);
+                    this.itemDropBehaviour, this.expDropBehaviour);
 
             this.creativeTab.ifPresent(block::setCreativeTab);
             this.hardness.ifPresent(block::setHardness);

@@ -1,8 +1,11 @@
 package com.elytradev.concrete.block;
 
+import net.minecraft.item.Item;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.Optional;
 import java.util.Random;
+import java.util.function.Supplier;
 
 /**
  * An interface used to describe the behaviour for item drops for a {@link ConcreteBlock}.
@@ -30,6 +33,27 @@ public interface ItemDropBehaviour {
     }
 
     /**
+     * Creates a drop behaviour that drops the given item quantity.
+     *
+     * @param drop The item to be dropped
+     * @param quantity The quantity of items to drop
+     * @return The drop behaviour
+     */
+    static ItemDropBehaviour of(Supplier<Item> drop, int quantity) {
+        return new ItemDropBehaviour() {
+            @Override
+            public int getQuantityDropped(Random random) {
+                return quantity;
+            }
+
+            @Override
+            public Optional<Supplier<Item>> getDrop() {
+                return Optional.of(drop);
+            }
+        };
+    }
+
+    /**
      * Creates a drop behaviour that drops based on given item quantity range.
      *
      * @param minimum The minimum quantity of items to drop
@@ -38,6 +62,28 @@ public interface ItemDropBehaviour {
      */
     static ItemDropBehaviour of(int minimum, int maximum) {
         return (random) -> MathHelper.getInt(random, minimum, maximum);
+    }
+
+    /**
+     * Creates a drop behaviour that drops based on given item quantity range.
+     *
+     * @param drop The item to be dropped
+     * @param minimum The minimum quantity of items to drop
+     * @param maximum The maximum quantity of items to drop
+     * @return The drop behaviour
+     */
+    static ItemDropBehaviour of(Supplier<Item> drop, int minimum, int maximum) {
+        return new ItemDropBehaviour() {
+            @Override
+            public int getQuantityDropped(Random random) {
+                return MathHelper.getInt(random, minimum, maximum);
+            }
+
+            @Override
+            public Optional<Supplier<Item>> getDrop() {
+                return Optional.of(drop);
+            }
+        };
     }
 
     /**
@@ -57,6 +103,16 @@ public interface ItemDropBehaviour {
      */
     default int getQuantityDroppedWithBonus(int fortune, Random random) {
         return this.getQuantityDropped(random);
+    }
+
+    /**
+     * Gets the {@link Item} that will be dropped.
+     * If this is {@code Optional.empty()}, the block will be dropped.
+     *
+     * @return The item to be dropped
+     */
+    default Optional<Supplier<Item>> getDrop() {
+        return Optional.empty();
     }
 
     /**
