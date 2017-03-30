@@ -70,7 +70,7 @@ public final class ConcreteBlock extends Block {
     }
 
     @Override
-    public int getMetaFromState(IBlockState state) {
+    public int damageDropped(IBlockState state) {
         return this.itemDropBehaviour.getMeta(this, state);
     }
 
@@ -143,7 +143,6 @@ public final class ConcreteBlock extends Block {
         private boolean translucent = false;
         private boolean silkHarvest = false;
         private Optional<SoundType> soundType = Optional.empty();
-        //private Supplier<Item> drop;
         private ItemDropBehaviour itemDropBehaviour = ItemDropBehaviour.DEFAULT;
         private ExpDropBehaviour expDropBehaviour = ExpDropBehaviour.DEFAULT;
         private Optional<Float> hardness = Optional.empty();

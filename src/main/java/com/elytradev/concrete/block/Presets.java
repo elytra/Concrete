@@ -15,14 +15,16 @@ public final class Presets {
      *
      * @see ConcreteBlock.Builder#preset(Consumer)
      */
-    public static Consumer<ConcreteBlock.Builder> ORE = builder -> builder.drop(ItemDropBehaviour.Fortune.DEFAULT);
+    public static Consumer<ConcreteBlock.Builder> ORE = builder -> builder
+            .drop(ItemDropBehaviour.Fortune.DEFAULT);
 
     /**
      * A preset for a block builder with glass properties, such as the hardness, and resistance.
      *
      * @see ConcreteBlock.Builder#preset(Consumer)
      */
-    public static Consumer<ConcreteBlock.Builder> GLASS = builder -> builder.material(Material.GLASS)
+    public static Consumer<ConcreteBlock.Builder> GLASS = builder -> builder
+            .material(Material.GLASS)
             .soundType(SoundType.GLASS)
             .drop(ItemDropBehaviour.DROP_NONE)
             .hardness(0.3f)

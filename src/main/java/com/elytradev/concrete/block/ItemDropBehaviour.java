@@ -124,12 +124,7 @@ public interface ItemDropBehaviour {
      * @return The meta
      */
     default int getMeta(ConcreteBlock block, IBlockState blockState) {
-        // Based on code from Block#getMetaFromState(IBlockState)
-        if (blockState.getPropertyKeys().isEmpty()) {
-            return 0;
-        } else {
-            throw new IllegalArgumentException("Don't know how to convert " + blockState + " back into data...");
-        }
+        return 0;
     }
 
     /**
