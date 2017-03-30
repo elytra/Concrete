@@ -8,3 +8,5 @@
 /eclipse
 *.launch
 /private.properties
+/.idea
+*.iml
