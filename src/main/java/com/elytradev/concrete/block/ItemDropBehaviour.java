@@ -11,17 +11,17 @@ import java.util.function.Supplier;
 /**
  * An interface used to describe the behaviour for item drops for a {@link ConcreteBlock}.
  */
-public interface ItemDropBehaviour {
+public abstract class ItemDropBehaviour {
 
     /**
      * A drop behaviour for dropping no items.
      */
-    ItemDropBehaviour DROP_NONE = of(0);
+    public static ItemDropBehaviour DROP_NONE = of(0);
 
     /**
      * The default drop behaviour.
      */
-    ItemDropBehaviour DEFAULT = of(1);
+    public static ItemDropBehaviour DEFAULT = of(1);
 
     /**
      * Creates a drop behaviour that drops the given item quantity.
@@ -29,8 +29,13 @@ public interface ItemDropBehaviour {
      * @param quantity The quantity of items to drop
      * @return The drop behaviour
      */
-    static ItemDropBehaviour of(int quantity) {
-        return (random) -> quantity;
+    public static ItemDropBehaviour of(int quantity) {
+        return new ItemDropBehaviour() {
+            @Override
+            public int getQuantityDropped(Random random) {
+                return quantity;
+            }
+        };
     }
 
     /**
@@ -40,7 +45,7 @@ public interface ItemDropBehaviour {
      * @param quantity The quantity of items to drop
      * @return The drop behaviour
      */
-    static ItemDropBehaviour of(Supplier<Item> drop, int quantity) {
+    public static ItemDropBehaviour of(Supplier<Item> drop, int quantity) {
         return new ItemDropBehaviour() {
             @Override
             public int getQuantityDropped(Random random) {
@@ -61,8 +66,13 @@ public interface ItemDropBehaviour {
      * @param maximum The maximum quantity of items to drop
      * @return The drop behaviour
      */
-    static ItemDropBehaviour of(int minimum, int maximum) {
-        return (random) -> MathHelper.getInt(random, minimum, maximum);
+    public static ItemDropBehaviour of(int minimum, int maximum) {
+        return new ItemDropBehaviour() {
+            @Override
+            public int getQuantityDropped(Random random) {
+                return MathHelper.getInt(random, minimum, maximum);
+            }
+        };
     }
 
     /**
@@ -73,7 +83,7 @@ public interface ItemDropBehaviour {
      * @param maximum The maximum quantity of items to drop
      * @return The drop behaviour
      */
-    static ItemDropBehaviour of(Supplier<Item> drop, int minimum, int maximum) {
+    public static ItemDropBehaviour of(Supplier<Item> drop, int minimum, int maximum) {
         return new ItemDropBehaviour() {
             @Override
             public int getQuantityDropped(Random random) {
@@ -93,7 +103,7 @@ public interface ItemDropBehaviour {
      * @param random The random
      * @return The quantity dropped
      */
-    int getQuantityDropped(Random random);
+    public abstract int getQuantityDropped(Random random);
 
     /**
      * Gets the quantity of items to be dropped, with bonus applied.
@@ -102,7 +112,7 @@ public interface ItemDropBehaviour {
      * @param random The random
      * @return The quantity dropped
      */
-    default int getQuantityDroppedWithBonus(int fortune, Random random) {
+    public int getQuantityDroppedWithBonus(int fortune, Random random) {
         return this.getQuantityDropped(random);
     }
 
@@ -112,7 +122,7 @@ public interface ItemDropBehaviour {
      *
      * @return The item to be dropped
      */
-    default Optional<Supplier<Item>> getDrop() {
+    public Optional<Supplier<Item>> getDrop() {
         return Optional.empty();
     }
 
@@ -123,24 +133,19 @@ public interface ItemDropBehaviour {
      * @param blockState The block state
      * @return The meta
      */
-    default int getMeta(ConcreteBlock block, IBlockState blockState) {
+    public int getMeta(ConcreteBlock block, IBlockState blockState) {
         return 0;
     }
 
     /**
      * A {@link ItemDropBehaviour} to be used to apply fortune. This allows for ore-like functionality.
      */
-    interface Fortune extends ItemDropBehaviour {
-
-        /**
-         * A drop behaviour for dropping no items.
-         */
-        Fortune DROP_NONE = of(0);
+    public static abstract class Fortune extends ItemDropBehaviour {
 
         /**
          * The default drop behaviour.
          */
-        Fortune DEFAULT = of(1);
+        public static Fortune DEFAULT = of(1);
 
         /**
          * Creates a drop behaviour that drops the given item quantity
@@ -148,8 +153,13 @@ public interface ItemDropBehaviour {
          * @param quantity The quantity of items to drop
          * @return The drop behaviour
          */
-        static Fortune of(int quantity) {
-            return (random) -> quantity;
+        public static Fortune of(int quantity) {
+            return new Fortune() {
+                @Override
+                public int getQuantityDropped(Random random) {
+                    return quantity;
+                }
+            };
         }
 
         /**
@@ -159,13 +169,18 @@ public interface ItemDropBehaviour {
          * @param maximum The maximum quantity of items to drop
          * @return The drop behaviour
          */
-        static Fortune of(int minimum, int maximum) {
-            return (random) -> MathHelper.getInt(random, minimum, maximum);
+        public static Fortune of(int minimum, int maximum) {
+            return new Fortune() {
+                @Override
+                public int getQuantityDropped(Random random) {
+                    return MathHelper.getInt(random, minimum, maximum);
+                }
+            };
         }
 
         // based on code from BlockOre#quantityDroppedWithBonus(int, Random)
         @Override
-        default int getQuantityDroppedWithBonus(int fortune, Random random) {
+        public int getQuantityDroppedWithBonus(int fortune, Random random) {
             if (fortune > 0) {
                 int i = random.nextInt(fortune + 2) - 1;
 
