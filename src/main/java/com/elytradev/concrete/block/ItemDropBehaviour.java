@@ -1,5 +1,6 @@
 package com.elytradev.concrete.block;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.MathHelper;
 
@@ -113,6 +114,22 @@ public interface ItemDropBehaviour {
      */
     default Optional<Supplier<Item>> getDrop() {
         return Optional.empty();
+    }
+
+    /**
+     * Gets the metadata.
+     *
+     * @param block The concrete block
+     * @param blockState The block state
+     * @return The meta
+     */
+    default int getMeta(ConcreteBlock block, IBlockState blockState) {
+        // Based on code from Block#getMetaFromState(IBlockState)
+        if (blockState.getPropertyKeys().isEmpty()) {
+            return 0;
+        } else {
+            throw new IllegalArgumentException("Don't know how to convert " + blockState + " back into data...");
+        }
     }
 
     /**

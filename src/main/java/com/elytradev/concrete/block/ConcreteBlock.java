@@ -70,6 +70,11 @@ public final class ConcreteBlock extends Block {
     }
 
     @Override
+    public int getMetaFromState(IBlockState state) {
+        return this.itemDropBehaviour.getMeta(this, state);
+    }
+
+    @Override
     public int getExpDrop(IBlockState state, IBlockAccess world, BlockPos pos, int fortune) {
         return this.expDropBehaviour.getQuantityDropped(state, world, pos, fortune);
     }
