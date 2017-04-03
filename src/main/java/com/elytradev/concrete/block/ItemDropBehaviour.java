@@ -39,6 +39,16 @@ public abstract class ItemDropBehaviour {
     }
 
     /**
+     * Creates a drop behaviour that drops the given item once.
+     *
+     * @param drop The item to drop
+     * @return The drop behaviour
+     */
+    public static ItemDropBehaviour of(Supplier<Item> drop) {
+        return of(drop, 1);
+    }
+
+    /**
      * Creates a drop behaviour that drops the given item quantity.
      *
      * @param drop The item to be dropped
@@ -160,6 +170,16 @@ public abstract class ItemDropBehaviour {
                     return quantity;
                 }
             };
+        }
+
+        /**
+         * Creates a drop behaviour that drops the given item once.
+         *
+         * @param drop The item to drop
+         * @return The drop behaviour
+         */
+        public static Fortune of(Supplier<Item> drop) {
+            return of(drop, 1);
         }
 
         /**
