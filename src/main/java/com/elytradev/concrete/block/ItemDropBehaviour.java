@@ -163,6 +163,27 @@ public abstract class ItemDropBehaviour {
         }
 
         /**
+         * Creates a drop behaviour that drops the given item quantity.
+         *
+         * @param drop The item to be dropped
+         * @param quantity The quantity of items to drop
+         * @return The drop behaviour
+         */
+        public static Fortune of(Supplier<Item> drop, int quantity) {
+            return new Fortune() {
+                @Override
+                public int getQuantityDropped(Random random) {
+                    return quantity;
+                }
+
+                @Override
+                public Optional<Supplier<Item>> getDrop() {
+                    return Optional.of(drop);
+                }
+            };
+        }
+
+        /**
          * Creates a drop behaviour that drops based on given item quantity range.
          *
          * @param minimum The minimum quantity of items to drop
@@ -174,6 +195,28 @@ public abstract class ItemDropBehaviour {
                 @Override
                 public int getQuantityDropped(Random random) {
                     return MathHelper.getInt(random, minimum, maximum);
+                }
+            };
+        }
+
+        /**
+         * Creates a drop behaviour that drops based on given item quantity range.
+         *
+         * @param drop The item to be dropped
+         * @param minimum The minimum quantity of items to drop
+         * @param maximum The maximum quantity of items to drop
+         * @return The drop behaviour
+         */
+        public static Fortune of(Supplier<Item> drop, int minimum, int maximum) {
+            return new Fortune() {
+                @Override
+                public int getQuantityDropped(Random random) {
+                    return MathHelper.getInt(random, minimum, maximum);
+                }
+
+                @Override
+                public Optional<Supplier<Item>> getDrop() {
+                    return Optional.of(drop);
                 }
             };
         }
