@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import com.elytradev.concrete.network.annotation.type.Asynchronous;
 import com.elytradev.concrete.network.annotation.type.ReceivedOn;
 import com.elytradev.concrete.network.exception.BadMessageException;
@@ -119,7 +121,7 @@ public abstract class Message {
 	 * certain special cases.</i>
 	 */
 	public final void sendToAllAround(World world, Entity entity, double radius) {
-		sendToAllAround(world, entity.posX, entity.posY, entity.posZ, radius);
+		sendToAllAroundExcept(world, entity, radius, null);
 	}
 	
 	/**
@@ -129,7 +131,7 @@ public abstract class Message {
 	 * useful for certain special cases.</i>
 	 */
 	public final void sendToAllAround(World world, Vec3i pos, double radius) {
-		sendToAllAround(world, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, radius);
+		sendToAllAroundExcept(world, pos, radius, null);
 	}
 	
 	/**
@@ -137,7 +139,7 @@ public abstract class Message {
 	 * within the given radius of the given position.
 	 */
 	public final void sendToAllAround(World world, Vec3d pos, double radius) {
-		sendToAllAround(world, pos.xCoord, pos.yCoord, pos.zCoord, radius);
+		sendToAllAroundExcept(world, pos, radius, null);
 	}
 	
 	/**
@@ -145,10 +147,49 @@ public abstract class Message {
 	 * within the given radius of the given position.
 	 */
 	public final void sendToAllAround(World world, double x, double y, double z, double radius) {
+		sendToAllAroundExcept(world, x, y, z, radius, null);
+	}
+	
+	
+	/**
+	 * For use on the server-side. Sends this Message to every player that is
+	 * within the given radius of the given position, except the given player.
+	 * <i>It is almost always better to use {@link #sendToAllWatching(Entity)},
+	 * this is only useful for certain special cases.</i>
+	 */
+	public final void sendToAllAroundExcept(World world, Entity entity, double radius, @Nullable EntityPlayer exclude) {
+		sendToAllAroundExcept(world, entity.posX, entity.posY, entity.posZ, radius, exclude);
+	}
+	
+	/**
+	 * For use on the server-side. Sends this Message to every player that is
+	 * within the given radius of the given position, except the given player.
+	 * <i>It is almost always better to use {@link #sendToAllWatching(World, BlockPos)},
+	 * this is only useful for certain special cases.</i>
+	 */
+	public final void sendToAllAroundExcept(World world, Vec3i pos, double radius, @Nullable EntityPlayer exclude) {
+		sendToAllAroundExcept(world, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, radius, exclude);
+	}
+	
+	/**
+	 * For use on the server-side. Sends this Message to every player that is
+	 * within the given radius of the given position, except the given player.
+	 */
+	public final void sendToAllAroundExcept(World world, Vec3d pos, double radius, @Nullable EntityPlayer exclude) {
+		sendToAllAroundExcept(world, pos.xCoord, pos.yCoord, pos.zCoord, radius, exclude);
+	}
+	
+	
+	/**
+	 * For use on the server-side. Sends this Message to every player that is
+	 * within the given radius of the given position, except the given player.
+	 */
+	public final void sendToAllAroundExcept(World world, double x, double y, double z, double radius, @Nullable EntityPlayer exclude) {
 		if (side.isServer()) wrongSide();
 		double sq = radius*radius;
 		List<Packet<INetHandlerPlayClient>> packets = toClientboundVanillaPackets();
 		for (EntityPlayerMP ep : world.getPlayers(EntityPlayerMP.class, Predicates.alwaysTrue())) {
+			if (ep == exclude) continue;
 			if (ep.getDistanceSq(x, y, z) <= sq) {
 				for (Packet<INetHandlerPlayClient> packet : packets) {
 					ep.connection.sendPacket(packet);
@@ -162,6 +203,14 @@ public abstract class Message {
 	 * see the given block.
 	 */
 	public final void sendToAllWatching(World world, BlockPos pos) {
+		sendToAllWatchingExcept(world, pos, null);
+	}
+	
+	/**
+	 * For use on the server-side. Sends this Message to every player that can
+	 * see the given block, except the given player.
+	 */
+	public final void sendToAllWatchingExcept(World world, BlockPos pos, @Nullable EntityPlayer exclude) {
 		if (side.isServer()) wrongSide();
 		if (world instanceof WorldServer) {
 			WorldServer srv = (WorldServer)world;
@@ -169,6 +218,7 @@ public abstract class Message {
 			if (srv.getPlayerChunkMap().contains(c.xPosition, c.zPosition)) {
 				List<Packet<INetHandlerPlayClient>> packets = toClientboundVanillaPackets();
 				for (EntityPlayerMP ep : world.getPlayers(EntityPlayerMP.class, Predicates.alwaysTrue())) {
+					if (ep == exclude) continue;
 					if (srv.getPlayerChunkMap().isPlayerWatchingChunk(ep, c.xPosition, c.zPosition)) {
 						for (Packet<INetHandlerPlayClient> packet : packets) {
 							ep.connection.sendPacket(packet);
@@ -184,7 +234,15 @@ public abstract class Message {
 	 * see the given tile entity.
 	 */
 	public final void sendToAllWatching(TileEntity te) {
-		sendToAllWatching(te.getWorld(), te.getPos());
+		sendToAllWatchingExcept(te, null);
+	}
+	
+	/**
+	 * For use on the server-side. Sends this Message to every player that can
+	 * see the given tile entity, except the given player.
+	 */
+	public final void sendToAllWatchingExcept(TileEntity te, @Nullable EntityPlayer exclude) {
+		sendToAllWatchingExcept(te.getWorld(), te.getPos(), exclude);
 	}
 	
 	
@@ -193,12 +251,60 @@ public abstract class Message {
 	 * see the given entity.
 	 */
 	public final void sendToAllWatching(Entity e) {
+		sendToAllWatchingExcept(e, null);
+	}
+	
+	/**
+	 * For use on the server-side. Sends this Message to every player that can
+	 * see the given entity, except the given player.
+	 */
+	public final void sendToAllWatchingExcept(Entity e, @Nullable EntityPlayer exclude) {
 		if (side.isServer()) wrongSide();
 		if (e.world instanceof WorldServer) {
 			WorldServer srv = (WorldServer)e.world;
 			List<Packet<INetHandlerPlayClient>> packets = toClientboundVanillaPackets();
-			for (Packet<INetHandlerPlayClient> packet : packets) {
-				srv.getEntityTracker().sendToTracking(e, packet);
+			for (EntityPlayer ep : srv.getEntityTracker().getTrackingPlayers(e)) {
+				if (ep == exclude) continue;
+				if (ep instanceof EntityPlayerMP) {
+					for (Packet<INetHandlerPlayClient> packet : packets) {
+						((EntityPlayerMP)ep).connection.sendPacket(packet);
+					}
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * For use on the server-side. Sends this Message to every player that can
+	 * see the given entity, and the entity itself if it's a player.
+	 */
+	public final void sendToAllWatchingAndSelf(Entity e) {
+		sendToAllWatchingAndSelfExcept(e, null);
+	}
+	
+	/**
+	 * For use on the server-side. Sends this Message to every player that can
+	 * see the given entity, and the entity itself if it's a player, except the
+	 * given player.
+	 */
+	public final void sendToAllWatchingAndSelfExcept(Entity e, @Nullable EntityPlayer exclude) {
+		if (side.isServer()) wrongSide();
+		if (e.world instanceof WorldServer) {
+			WorldServer srv = (WorldServer)e.world;
+			List<Packet<INetHandlerPlayClient>> packets = toClientboundVanillaPackets();
+			for (EntityPlayer ep : srv.getEntityTracker().getTrackingPlayers(e)) {
+				if (ep == exclude) continue;
+				if (ep instanceof EntityPlayerMP) {
+					for (Packet<INetHandlerPlayClient> packet : packets) {
+						((EntityPlayerMP)ep).connection.sendPacket(packet);
+					}
+				}
+			}
+			if (e instanceof EntityPlayerMP) {
+				for (Packet<INetHandlerPlayClient> packet : packets) {
+					((EntityPlayerMP)e).connection.sendPacket(packet);
+				}
 			}
 		}
 	}
@@ -208,9 +314,17 @@ public abstract class Message {
 	 * given world.
 	 */
 	public final void sendToAllIn(World world) {
+		sendToAllInExcept(world, null);
+	}
+	/**
+	 * For use on the server-side. Sends this Message to every player in the
+	 * given world, except the given player.
+	 */
+	public final void sendToAllInExcept(World world, @Nullable EntityPlayer exclude) {	
 		if (side.isServer()) wrongSide();
 		List<Packet<INetHandlerPlayClient>> packets = toClientboundVanillaPackets();
 		for (EntityPlayerMP ep : world.getPlayers(EntityPlayerMP.class, Predicates.alwaysTrue())) {
+			if (ep == exclude) continue;
 			for (Packet<INetHandlerPlayClient> packet : packets) {
 				ep.connection.sendPacket(packet);
 			}
