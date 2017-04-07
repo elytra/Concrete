@@ -3,9 +3,16 @@ package com.elytradev.concrete;
 import java.util.ArrayList;
 import java.util.Collection;
 import com.google.common.base.Supplier;
+
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 public class NBTHelper {
 
@@ -65,6 +72,40 @@ public class NBTHelper {
 			collection.add(t);
 		}
 		return collection;
+	}
+	
+	
+	
+	
+	public NBTTagList serializeInventory(IInventory in) {
+		return serializeInventory(new InvWrapper(in));
+	}
+	
+	public void deserializeInventory(IInventory out, NBTTagList in) {
+		deserializeInventory(new InvWrapper(out), in);
+	}
+	
+	public NBTTagList serializeInventory(IItemHandler in) {
+		NBTTagList out = new NBTTagList();
+		for (int i = 0; i < in.getSlots(); i++) {
+			ItemStack is = in.getStackInSlot(i);
+			if (is == null || is.isEmpty()) continue;
+			NBTTagCompound stackTag = is.serializeNBT();
+			stackTag.setInteger("Slot", i);
+			out.appendTag(stackTag);
+		}
+		return out;
+	}
+	
+	public void deserializeInventory(IItemHandlerModifiable out, NBTTagList in) {
+		for (int i = 0; i < out.getSlots(); i++) {
+			out.setStackInSlot(i, ItemStack.EMPTY);
+		}
+		for (int i = 0; i < in.tagCount(); i++) {
+			NBTTagCompound stackTag = in.getCompoundTagAt(i);
+			ItemStack is = new ItemStack(stackTag);
+			out.setStackInSlot(stackTag.getInteger("Slot"), is);
+		}
 	}
 	
 }
