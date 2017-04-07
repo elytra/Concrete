@@ -23,7 +23,7 @@ apply plugin: 'maven'
 
 group = "com.elytradev"
 archivesBaseName = "Concrete"
-version = "0.1.0"
+version = "0.2.0"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -64,6 +64,15 @@ processResources {
 	from(sourceSets.main.resources.srcDirs) {
 		exclude 'mcmod.info'
 	}
+}
+
+task deobfJar(type: Jar, dependsOn: 'jar') {
+	classifier 'deobf'
+	from 'build/classes/main'
+}
+
+artifacts {
+	archives deobfJar
 }
 
 def parseConfig(File config) {
