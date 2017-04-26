@@ -7,14 +7,30 @@ Concrete is a varied set of useful *stuff* that is designed to be shaded into a
 mod's jar, meaning it's not a runtime dependency and is rather included in the
 dependent mod itself.
 
-## Features
+## Modules
 
-* NBT {de,}serialization utilities (common module)
-* Easy networking primitives, based on a Message class (network module)
-* Easy reflection primitives that take advantage of MethodHandles when possible (reflect module)
-* Functional-style block classes (block module)
+### Common
+Currently just an NBT helper class, though this is where classes that all the
+other modules depend on will go if that happens, as well as exceedingly small
+utility classes that most Concrete-based mods will want to take advantage of.
 
-More coming soon!
+### Block
+Contains a functional builder for Block classes.
+
+### Inventory
+Contains a Predicate-based validated IItemHandler, and associated IInventory.
+Also contains extremely useful replacements for Container and GuiContainer.
+
+### Network
+**Depends on Reflect**
+
+Contains an easy-to-use network message framework built on top of plugin
+message packets, similar to SimpleImpl. Replacement for the now-deprecated
+LambdaNetwork.
+
+### Reflect
+Contains a set of method invokers, field accessors, and class instanciators that
+take advantage of MethodHandles when they are available.
 
 ## Depending on Concrete
 
@@ -40,7 +56,7 @@ jar {
 
 shadowJar {
 	classifier = ''
-	relocate 'com.elytradev.concrete', '**me.mymod.repackage.**com.elytradev.concrete'
+	relocate 'com.elytradev.concrete', '<me.mymod>.repackage.com.elytradev.concrete'
 	configurations = [project.configurations.shadow]
 }
 
@@ -55,11 +71,11 @@ artifacts {
 }
 
 dependencies {
-	compile 'com.elytradev:concrete:0.2.1:common'
-	shadow 'com.elytradev:concrete:0.2.1:common'
+	compile 'com.elytradev:concrete:0.2.2:common'
+	shadow 'com.elytradev:concrete:0.2.2:common'
 
-	compile 'com.elytradev:concrete:0.2.1:<module name>'
-	shadow 'com.elytradev:concrete:0.2.1:<module name>'
+	compile 'com.elytradev:concrete:0.2.2:<module name>'
+	shadow 'com.elytradev:concrete:0.2.2:<module name>'
 }
 ```
 
