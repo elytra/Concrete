@@ -31,6 +31,7 @@ package com.elytradev.concrete.inventory.gui;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.elytradev.concrete.common.ShadingValidator;
 import com.elytradev.concrete.inventory.ValidatedSlot;
 import com.elytradev.concrete.inventory.gui.widget.WPanel;
 
@@ -54,6 +55,7 @@ public class ConcreteContainer extends Container {
 	private int[] syncFields = new int[0];
 	
 	public ConcreteContainer(@Nonnull IInventory player, @Nullable IInventory container) {
+		ShadingValidator.ensureShaded();
 		this.playerInventory = player;
 		this.container = container;
 		

@@ -30,6 +30,8 @@ package com.elytradev.concrete.reflect.invoker;
 
 import java.lang.reflect.Method;
 
+import com.elytradev.concrete.common.ShadingValidator;
+
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public final class Invokers {
@@ -50,6 +52,7 @@ public final class Invokers {
 	}
 	
 	public static Invoker from(Method m) {
+		ShadingValidator.ensureShaded();
 		if (methodHandlesAvailable) {
 			return new MethodHandlesInvoker(m);
 		} else {

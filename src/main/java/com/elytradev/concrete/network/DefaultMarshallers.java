@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.elytradev.concrete.common.ConcreteLog;
 import com.elytradev.concrete.network.exception.BadMessageException;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -373,7 +374,7 @@ public class DefaultMarshallers {
 							inst.setAccessible(true);
 							marshaller = (Marshaller<T>) inst.get(null);
 						} catch (Exception e) {
-							NetworkContext.log.warn(clazz.getName()+" does not appear to define an INSTANCE field, but it should");
+							ConcreteLog.warn(clazz.getName()+" does not appear to define an INSTANCE field, but it should");
 						}
 						if (marshaller == null) {
 							try {

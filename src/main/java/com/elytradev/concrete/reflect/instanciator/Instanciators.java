@@ -30,6 +30,8 @@ package com.elytradev.concrete.reflect.instanciator;
 
 import java.lang.reflect.Constructor;
 
+import com.elytradev.concrete.common.ShadingValidator;
+
 public final class Instanciators {
 	private static final boolean methodHandlesAvailable;
 	static {
@@ -44,6 +46,7 @@ public final class Instanciators {
 	}
 	
 	public static <T> Instanciator<T> from(Constructor<T> c) {
+		ShadingValidator.ensureShaded();
 		if (methodHandlesAvailable) {
 			return new MethodHandlesInstanciator<>(c);
 		} else {

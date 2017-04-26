@@ -37,9 +37,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import com.elytradev.concrete.common.ConcreteLog;
+import com.elytradev.concrete.common.ShadingValidator;
 import com.elytradev.concrete.network.annotation.field.Optional;
 import com.elytradev.concrete.network.exception.BadMessageException;
 import com.elytradev.concrete.network.exception.WrongSideException;
@@ -56,10 +55,8 @@ import com.google.common.collect.Sets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
@@ -69,18 +66,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class NetworkContext {
-	static final Logger log = LogManager.getLogger("Concrete");
-	
-	private static final String DEFAULT_PACKAGE;
-		
-	static {
-		// we have to do this so the shadow plugin doesn't remap the string
-		char[] c = {
-				'c','o','m','.','e','l','y','t','r','a','d','e','v','.','c','o','n','c','r','e','t','e'
-		};
-		DEFAULT_PACKAGE = new String(c);
-	}
-	
 	protected static final Map<Class<? extends Message>, Instanciator<? extends Message>> instanciators = Maps.newHashMap();
 	
 	protected final BiMap<Class<? extends Message>, Integer> packetIds = HashBiMap.create();
@@ -93,20 +78,14 @@ public class NetworkContext {
 	private int nextPacketId = 0;
 	
 	private NetworkContext(String channel) {
-		if (NetworkContext.class.getName().startsWith(DEFAULT_PACKAGE)) {
-			if (!((Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment"))) {
-				throw new RuntimeException("Concrete is designed to be shaded and must not be left in the default package! (Offending mod: "+Loader.instance().activeModContainer().getName()+")");
-			} else {
-				log.warn("Concrete is in the default package. This is not a fatal error, as you are in a development environment, but remember to repackage it!");
-			}
-		}
+		ShadingValidator.ensureShaded();
 		this.channel = channel;
 		NetworkRegistry.INSTANCE.newEventDrivenChannel(channel).register(this);;
 	}
 	
 	public NetworkContext register(Class<? extends Message> clazz) {
 		if (packetIds.containsKey(clazz)) {
-			log.warn("{} was registered twice", clazz);
+			ConcreteLog.warn("{} was registered twice", clazz);
 			return this;
 		}
 		packetIds.put(clazz, nextPacketId++);
