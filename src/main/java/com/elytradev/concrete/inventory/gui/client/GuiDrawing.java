@@ -25,6 +25,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.elytradev.concrete.inventory.gui.client;
 
 import org.lwjgl.opengl.GL11;
