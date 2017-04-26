@@ -44,6 +44,10 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 public class NBTHelper {
 
+	public NBTHelper() {
+		ShadingValidator.ensureShaded();
+	}
+	
 	/**
 	 * Convert the given Collection of INBTSerializable objects into an
 	 * NBTTagList.
