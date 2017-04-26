@@ -31,6 +31,8 @@ package com.elytradev.concrete.reflect.accessor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.elytradev.concrete.common.ShadingValidator;
+
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public final class Accessors {
@@ -59,6 +61,7 @@ public final class Accessors {
 	}
 	
 	public static <T> Accessor<T> from(Method get, Method set) {
+		ShadingValidator.ensureShaded();
 		if (methodHandlesAvailable) {
 			return new MethodHandlesAccessor<>(get, set);
 		} else {

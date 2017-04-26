@@ -48,6 +48,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import com.elytradev.concrete.common.ShadingValidator;
+
 /**
  * An extension of {@link Block} used by the Concrete block builder system, to allow for
  * the creation of blocks through said system.
@@ -70,6 +72,7 @@ public final class ConcreteBlock extends Block {
     private ConcreteBlock(String identifier, Material materialIn, boolean translucent, boolean silkHarvest,
             ItemDropBehaviour itemDropBehaviour, ExpDropBehaviour expDropBehaviour) {
         super(materialIn);
+        ShadingValidator.ensureShaded();
         this.concreteTranslucent = translucent;
         this.silkHarvest = silkHarvest;
         this.itemDropBehaviour = itemDropBehaviour;
@@ -120,7 +123,8 @@ public final class ConcreteBlock extends Block {
     // Translucent: Start
     /////////////////////
 
-    @SideOnly(Side.CLIENT)
+    @Override
+	@SideOnly(Side.CLIENT)
     public BlockRenderLayer getBlockLayer() {
         if (this.concreteTranslucent) {
             return BlockRenderLayer.TRANSLUCENT;
@@ -147,7 +151,8 @@ public final class ConcreteBlock extends Block {
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @Override
+	@SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
         if (this.concreteTranslucent) {
             // adapted from BlockGlass#shouldSideBeRendered(IBlockState, IBlockAccess, BlockPos, EnumFacing)
