@@ -1,4 +1,4 @@
-package com.elytradev.concrete;
+package com.elytradev.concrete.common;
 
 import java.util.ArrayList;
 import java.util.Collection;

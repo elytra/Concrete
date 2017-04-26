@@ -23,7 +23,7 @@ apply plugin: 'maven'
 
 group = "com.elytradev"
 archivesBaseName = "Concrete"
-version = "0.2.0"
+version = "0.2.1"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -66,13 +66,48 @@ processResources {
 	}
 }
 
-task deobfJar(type: Jar, dependsOn: 'jar') {
-	classifier 'deobf'
-	from 'build/classes/main'
+jar {
+	classifier = 'all'
 }
 
+task commonJar(type: Jar) {
+	classifier = 'common'
+	from(sourceSets.main.output) {
+		include 'com/elytradev/concrete/common/**'
+	}
+}
+
+task blockJar(type: Jar) {
+	classifier = 'block'
+	from(sourceSets.main.output) {
+		include 'com/elytradev/concrete/block/**'
+	}
+}
+
+task networkJar(type: Jar) {
+	classifier = 'network'
+	from(sourceSets.main.output) {
+		include 'com/elytradev/concrete/network/**'
+	}
+}
+
+task reflectJar(type: Jar) {
+	classifier = 'reflect'
+	from(sourceSets.main.output) {
+		include 'com/elytradev/concrete/reflect/**'
+	}
+}
+
+reobf {
+	commonJar { mappingType = 'SEARGE' }
+	blockJar { mappingType = 'SEARGE' }
+	networkJar { mappingType = 'SEARGE' }
+	reflectJar { mappingType = 'SEARGE' }
+}
+
+
 artifacts {
-	archives deobfJar
+	archives commonJar, blockJar, networkJar, reflectJar
 }
 
 def parseConfig(File config) {
