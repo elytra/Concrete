@@ -17,13 +17,17 @@ buildscript {
 	}
 }
 
+plugins {
+	id 'net.minecrell.licenser' version '0.3'
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'maven'
 
 group = "com.elytradev"
 archivesBaseName = "Concrete"
-version = "0.2.1"
+version = "0.2.2"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -98,16 +102,24 @@ task reflectJar(type: Jar) {
 	}
 }
 
+task inventoryJar(type: Jar) {
+	classifier = 'gui'
+	from(sourceSets.main.output) {
+		include 'com/elytradev/concrete/inventory/**'
+	}
+}
+
 reobf {
 	commonJar { mappingType = 'SEARGE' }
 	blockJar { mappingType = 'SEARGE' }
 	networkJar { mappingType = 'SEARGE' }
 	reflectJar { mappingType = 'SEARGE' }
+	inventoryJar { mappingType = 'SEARGE' }
 }
 
 
 artifacts {
-	archives commonJar, blockJar, networkJar, reflectJar
+	archives commonJar, blockJar, networkJar, reflectJar, inventoryJar
 }
 
 def parseConfig(File config) {
