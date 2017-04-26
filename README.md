@@ -10,9 +10,8 @@ dependent mod itself.
 ## Modules
 
 ### Common
-Currently just an NBT helper class, though this is where classes that all the
-other modules depend on will go if that happens, as well as exceedingly small
-utility classes that most Concrete-based mods will want to take advantage of.
+Contains small utility classes that most Concrete mods will want to use, as well
+as features shared between all modules.
 
 ### Block
 Contains a functional builder for Block classes.
