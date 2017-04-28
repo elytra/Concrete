@@ -28,7 +28,6 @@
 
 package com.elytradev.concrete.inventory;
 
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -41,7 +40,6 @@ import java.util.function.Predicate;
 public class ConcreteFluidTank extends FluidTank implements IObservableFluidTank {
     private ArrayList<Runnable> listeners = new ArrayList<>();
     private Predicate<FluidStack> fillValidator = Validators.ANY_FLUID;
-    private Predicate<FluidStack> drainValidator = Validators.ANY_FLUID;
 
     public ConcreteFluidTank(int capacity) {
         this(null, capacity);
@@ -60,15 +58,6 @@ public class ConcreteFluidTank extends FluidTank implements IObservableFluidTank
         return this;
     }
 
-    public final ConcreteFluidTank withDrainValidator(Predicate<FluidStack> drainValidator) {
-        this.fillValidator = fillValidator;
-        return this;
-    }
-
-    public final ConcreteFluidTank withValidators(Predicate<FluidStack> fillValidator,
-                                                  Predicate<FluidStack> drainValidator) {
-        return this.withFillValidator(fillValidator).withDrainValidator(drainValidator);
-    }
 
     public void markDirty() {
         for(Runnable r : listeners) {
@@ -82,47 +71,14 @@ public class ConcreteFluidTank extends FluidTank implements IObservableFluidTank
     }
 
     @Override
-    public int fill(FluidStack resource, boolean doFill) {
-        int result = super.fill(resource, doFill);
-        if (doFill) this.markDirty();
-        return result;
+    protected void onContentsChanged() {
+        this.markDirty();
+        super.onContentsChanged();
     }
 
-    @Override
-    public int fillInternal(FluidStack resource, boolean doFill) {
-        int result = super.fillInternal(resource, doFill);
-        if (doFill) this.markDirty();
-        return result;
-    }
-
-    @Override
-    public FluidStack drain(FluidStack resource, boolean doDrain) {
-        FluidStack result = super.drain(resource, doDrain);
-        if (doDrain) this.markDirty();
-        return result;
-    }
-
-    @Override
-    public FluidStack drain(int maxDrain, boolean doDrain) {
-        FluidStack result = super.drain(maxDrain, doDrain);
-        if (doDrain) this.markDirty();
-        return result;
-    }
-
-    @Nullable
-    @Override
-    public FluidStack drainInternal(FluidStack resource, boolean doDrain) {
-        FluidStack result = super.drainInternal(resource, doDrain);
-        if (doDrain) this.markDirty();
-        return result;
-    }
-
-    @Nullable
-    @Override
-    public FluidStack drainInternal(int maxDrain, boolean doDrain) {
-        FluidStack result = super.drainInternal(maxDrain, doDrain);
-        if (doDrain) this.markDirty();
-        return result;
+    @Nonnull
+    public Predicate<FluidStack> getFillValidator() {
+        return this.fillValidator;
     }
 
 
