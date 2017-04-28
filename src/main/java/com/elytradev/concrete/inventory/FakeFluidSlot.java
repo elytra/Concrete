@@ -44,7 +44,9 @@ public class FakeFluidSlot extends Slot {
     @Override
     public ItemStack getStack() {
         NBTTagCompound fluidTank = new NBTTagCompound();
-        fluidTank.setTag("fluid_tank", CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.writeNBT(delegate, null));
+        NBTTagCompound fluidStack = new NBTTagCompound();
+        delegate.writeToNBT(fluidStack);
+        fluidTank.setTag("fluid_tank", fluidStack);
         ItemStack result = new ItemStack(Items.STICK, 1, 0);
         result.setTagCompound(fluidTank);
         return result;
@@ -53,8 +55,7 @@ public class FakeFluidSlot extends Slot {
     @Override
     public void putStack(ItemStack stack) {
         if (stack.getTagCompound().hasKey("fluid_tank"))
-            CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.readNBT(delegate, null,
-                    stack.getTagCompound().getCompoundTag("fluid_tank"));
+            delegate.readFromNBT(stack.getTagCompound().getCompoundTag("fluid_tank"));
     }
 
     @Override
