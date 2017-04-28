@@ -29,6 +29,9 @@
 package com.elytradev.concrete.inventory.gui.widget;
 
 import com.elytradev.concrete.inventory.ConcreteFluidTank;
+import com.elytradev.concrete.inventory.FakeFluidSlot;
+import com.elytradev.concrete.inventory.ValidatedFluidTankInventoryView;
+import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
 
 import net.minecraft.inventory.IInventory;
@@ -60,6 +63,15 @@ public class WFluidBar extends WWidget {
     @Override
     public boolean canResize() {
         return true;
+    }
+
+    /**
+     * Creates a fake item slot to sync the fluid data between the client and the server.
+     * @param c the top-level Container that will hold the peers
+     */
+    @Override
+    public void createPeers(ConcreteContainer c) {
+        c.addSlotPeer(new FakeFluidSlot(new ValidatedFluidTankInventoryView(concreteFluidTank)));
     }
 
     @SideOnly(Side.CLIENT)
