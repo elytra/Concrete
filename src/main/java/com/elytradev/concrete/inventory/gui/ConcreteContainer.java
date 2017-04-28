@@ -36,6 +36,7 @@ import com.elytradev.concrete.inventory.ValidatedSlot;
 import com.elytradev.concrete.inventory.gui.widget.WPanel;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;

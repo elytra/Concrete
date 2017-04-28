@@ -33,6 +33,7 @@ import java.util.function.Predicate;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 public class Validators {
@@ -45,4 +46,13 @@ public class Validators {
 	public static final Predicate<ItemStack> FLUID_CONTAINERS = (it)->{
 		return it.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 	};
+
+	public static final Predicate<FluidStack> ANY_FLUID = (fs)->true;
+	public static final Predicate<FluidStack> NO_FLUID = (fs)->false;
+
+	// Example Validator - is the fluid as hot as or hotter than lava's temperature?
+	public static final Predicate<FluidStack> HOT_FLUIDS = (fs)->fs.getFluid().getTemperature()>=1300;
+
+	// Example Validator - is the fluid colder than water's temperature?
+	public static final Predicate<FluidStack> COLD_FLUIDS = (fs)->fs.getFluid().getTemperature()<300;
 }
