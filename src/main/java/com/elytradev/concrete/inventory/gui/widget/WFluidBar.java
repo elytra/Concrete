@@ -101,16 +101,16 @@ public class WFluidBar extends WWidget {
                     for(int dX=0;dX < horizontalSegments;dX++)
                     {
                         //GuiDrawing.rect(concreteFluidTank.getFluid().getFluid(), left+(dX*16), y+(dY*16), 16, 16, 0, 0, 1, 1, 0xFFFFFFFF);
-                        GuiDrawing.rect(fluid, left+(dX*16), y+(dY*16), 16, 16, 0xFFFFFFFF);
+                        GuiDrawing.rect(fluid, left+(dX*16), y+(dY*16), 16, 16, 16.0f, 16f, 0xFFFFFFFF);
                     }
-                    GuiDrawing.rect(fluid, left+(horizontalSegments*16), y+(dY*16), getWidth()%16, 16, 0xFFFFFFFF);
+                    GuiDrawing.rect(fluid, left+(horizontalSegments*16), y+(dY*16), getWidth()%16, 16, getWidth()%16, 16.0f, 0xFFFFFFFF);
                 }
 
                 for(int dX=0;dX < horizontalSegments;dX++)
                 {
-                    GuiDrawing.rect(fluid, left+(dX*16), y+(verticalSegments*16), 16, (barSize%16), 0xFFFFFFFF);
+                    GuiDrawing.rect(fluid, left+(dX*16), y+(verticalSegments*16), 16, (barSize%16), 16, (barSize%16), 0xFFFFFFFF);
                 }
-                GuiDrawing.rect(fluid, left+(horizontalSegments*16), y+(verticalSegments*16), getWidth()%16, (barSize%16), 0xFFFFFFFF);
+                GuiDrawing.rect(fluid, left+(horizontalSegments*16), y+(verticalSegments*16), getWidth()%16, (barSize%16), getWidth()%16, (barSize%16), 0xFFFFFFFF);
             }
             break;
             case RIGHT: {
