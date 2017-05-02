@@ -29,11 +29,10 @@
 package com.elytradev.concrete.inventory.gui.widget;
 
 import com.elytradev.concrete.inventory.ConcreteFluidTank;
-import com.elytradev.concrete.inventory.FakeFluidSlot;
+import com.elytradev.concrete.inventory.FluidTankProxySlot;
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -64,7 +63,7 @@ public class WFluidBar extends WWidget {
      */
     @Override
     public void createPeers(ConcreteContainer c) {
-        c.addSlotPeer(new FakeFluidSlot(concreteFluidTank));
+        c.addSlotPeer(new FluidTankProxySlot(concreteFluidTank));
     }
 
     @SideOnly(Side.CLIENT)

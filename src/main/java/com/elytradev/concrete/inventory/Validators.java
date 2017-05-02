@@ -47,12 +47,29 @@ public class Validators {
 		return it.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 	};
 
+	/**
+	 * Default Validator - accept every fluid.
+	 */
 	public static final Predicate<FluidStack> ANY_FLUID = (fs)->true;
+
+	/**
+	 * Default Validator - accept no fluid.
+	 */
 	public static final Predicate<FluidStack> NO_FLUID = (fs)->false;
 
-	// Example Validator - is the fluid as hot as or hotter than lava's temperature?
+	/**
+	 * Example Validator - is the fluid as hot or hotter than lava?
+	 */
 	public static final Predicate<FluidStack> HOT_FLUIDS = (fs)->fs.getFluid().getTemperature()>=1300;
 
-	// Example Validator - is the fluid colder than water's temperature?
+	/**
+	 * Example Validator - is the fluid colder than water?
+	 */
 	public static final Predicate<FluidStack> COLD_FLUIDS = (fs)->fs.getFluid().getTemperature()<300;
+
+	/**
+	 * Example Validator - is the fluid a gas?
+	 */
+	public static final Predicate<FluidStack> GASES = (fs)->fs.getFluid().isGaseous();
+
 }
