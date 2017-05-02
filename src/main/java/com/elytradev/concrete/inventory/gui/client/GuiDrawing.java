@@ -121,9 +121,9 @@ public class GuiDrawing {
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.color(r, g, b, 1.0f);
 		vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX); //I thought GL_QUADS was deprecated but okay, sure.
-		vertexbuffer.pos(left,       top+height, 0.0D).tex(tas.getMinU(), tas.getMaxV()*vScale).endVertex();
-		vertexbuffer.pos(left+width, top+height, 0.0D).tex(tas.getMaxU()*uScale, tas.getMaxV()*vScale).endVertex();
-		vertexbuffer.pos(left+width, top,        0.0D).tex(tas.getMaxU()*uScale, tas.getMinV()).endVertex();
+		vertexbuffer.pos(left,       top+height, 0.0D).tex(tas.getMinU(), tas.getInterpolatedV(vScale)).endVertex();
+		vertexbuffer.pos(left+width, top+height, 0.0D).tex(tas.getInterpolatedU(uScale), tas.getInterpolatedV(vScale)).endVertex();
+		vertexbuffer.pos(left+width, top,        0.0D).tex(tas.getInterpolatedU(uScale), tas.getMinV()).endVertex();
 		vertexbuffer.pos(left,       top,        0.0D).tex(tas.getMinU(), tas.getMinV()).endVertex();
 		tessellator.draw();
 		//GlStateManager.enableTexture2D();
