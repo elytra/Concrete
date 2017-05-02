@@ -28,11 +28,14 @@
 
 package com.elytradev.concrete.inventory;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 
 import javax.annotation.Nonnull;
 
@@ -55,7 +58,7 @@ public class FluidTankProxySlot extends Slot {
     private ConcreteFluidTank delegate;
 
     public FluidTankProxySlot(ConcreteFluidTank delegate) {
-        super(null, 0, 0, 0);
+        super(null, 0, Integer.MIN_VALUE,Integer.MIN_VALUE);
         this.delegate = delegate;
     }
 
@@ -64,8 +67,19 @@ public class FluidTankProxySlot extends Slot {
     public ItemStack getStack() {
         NBTTagCompound fluidTank = new NBTTagCompound();
         NBTTagCompound fluidStack = new NBTTagCompound();
+
+        /* Having a little fun with it... */
+        NBTTagCompound display = new NBTTagCompound();
+        NBTTagList garbageLore = new NBTTagList();
+        garbageLore.appendTag(new NBTTagString("What? How can you see this?"));
+        garbageLore.appendTag(new NBTTagString("Tell @CalmBit immediately."));
+        display.setTag("Name", new NBTTagString("Fluid Stick"));
+        display.setTag("Lore", garbageLore);
+        /* End fun */
+
         delegate.writeToNBT(fluidStack);
         fluidTank.setTag("fluid_tank", fluidStack);
+        fluidTank.setTag("display", display);
         ItemStack result = new ItemStack(Items.STICK, 1, 0);
         result.setTagCompound(fluidTank);
         return result;

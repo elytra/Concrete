@@ -92,6 +92,32 @@ public class WFluidBar extends WWidget {
         switch(direction) { //anonymous blocks in this switch statement are to sandbox variables
             case UP: {
                 int left = x;
+                int bottom = y+getHeight();
+                //top -= barSize;
+                int verticalSegments = barSize / 16;
+                int horizontalSegments = getWidth() / 16;
+                for(int dY=0;dY < verticalSegments;dY++)
+                {
+                    for(int dX=0;dX < horizontalSegments;dX++)
+                    {
+                        GuiDrawing.rect(fluid, left+(dX*16), bottom-((dY+1)*16), 16, 16, 16.0f, 16f, 0xFFFFFFFF);
+                    }
+                    GuiDrawing.rect(fluid, left+(horizontalSegments*16), bottom-((dY+1)*16), getWidth()%16, 16, getWidth()%16, 16.0f, 0xFFFFFFFF);
+                }
+
+                for(int dX=0;dX < horizontalSegments;dX++)
+                {
+                    GuiDrawing.rect(fluid, left+(dX*16), bottom-((verticalSegments)*16)-(barSize%16), 16, (barSize%16), 16, (barSize%16), 0xFFFFFFFF);
+                }
+                GuiDrawing.rect(fluid, left+(horizontalSegments*16), bottom-(verticalSegments*16)-(barSize%16), getWidth()%16, (barSize%16), getWidth()%16, (barSize%16), 0xFFFFFFFF);
+            }
+            break;
+            case RIGHT: {
+                //GuiDrawing.rect(fluidTexture, x, y, barSize, getHeight(), 0, 0, percent, 1, 0xFFFFFFFF);
+            }
+            break;
+            case DOWN: {
+                int left = x;
                 int top = y + getHeight();
                 top -= barSize;
                 int verticalSegments = barSize / 16;
@@ -111,14 +137,6 @@ public class WFluidBar extends WWidget {
                     GuiDrawing.rect(fluid, left+(dX*16), y+(verticalSegments*16), 16, (barSize%16), 16, (barSize%16), 0xFFFFFFFF);
                 }
                 GuiDrawing.rect(fluid, left+(horizontalSegments*16), y+(verticalSegments*16), getWidth()%16, (barSize%16), getWidth()%16, (barSize%16), 0xFFFFFFFF);
-            }
-            break;
-            case RIGHT: {
-                //GuiDrawing.rect(fluidTexture, x, y, barSize, getHeight(), 0, 0, percent, 1, 0xFFFFFFFF);
-            }
-            break;
-            case DOWN: {
-                //GuiDrawing.rect(fluidTexture, x, y, getWidth(), barSize, 0, 0, 1, percent, 0xFFFFFFFF);
             }
             break;
             case LEFT: {
