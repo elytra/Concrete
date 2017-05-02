@@ -32,7 +32,9 @@ import com.elytradev.concrete.inventory.ConcreteFluidTank;
 import com.elytradev.concrete.inventory.FluidTankProxySlot;
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -74,7 +76,7 @@ public class WFluidBar extends WWidget {
         if(concreteFluidTank.getFluid() == null)
             return;
 
-        float percent = concreteFluidTank.getFluidAmount()/concreteFluidTank.getCapacity();
+        float percent = (float)concreteFluidTank.getFluidAmount()/(float)concreteFluidTank.getCapacity();
         if (percent<0) percent=0f;
         if (percent>1) percent=1f;
 
@@ -85,7 +87,7 @@ public class WFluidBar extends WWidget {
         int barSize = (int)(barMax*percent);
         if (barSize<=0) return;
 
-        ResourceLocation fluidTexture = concreteFluidTank.getFluid().getFluid().getStill();
+        Fluid fluid = concreteFluidTank.getFluid().getFluid();
 
         switch(direction) { //anonymous blocks in this switch statement are to sandbox variables
             case UP: {
@@ -98,32 +100,33 @@ public class WFluidBar extends WWidget {
                 {
                     for(int dX=0;dX < horizontalSegments;dX++)
                     {
-                        GuiDrawing.rect(fluidTexture, left+(dX*16), y+(dY*16), 16, 16, 0, 0, 1, 1, 0xFFFFFFFF);
+                        //GuiDrawing.rect(concreteFluidTank.getFluid().getFluid(), left+(dX*16), y+(dY*16), 16, 16, 0, 0, 1, 1, 0xFFFFFFFF);
+                        GuiDrawing.rect(fluid, left+(dX*16), y+(dY*16), 16, 16, 0xFFFFFFFF);
                     }
-                    GuiDrawing.rect(fluidTexture, left+(horizontalSegments*16), y+(dY*16), 16-(getWidth()%16), 16, 0, 0, 1-percent, 1, 0xFFFFFFFF);
+                    GuiDrawing.rect(fluid, left+(horizontalSegments*16), y+(dY*16), getWidth()%16, 16, 0xFFFFFFFF);
                 }
 
                 for(int dX=0;dX < horizontalSegments;dX++)
                 {
-                    GuiDrawing.rect(fluidTexture, left+(dX*16), y+(verticalSegments*16), 16, 16-(barSize%16), 0, 0, 1, 1-percent, 0xFFFFFFFF);
+                    GuiDrawing.rect(fluid, left+(dX*16), y+(verticalSegments*16), 16, (barSize%16), 0xFFFFFFFF);
                 }
-                GuiDrawing.rect(fluidTexture, left+(horizontalSegments*16), y+(verticalSegments*16), 16-(barSize%16), 16-(getHeight()%16), 0, 0, 1-percent, 1-percent, 0xFFFFFFFF);
+                GuiDrawing.rect(fluid, left+(horizontalSegments*16), y+(verticalSegments*16), getWidth()%16, (barSize%16), 0xFFFFFFFF);
             }
             break;
             case RIGHT: {
-                GuiDrawing.rect(fluidTexture, x, y, barSize, getHeight(), 0, 0, percent, 1, 0xFFFFFFFF);
+                //GuiDrawing.rect(fluidTexture, x, y, barSize, getHeight(), 0, 0, percent, 1, 0xFFFFFFFF);
             }
             break;
             case DOWN: {
-                GuiDrawing.rect(fluidTexture, x, y, getWidth(), barSize, 0, 0, 1, percent, 0xFFFFFFFF);
+                //GuiDrawing.rect(fluidTexture, x, y, getWidth(), barSize, 0, 0, 1, percent, 0xFFFFFFFF);
             }
             break;
             case LEFT: {
-                int left = x + getWidth();
+                /*int left = x + getWidth();
                 int top = y;
                 left -= barSize;
                 GuiDrawing.rect(fluidTexture, left, top, barSize, getHeight(), 1-percent, 0, 1, 1, 0xFFFFFFFF);
-            }
+            */}
             break;
         }
 
