@@ -109,17 +109,25 @@ task inventoryJar(type: Jar) {
 	}
 }
 
+task resgenJar(type: Jar) {
+	classifier = 'resgen'
+	from(sourceSets.main.output) {
+		include 'com/elytradev/concrete/resgen/**'
+	}
+}
+
 reobf {
 	commonJar { mappingType = 'SEARGE' }
 	blockJar { mappingType = 'SEARGE' }
 	networkJar { mappingType = 'SEARGE' }
 	reflectJar { mappingType = 'SEARGE' }
 	inventoryJar { mappingType = 'SEARGE' }
+	resgenJar { mappingType = 'SEARGE' }
 }
 
 
 artifacts {
-	archives commonJar, blockJar, networkJar, reflectJar, inventoryJar
+	archives commonJar, blockJar, networkJar, reflectJar, inventoryJar, resgenJar
 }
 
 def parseConfig(File config) {
