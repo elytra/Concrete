@@ -1,11 +1,14 @@
 package com.elytradev.concrete.resgen;
 
+import com.elytradev.concrete.common.ConcreteLog;
 import com.elytradev.concrete.reflect.accessor.Accessor;
 import com.elytradev.concrete.reflect.accessor.Accessors;
 import com.elytradev.concrete.reflect.invoker.Invoker;
 import com.elytradev.concrete.reflect.invoker.Invokers;
+import com.google.common.base.Charsets;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
+import com.google.common.io.Resources;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -20,28 +23,20 @@ import net.minecraftforge.fml.common.registry.RegistryDelegate;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
- * Custom resource pack that auto overwrites the default one FML generates,
+ * Custom resource pack that is used when there's missing assets in your assets folder,
  * allows for auto genning common models like cubes and sprite based items.
  *
- * @author darkevilmac (Benjamin K)
- * @see IResourceHolder for custom texture locations for items and blocks.
+ * @see IResourceHolder for custom asset locations for items and blocks.
  */
 public class ConcreteResourcePack extends AbstractResourcePack implements IResourceManagerReloadListener {
-
-	private static final Logger LOG = LogManager.getLogger("Concrete");
 
 	private static Accessor<List<IResourcePack>> resourcePackList = Accessors.findField(FMLClientHandler.class, "resourcePackList");
 
@@ -59,11 +54,11 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 
 	static {
 		try {
-			SIMPLE_BLOCK_MODEL = IOUtils.toString(ConcreteResourcePack.class.getResourceAsStream("concreteblockmodel.json"));
-			SIMPLE_ITEM_MODEL = IOUtils.toString(ConcreteResourcePack.class.getResourceAsStream("concreteitemmodel.json"));
-			SIMPLE_BLOCK_STATE = IOUtils.toString(ConcreteResourcePack.class.getResourceAsStream("concreteblockstate.json"));
+			SIMPLE_BLOCK_MODEL = Resources.toString(ConcreteResourcePack.class.getResource("concreteblockmodel.json"), Charsets.UTF_8);
+			SIMPLE_ITEM_MODEL = Resources.toString(ConcreteResourcePack.class.getResource("concreteitemmodel.json"), Charsets.UTF_8);
+			SIMPLE_BLOCK_STATE = Resources.toString(ConcreteResourcePack.class.getResource("concreteblockstate.json"), Charsets.UTF_8);
 		} catch (IOException e) {
-			LOG.error("Caught IOException loading simple models, things will not definitely not work.", e);
+			ConcreteLog.error("Caught IOException loading simple models, things will not definitely not work.", e);
 		}
 	}
 
@@ -124,7 +119,7 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 		String domain = name.substring(0, name.indexOf("/"));
 		String path = name.substring(name.indexOf("/") + 1);
 
-		LOG.debug("Converted " + name + " to " + new ResourceLocation(domain, path));
+		ConcreteLog.debug("Converted {} to {}", name, new ResourceLocation(domain, path));
 		return new ResourceLocation(domain, path);
 	}
 
@@ -133,10 +128,10 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 			Field field = ModelLoader.class.getDeclaredField("customModels");
 			return (Map<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation>) FieldUtils.readStaticField(field, true);
 		} catch (Exception e) {
-			LOG.error("Caught exception getting customModels from the model loader, ", e);
+			ConcreteLog.error("Caught exception getting customModels from the model loader, ", e);
 		}
 
-		return Maps.newHashMap();
+		return Collections.emptyMap();
 	}
 
 	@Override
@@ -144,28 +139,28 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 		// Default to fallback if possible.
 		if (!((boolean) hasResourceName.invoke(realResourcePack, name))) {
 			if (cache.containsKey(name)) {
-				LOG.debug("ConcreteResourcePack was asked to obtain: " + name + " using cache.");
+				ConcreteLog.debug("ConcreteResourcePack was asked to obtain: {} using cache.", name);
 				return IOUtils.toInputStream(cache.get(name));
 			}
 
-			LOG.debug("ConcreteResourcePack was asked to obtain: " + name);
+			ConcreteLog.debug("ConcreteResourcePack was asked to obtain: {}", name);
 			if (isLocation(name, "/blockstates/")) {
-				return IOUtils.toInputStream(getBlockState(name));
+				return IOUtils.toInputStream(generateBlockState(name));
 			} else if (isLocation(name, "/models/block/")) {
-				return IOUtils.toInputStream(getBlockModel(name));
+				return IOUtils.toInputStream(generateBlockModel(name));
 			} else if (isLocation(name, "/models/item/")) {
-				return IOUtils.toInputStream(getItemModel(name));
+				return IOUtils.toInputStream(generateItemModel(name));
 			}
 		}
 
-		// Cover ourself in the event of something odd happening.
+		// Use the real pack in the event that we're asked for a resource we don't have.
 		return (InputStream) getInputStreamByName.invoke(realResourcePack, name);
 	}
 
 	/**
 	 * Generates a string of JSON representing a blockstate for the given location.
 	 **/
-	private String getBlockState(String name) {
+	private String generateBlockState(String name) {
 		String blockID = name.substring(name.lastIndexOf("/") + 1, name.lastIndexOf("."));
 		Block blockFromLocation = Block.getBlockFromName(modID + ":" + blockID);
 		String modelLocation = modID + ":" + blockID;
@@ -176,7 +171,7 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 		}
 
 		String simpleBlockState = SIMPLE_BLOCK_STATE;
-		simpleBlockState = simpleBlockState.replaceAll("#MDL", modelLocation);
+		simpleBlockState = simpleBlockState.replaceAll("%MDL%", modelLocation);
 		cache.put(name, simpleBlockState);
 		return simpleBlockState;
 	}
@@ -184,7 +179,7 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 	/**
 	 * Generates a string of JSON representing a block model for the given location.
 	 **/
-	private String getBlockModel(String name) {
+	private String generateBlockModel(String name) {
 		String blockID = name.substring(name.lastIndexOf("/") + 1, name.lastIndexOf("."));
 		Block blockFromLocation = Block.getBlockFromName(modID + ":" + blockID);
 		String textureLocation = modID + ":blocks/" + blockID;
@@ -195,7 +190,7 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 		}
 
 		String simpleBlockJSON = SIMPLE_BLOCK_MODEL;
-		simpleBlockJSON = simpleBlockJSON.replaceAll("#ALL", textureLocation);
+		simpleBlockJSON = simpleBlockJSON.replaceAll("%ALL%", textureLocation);
 		cache.put(name, simpleBlockJSON);
 		return simpleBlockJSON;
 	}
@@ -203,7 +198,7 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 	/**
 	 * Generates a string of JSON representing an item model for the given location.
 	 **/
-	private String getItemModel(String name) {
+	private String generateItemModel(String name) {
 		String itemID = name.substring(name.lastIndexOf("/") + 1, name.lastIndexOf("."));
 		Item itemFromLocation = getItem(name);
 		String textureLocation = modID + ":items/" + itemID;
@@ -219,18 +214,18 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 				try {
 					cache.put(name, IOUtils.toString(getInputStreamByName(name.replace("/item/", "/block/"))));
 				} catch (IOException e) {
-					LOG.error("Failed to get item model for " + name);
+					ConcreteLog.error("Failed to get item model for {}", name);
 				}
 			} else {
 				String simpleBlockModel = SIMPLE_BLOCK_MODEL;
-				simpleBlockModel = simpleBlockModel.replaceAll("#ALL", textureLocation);
+				simpleBlockModel = simpleBlockModel.replaceAll("%ALL%", textureLocation);
 				cache.put(name, simpleBlockModel);
 			}
 			return cache.get(name);
 		}
 
 		String simpleItemModel = SIMPLE_ITEM_MODEL;
-		simpleItemModel = simpleItemModel.replaceAll("#L0", textureLocation);
+		simpleItemModel = simpleItemModel.replaceAll("%L0%", textureLocation);
 		cache.put(name, simpleItemModel);
 		return simpleItemModel;
 	}
@@ -286,15 +281,15 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 			return false;
 
 		if (isLocation(name, "/blockstates/")) {
-			LOG.debug("Location was provided " + name + ", matched blockstate check.");
+			ConcreteLog.debug("Location was provided {}, matched blockstate check.", name);
 			return true;
 		}
 		if (isLocation(name, "/models/block/")) {
-			LOG.debug("Location was provided " + name + ", matched block model check.");
+			ConcreteLog.debug("Location was provided {}, matched block model check.", name);
 			return true;
 		}
 		if (isLocation(name, "/models/item/")) {
-			LOG.debug("Location was provided " + name + ", matched item model check.");
+			ConcreteLog.debug("Location was provided {}, matched item model check.", name);
 			return true;
 		}
 		return false;
