@@ -246,7 +246,7 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 				if (customModelsMap.inverse().containsKey(location))
 					return customModelsMap.inverse().get(location).getLeft().get();
 			} catch (Exception e) {
-				e.printStackTrace();
+				ConcreteLog.error("Failed to get item from ResourceLocation", e);
 			}
 			return Items.AIR;
 		}
@@ -270,7 +270,7 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 			if (customModelsMap.inverse().containsKey(location))
 				return customModelsMap.inverse().get(location).getRight();
 		} catch (Exception e) {
-			e.printStackTrace();
+			ConcreteLog.error("Failed to get metadata from name", e);
 		}
 		return 0;
 	}
