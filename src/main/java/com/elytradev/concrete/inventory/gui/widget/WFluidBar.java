@@ -32,7 +32,6 @@ import com.elytradev.concrete.inventory.ConcreteFluidTank;
 import com.elytradev.concrete.inventory.FluidTankProxySlot;
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
