@@ -91,7 +91,7 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 		}
 
 		//Add our pack as a default pack, use FMLClientHandler's field for this so we don't need to worry about obf names
-		resourcePackList.get(FMLClientHandler.instance()).add(this);
+		resourcePackList.get(FMLClientHandler.instance()).add(resourcePackList.get(FMLClientHandler.instance()).indexOf(realPack), this);
 
 		// Confirms that our resourcepack is available as soon as possible to prevent missing resource errors.
 		if (Minecraft.getMinecraft().getResourceManager() instanceof SimpleReloadableResourceManager) {
@@ -100,7 +100,7 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 
 			// Forces this resource pack to be loaded early on. FML already did it's initial registration so we need to bypass that.
 			FallbackResourceManager domainManager = domainResourceManagers.get(resourceManager).get(modID);
-			resourcePacks.get(domainManager).add(this);
+			resourcePacks.get(domainManager).add(resourcePacks.get(domainManager).indexOf(realPack), this);
 		}
 	}
 
@@ -136,22 +136,20 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 
 	@Override
 	protected InputStream getInputStreamByName(String name) throws IOException {
-		// Default to fallback if possible.
-		if (!((boolean) hasResourceName.invoke(realResourcePack, name))) {
-			if (cache.containsKey(name)) {
-				ConcreteLog.debug("ConcreteResourcePack was asked to obtain: {} using cache.", name);
-				return IOUtils.toInputStream(cache.get(name));
-			}
-
-			ConcreteLog.debug("ConcreteResourcePack was asked to obtain: {}", name);
-			if (isLocation(name, "/blockstates/")) {
-				return IOUtils.toInputStream(generateBlockState(name));
-			} else if (isLocation(name, "/models/block/")) {
-				return IOUtils.toInputStream(generateBlockModel(name));
-			} else if (isLocation(name, "/models/item/")) {
-				return IOUtils.toInputStream(generateItemModel(name));
-			}
+		if (cache.containsKey(name)) {
+			ConcreteLog.debug("ConcreteResourcePack was asked to obtain: {} using cache.", name);
+			return IOUtils.toInputStream(cache.get(name));
 		}
+
+		ConcreteLog.debug("ConcreteResourcePack was asked to obtain: {}", name);
+		if (isLocation(name, "/blockstates/")) {
+			return IOUtils.toInputStream(generateBlockState(name));
+		} else if (isLocation(name, "/models/block/")) {
+			return IOUtils.toInputStream(generateBlockModel(name));
+		} else if (isLocation(name, "/models/item/")) {
+			return IOUtils.toInputStream(generateItemModel(name));
+		}
+
 
 		// Use the real pack in the event that we're asked for a resource we don't have.
 		return (InputStream) getInputStreamByName.invoke(realResourcePack, name);
@@ -212,7 +210,13 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 		if (Block.getBlockFromItem(itemFromLocation) != Blocks.AIR) {
 			if (itemFromLocation.getRegistryName().getResourcePath().equals(itemID)) {
 				try {
-					cache.put(name, IOUtils.toString(getInputStreamByName(name.replace("/item/", "/block/"))));
+					String blockName = name.replace("/item/", "/block/");
+					// Checks if we can use an existing block model or if we need to gen our own.
+					if ((boolean) hasResourceName.invoke(realResourcePack, blockName)) {
+						cache.put(name, IOUtils.toString((InputStream) getInputStreamByName.invoke(realResourcePack, blockName)));
+					} else {
+						cache.put(name, IOUtils.toString(getInputStreamByName(blockName)));
+					}
 				} catch (IOException e) {
 					ConcreteLog.error("Failed to get item model for {}", name);
 				}
@@ -277,9 +281,6 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 
 	@Override
 	protected boolean hasResourceName(String name) {
-		if ((boolean) hasResourceName.invoke(realResourcePack, name))
-			return false;
-
 		if (isLocation(name, "/blockstates/")) {
 			ConcreteLog.debug("Location was provided {}, matched blockstate check.", name);
 			return true;
