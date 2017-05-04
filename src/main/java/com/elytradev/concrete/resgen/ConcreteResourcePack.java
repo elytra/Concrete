@@ -136,11 +136,13 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 
 	@Override
 	protected InputStream getInputStreamByName(String name) throws IOException {
+		// Check if we've already cached a model for this name.
 		if (cache.containsKey(name)) {
 			ConcreteLog.debug("ConcreteResourcePack was asked to obtain: {} using cache.", name);
 			return IOUtils.toInputStream(cache.get(name));
 		}
 
+		// Return a stream corresponding to a matching location.
 		ConcreteLog.debug("ConcreteResourcePack was asked to obtain: {}", name);
 		if (isLocation(name, "/blockstates/")) {
 			return IOUtils.toInputStream(generateBlockState(name));
