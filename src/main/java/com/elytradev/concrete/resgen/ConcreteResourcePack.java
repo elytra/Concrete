@@ -58,7 +58,7 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 			SIMPLE_ITEM_MODEL = Resources.toString(ConcreteResourcePack.class.getResource("concreteitemmodel.json"), Charsets.UTF_8);
 			SIMPLE_BLOCK_STATE = Resources.toString(ConcreteResourcePack.class.getResource("concreteblockstate.json"), Charsets.UTF_8);
 		} catch (IOException e) {
-			ConcreteLog.error("Caught IOException loading simple models, things will not definitely not work.", e);
+			ConcreteLog.error("Caught IOException loading simple models, things will definitely not work.", e);
 		}
 	}
 
@@ -114,26 +114,6 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 		return null;
 	}
 
-	public static ResourceLocation nameToLocation(String name) {
-		name = name.substring(name.indexOf("/") + 1);
-		String domain = name.substring(0, name.indexOf("/"));
-		String path = name.substring(name.indexOf("/") + 1);
-
-		ConcreteLog.debug("Converted {} to {}", name, new ResourceLocation(domain, path));
-		return new ResourceLocation(domain, path);
-	}
-
-	private static Map<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation> getCustomModels() {
-		try {
-			Field field = ModelLoader.class.getDeclaredField("customModels");
-			return (Map<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation>) FieldUtils.readStaticField(field, true);
-		} catch (Exception e) {
-			ConcreteLog.error("Caught exception getting customModels from the model loader, ", e);
-		}
-
-		return Collections.emptyMap();
-	}
-
 	@Override
 	protected InputStream getInputStreamByName(String name) throws IOException {
 		// Check if we've already cached a model for this name.
@@ -154,12 +134,77 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 
 
 		// Use the real pack in the event that we're asked for a resource we don't have.
+		// Most notable example being pack.mcmeta.
 		return (InputStream) getInputStreamByName.invoke(realResourcePack, name);
+	}
+
+
+	@Override
+	protected boolean hasResourceName(String name) {
+		if (isLocation(name, "/blockstates/")) {
+			ConcreteLog.debug("Location was provided {}, matched blockstate check.", name);
+			return true;
+		}
+		if (isLocation(name, "/models/block/")) {
+			ConcreteLog.debug("Location was provided {}, matched block model check.", name);
+			return true;
+		}
+		if (isLocation(name, "/models/item/")) {
+			ConcreteLog.debug("Location was provided {}, matched item model check.", name);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Set<String> getResourceDomains() {
+		return realResourcePack.getResourceDomains();
+	}
+
+	/**
+	 * Auto clears the cache on a resource manager reload.
+	 *
+	 * @param iResourceManager
+	 */
+	@Override
+	public void onResourceManagerReload(IResourceManager iResourceManager) {
+		cache.clear();
+	}
+
+	/**
+	 * Converts a name given by AbstractResourcePack back into a ResourceLocation.
+	 *
+	 * @param name provided by AbstractResourcePack
+	 * @return a ResourceLocation matching the given data.
+	 */
+	private static ResourceLocation nameToLocation(String name) {
+		name = name.substring(name.indexOf("/") + 1);
+		String domain = name.substring(0, name.indexOf("/"));
+		String path = name.substring(name.indexOf("/") + 1);
+
+		ConcreteLog.debug("Converted {} to {}", name, new ResourceLocation(domain, path));
+		return new ResourceLocation(domain, path);
+	}
+
+	/**
+	 * Used in place of an Accessor due to an error with static fields.
+	 *
+	 * @return the value of ModelLoader.customModels
+	 */
+	private static Map<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation> getCustomModels() {
+		try {
+			Field field = ModelLoader.class.getDeclaredField("customModels");
+			return (Map<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation>) FieldUtils.readStaticField(field, true);
+		} catch (Exception e) {
+			ConcreteLog.error("Caught exception getting customModels from the model loader, ", e);
+		}
+
+		return Collections.emptyMap();
 	}
 
 	/**
 	 * Generates a string of JSON representing a blockstate for the given location.
-	 **/
+	 */
 	private String generateBlockState(String name) {
 		String blockID = name.substring(name.lastIndexOf("/") + 1, name.lastIndexOf("."));
 		Block blockFromLocation = Block.getBlockFromName(modID + ":" + blockID);
@@ -178,7 +223,7 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 
 	/**
 	 * Generates a string of JSON representing a block model for the given location.
-	 **/
+	 */
 	private String generateBlockModel(String name) {
 		String blockID = name.substring(name.lastIndexOf("/") + 1, name.lastIndexOf("."));
 		Block blockFromLocation = Block.getBlockFromName(modID + ":" + blockID);
@@ -197,7 +242,7 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 
 	/**
 	 * Generates a string of JSON representing an item model for the given location.
-	 **/
+	 */
 	private String generateItemModel(String name) {
 		String itemID = name.substring(name.lastIndexOf("/") + 1, name.lastIndexOf("."));
 		Item itemFromLocation = getItem(name);
@@ -236,6 +281,12 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 		return simpleItemModel;
 	}
 
+	/**
+	 * Gets an item based on the name given by AbstractResourcePack.
+	 *
+	 * @param name the name provided by AbstractResourcePack
+	 * @return the Item corresponding to the given name.
+	 */
 	private Item getItem(String name) {
 		String itemID = name.substring(name.lastIndexOf("/") + 1, name.lastIndexOf("."));
 		if (Item.getByNameOrId(modID + ":" + itemID) != null) {
@@ -281,28 +332,6 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 		return 0;
 	}
 
-	@Override
-	protected boolean hasResourceName(String name) {
-		if (isLocation(name, "/blockstates/")) {
-			ConcreteLog.debug("Location was provided {}, matched blockstate check.", name);
-			return true;
-		}
-		if (isLocation(name, "/models/block/")) {
-			ConcreteLog.debug("Location was provided {}, matched block model check.", name);
-			return true;
-		}
-		if (isLocation(name, "/models/item/")) {
-			ConcreteLog.debug("Location was provided {}, matched item model check.", name);
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public Set<String> getResourceDomains() {
-		return realResourcePack.getResourceDomains();
-	}
-
 	/**
 	 * Check if the place provided matches the location validation.
 	 *
@@ -314,13 +343,4 @@ public class ConcreteResourcePack extends AbstractResourcePack implements IResou
 		return place.startsWith(("assets/" + modID + validation)) && place.endsWith(".json");
 	}
 
-	/**
-	 * Auto clears the cache on a resource manager reload.
-	 *
-	 * @param iResourceManager
-	 */
-	@Override
-	public void onResourceManagerReload(IResourceManager iResourceManager) {
-		cache.clear();
-	}
 }
