@@ -155,7 +155,7 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 
 	@Override
 	public Set<String> getResourceDomains() {
-		return realResourcePack.getResourceDomains();
+		return Collections.singleton(modID);
 	}
 
 	/**
