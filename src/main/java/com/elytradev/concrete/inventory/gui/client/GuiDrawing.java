@@ -102,7 +102,7 @@ public class GuiDrawing {
 	/**
 	 * Draws a rectangle for a Fluid, because fluids are tough.
 	 */
-	public static void rect(Fluid fluid, int left, int top, int width, int height, float uScale1, float vScale1, float uScale2, float vScale2, int color) {
+	public static void rect(Fluid fluid, int left, int top, int width, int height, float u1, float v1, float u2, float v2, int color) {
 		ResourceLocation fluidTexture = fluid.getStill();
 
 		TextureAtlasSprite tas = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(fluidTexture.toString());
@@ -121,10 +121,10 @@ public class GuiDrawing {
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.color(r, g, b, 1.0f);
 		vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX); //I thought GL_QUADS was deprecated but okay, sure.
-		vertexbuffer.pos(left,       top+height, 0.0D).tex(tas.getInterpolatedU(uScale1), tas.getInterpolatedV(vScale2)).endVertex();
-		vertexbuffer.pos(left+width, top+height, 0.0D).tex(tas.getInterpolatedU(uScale2), tas.getInterpolatedV(vScale2)).endVertex();
-		vertexbuffer.pos(left+width, top,        0.0D).tex(tas.getInterpolatedU(uScale2), tas.getInterpolatedV(vScale1)).endVertex();
-		vertexbuffer.pos(left,       top,        0.0D).tex(tas.getInterpolatedU(uScale1), tas.getInterpolatedV(vScale1)).endVertex();
+		vertexbuffer.pos(left,       top+height, 0.0D).tex(tas.getInterpolatedU(u1), tas.getInterpolatedV(v2)).endVertex();
+		vertexbuffer.pos(left+width, top+height, 0.0D).tex(tas.getInterpolatedU(u2), tas.getInterpolatedV(v2)).endVertex();
+		vertexbuffer.pos(left+width, top,        0.0D).tex(tas.getInterpolatedU(u2), tas.getInterpolatedV(v1)).endVertex();
+		vertexbuffer.pos(left,       top,        0.0D).tex(tas.getInterpolatedU(u1), tas.getInterpolatedV(v1)).endVertex();
 		tessellator.draw();
 		//GlStateManager.enableTexture2D();
 		GlStateManager.disableBlend();
