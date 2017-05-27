@@ -28,23 +28,17 @@
 
 package com.elytradev.concrete.inventory.gui;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.elytradev.concrete.common.ShadingValidator;
 import com.elytradev.concrete.inventory.ValidatedSlot;
 import com.elytradev.concrete.inventory.gui.widget.WPanel;
-
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * "Container" is Minecraft's way of managing shared state for a block whose GUI is currently open.
