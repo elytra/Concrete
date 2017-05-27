@@ -28,22 +28,17 @@
 
 package com.elytradev.concrete.inventory.gui;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.elytradev.concrete.common.ShadingValidator;
 import com.elytradev.concrete.inventory.ValidatedSlot;
 import com.elytradev.concrete.inventory.gui.widget.WPanel;
-
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * "Container" is Minecraft's way of managing shared state for a block whose GUI is currently open.
@@ -229,11 +224,19 @@ public class ConcreteContainer extends Container {
 	
 	public boolean canStackTogether(ItemStack src, ItemStack dest) {
 		if (src.isEmpty() || dest.isEmpty()) return false; //Don't stack using itemstack counts if one or the other is empty.
-		
+
+        boolean compoundComparison = false;
+        if(dest.hasTagCompound() && src.hasTagCompound()) {
+            compoundComparison = dest.getTagCompound().equals(src.getTagCompound());
+        }
+        else {
+            compoundComparison = !(dest.hasTagCompound() || src.hasTagCompound());
+        }
 		return
 				dest.isStackable() &&
 				dest.getItem()==src.getItem() &&
 				dest.getItemDamage()==src.getItemDamage() &&
+                compoundComparison &&
 				dest.areCapsCompatible(src);
 	}
 

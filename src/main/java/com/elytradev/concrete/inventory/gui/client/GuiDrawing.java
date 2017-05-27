@@ -28,6 +28,9 @@
 
 package com.elytradev.concrete.inventory.gui.client;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraftforge.fluids.Fluid;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -97,8 +100,42 @@ public class GuiDrawing {
 	}
 
 	/**
-	 * Draws a beveled, round rectangle that is substantially similar to default Minecraft UI panels.
+	 * Draws a rectangle for a Fluid, because fluids are tough.
 	 */
+	public static void rect(Fluid fluid, int left, int top, int width, int height, float u1, float v1, float u2, float v2, int color) {
+		ResourceLocation fluidTexture = fluid.getStill();
+
+		TextureAtlasSprite tas = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(fluidTexture.toString());
+		Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+
+		if (width<=0) width=1;
+		if (height<=0) height=1;
+
+		float r = (color >> 16 & 255) / 255.0F;
+		float g = (color >> 8 & 255) / 255.0F;
+		float b = (color & 255) / 255.0F;
+		Tessellator tessellator = Tessellator.getInstance();
+		VertexBuffer vertexbuffer = tessellator.getBuffer();
+		GlStateManager.enableBlend();
+		//GlStateManager.disableTexture2D();
+		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		GlStateManager.color(r, g, b, 1.0f);
+		vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX); //I thought GL_QUADS was deprecated but okay, sure.
+		vertexbuffer.pos(left,       top+height, 0.0D).tex(tas.getInterpolatedU(u1), tas.getInterpolatedV(v2)).endVertex();
+		vertexbuffer.pos(left+width, top+height, 0.0D).tex(tas.getInterpolatedU(u2), tas.getInterpolatedV(v2)).endVertex();
+		vertexbuffer.pos(left+width, top,        0.0D).tex(tas.getInterpolatedU(u2), tas.getInterpolatedV(v1)).endVertex();
+		vertexbuffer.pos(left,       top,        0.0D).tex(tas.getInterpolatedU(u1), tas.getInterpolatedV(v1)).endVertex();
+		tessellator.draw();
+		//GlStateManager.enableTexture2D();
+		GlStateManager.disableBlend();
+	}
+
+    public static void rect(Fluid fluid, int left, int top, int width, int height, int color) {
+        rect(fluid, left, top, width, height,0,0,16,16, color);
+    }
+        /**
+         * Draws a beveled, round rectangle that is substantially similar to default Minecraft UI panels.
+         */
 	public static void drawGuiPanel(int x, int y, int width, int height) {
 		drawGuiPanel(x, y, width, height, 0x555555, 0xC6C6C6, 0xFFFFFF, 0x000000);
 	}
