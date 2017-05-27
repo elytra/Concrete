@@ -230,11 +230,19 @@ public class ConcreteContainer extends Container {
 	
 	public boolean canStackTogether(ItemStack src, ItemStack dest) {
 		if (src.isEmpty() || dest.isEmpty()) return false; //Don't stack using itemstack counts if one or the other is empty.
-		
+
+        boolean compoundComparison = false;
+        if(dest.hasTagCompound() && src.hasTagCompound()) {
+            compoundComparison = dest.getTagCompound().equals(src.getTagCompound());
+        }
+        else {
+            compoundComparison = !(dest.hasTagCompound() || src.hasTagCompound());
+        }
 		return
 				dest.isStackable() &&
 				dest.getItem()==src.getItem() &&
 				dest.getItemDamage()==src.getItemDamage() &&
+                compoundComparison &&
 				dest.areCapsCompatible(src);
 	}
 
