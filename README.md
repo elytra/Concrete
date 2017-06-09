@@ -31,6 +31,10 @@ LambdaNetwork.
 Contains a set of method invokers, field accessors, and class instanciators that
 take advantage of MethodHandles when they are available.
 
+### Config
+Adds a dead-simple annotation-based configuration system, similar to the Network
+module.
+
 ## Depending on Concrete
 
 Concrete *must* be shaded into the jar and will throw an exception at runtime if
