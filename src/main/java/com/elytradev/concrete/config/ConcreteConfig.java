@@ -1,5 +1,6 @@
-package com.elytradev.teckle.config;
+package com.elytradev.concrete.config;
 
+import com.elytradev.concrete.common.ConcreteLog;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -12,98 +13,99 @@ import java.util.Objects;
  */
 public abstract class ConcreteConfig {
 
-    // The real configuration that all writing is done to.
-    private final Configuration configuration;
+	// The real configuration that all writing is done to.
+	private final Configuration configuration;
 
-    /**
-     * Create a new configuration with the given file.
-     * @param configFile
-     */
-    protected ConcreteConfig(File configFile) {
-        this.configuration = new Configuration(configFile);
-    }
+	/**
+	 * Create a new configuration with the given file.
+	 *
+	 * @param configFile
+	 */
+	protected ConcreteConfig(File configFile) {
+		this.configuration = new Configuration(configFile);
+	}
 
-    /**
-     * Saves config values, and writes to disk.
-     */
-    public void loadConfig() {
-        Class clazz = this.getClass();
+	/**
+	 * Saves config values, and writes to disk.
+	 */
+	public void loadConfig() {
+		Class clazz = this.getClass();
 
-        for (Field field : clazz.getDeclaredFields()) {
-            if (field.getAnnotation(ConfigValue.class) != null) {
-                ConfigValue cfgValue = field.getAnnotation(ConfigValue.class);
-                String valueKey = cfgValue.key();
-                String valueComment = cfgValue.comment();
-                String valueCategory = cfgValue.category();
+		for (Field field : clazz.getDeclaredFields()) {
+			if (field.getAnnotation(ConfigValue.class) != null) {
+				ConfigValue cfgValue = field.getAnnotation(ConfigValue.class);
+				String valueKey = cfgValue.key();
+				String valueComment = cfgValue.comment();
+				String valueCategory = cfgValue.category();
 
-                if (Objects.equals(valueKey, "")) {
-                    valueKey = field.getName();
-                }
+				if (Objects.equals(valueKey, "")) {
+					valueKey = field.getName();
+				}
 
-                try {
-                    Object fieldValue = field.get(this);
+				try {
+					Object fieldValue = field.get(this);
 
-                    if (field.getType().isArray()) {
-                        switch (cfgValue.type()) {
-                            case INTEGER: {
-                                Property property = configuration.get(valueCategory, valueKey,
-                                        (int[]) fieldValue, valueComment);
-                                field.set(this, property.getIntList());
-                                break;
-                            }
-                            case BOOLEAN: {
-                                Property property = configuration.get(valueCategory, valueKey, (boolean[]) fieldValue, valueComment);
-                                field.set(this, property.getBooleanList());
-                                break;
-                            }
-                            case DOUBLE: {
-                                Property property = configuration.get(valueCategory, valueKey, (double[]) fieldValue, valueComment);
-                                field.set(this, property.getDoubleList());
-                                break;
-                            }
-                            case STRING: {
-                                Property property = configuration.get(valueCategory, valueKey, (String[]) fieldValue, valueComment);
-                                field.set(this, property.getStringList());
-                                break;
-                            }
-                        }
-                    } else {
-                        switch (cfgValue.type()) {
-                            case INTEGER: {
-                                Property property = configuration.get(valueCategory, valueKey, (Integer) fieldValue, valueComment);
-                                field.set(this, property.getInt());
-                                break;
-                            }
-                            case BOOLEAN: {
-                                Property property = configuration.get(valueCategory, valueKey, (Boolean) fieldValue, valueComment);
-                                field.set(this, property.getBoolean());
-                                break;
-                            }
-                            case DOUBLE: {
-                                Property property = configuration.get(valueCategory, valueKey, (Double) fieldValue, valueComment);
-                                field.set(this, property.getDouble());
-                                break;
-                            }
-                            case STRING: {
-                                Property property = configuration.get(valueCategory, valueKey, (String) fieldValue, valueComment);
-                                field.set(this, property.getString());
-                                break;
-                            }
-                        }
-                    }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        configuration.save();
-    }
+					if (field.getType().isArray()) {
+						switch (cfgValue.type()) {
+							case INTEGER: {
+								Property property = configuration.get(valueCategory, valueKey,
+										(int[]) fieldValue, valueComment);
+								field.set(this, property.getIntList());
+								break;
+							}
+							case BOOLEAN: {
+								Property property = configuration.get(valueCategory, valueKey, (boolean[]) fieldValue, valueComment);
+								field.set(this, property.getBooleanList());
+								break;
+							}
+							case DOUBLE: {
+								Property property = configuration.get(valueCategory, valueKey, (double[]) fieldValue, valueComment);
+								field.set(this, property.getDoubleList());
+								break;
+							}
+							case STRING: {
+								Property property = configuration.get(valueCategory, valueKey, (String[]) fieldValue, valueComment);
+								field.set(this, property.getStringList());
+								break;
+							}
+						}
+					} else {
+						switch (cfgValue.type()) {
+							case INTEGER: {
+								Property property = configuration.get(valueCategory, valueKey, (Integer) fieldValue, valueComment);
+								field.set(this, property.getInt());
+								break;
+							}
+							case BOOLEAN: {
+								Property property = configuration.get(valueCategory, valueKey, (Boolean) fieldValue, valueComment);
+								field.set(this, property.getBoolean());
+								break;
+							}
+							case DOUBLE: {
+								Property property = configuration.get(valueCategory, valueKey, (Double) fieldValue, valueComment);
+								field.set(this, property.getDouble());
+								break;
+							}
+							case STRING: {
+								Property property = configuration.get(valueCategory, valueKey, (String) fieldValue, valueComment);
+								field.set(this, property.getString());
+								break;
+							}
+						}
+					}
+				} catch (IllegalAccessException e) {
+					ConcreteLog.error("Failed to access field when loading a concrete configuration. {}", e);
+				}
+			}
+		}
+		configuration.save();
+	}
 
-    /**
-     * Get the forge configuration that is written to, use if you need direct access.
-     */
-    public Configuration getConfiguration(){
-        return configuration;
-    }
+	/**
+	 * Get the forge configuration that is written to, use if you need direct access.
+	 */
+	public Configuration getConfiguration() {
+		return configuration;
+	}
 
 }

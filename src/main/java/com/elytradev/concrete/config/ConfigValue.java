@@ -1,4 +1,4 @@
-package com.elytradev.teckle.config;
+package com.elytradev.concrete.config;
 
 import net.minecraftforge.common.config.Property;
 
@@ -14,25 +14,25 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface ConfigValue {
 
-    /**
-     * The configuration comment for this field, provides information to end users.
-     * There's very few cases where you shouldn't include this.
-     */
-    String comment() default "";
+	/**
+	 * The configuration comment for this field, provides information to end users.
+	 * There's very few cases where you shouldn't include this.
+	 */
+	String comment() default "";
 
-    /**
-     * The configuration category for this field. Leave empty if not applicable.
-     */
-    String category() default "";
+	/**
+	 * The configuration category for this field. Leave empty if not applicable.
+	 */
+	String category() default "";
 
-    /**
-     * The field key, the 'name' used in the configuration file. Leave empty if the field name should be used.
-     */
-    String key() default "";
+	/**
+	 * The field key, the 'name' used in the configuration file. Leave empty if the field name should be used.
+	 */
+	String key() default "";
 
-    /**
-     * The property type for this config field. Determines how the field will be serialized.
-     */
-    Property.Type type();
+	/**
+	 * The property type for this config field. Determines how the field will be serialized.
+	 */
+	Property.Type type();
 
 }
