@@ -27,6 +27,16 @@ Contains an easy-to-use network message framework built on top of plugin
 message packets, similar to SimpleImpl. Replacement for the now-deprecated
 LambdaNetwork.
 
+### ResGen
+**Depends on Reflect**
+
+Contains a fake resource pack that automatically generates the most common
+kinds of block and item models. Done without ASM and without any nasty hacks.
+
+It's strongly recommended to put a README.md in your models/block and models/item
+assets directory explaining your use of ResGen. An example is provided in
+`doc/resgen-README.md`.
+
 ### Reflect
 Contains a set of method invokers, field accessors, and class instanciators that
 take advantage of MethodHandles when they are available.
