@@ -41,7 +41,7 @@ public class MethodHandlesInvoker implements Invoker {
 	public MethodHandlesInvoker(Method m) {
 		try {
 			m.setAccessible(true);
-			handle = MethodHandles.lookup().unreflect(m);
+			handle = MethodHandles.publicLookup().unreflect(m);
 		} catch (IllegalAccessException e) {
 			Throwables.propagate(e);
 		}
