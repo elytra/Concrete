@@ -43,8 +43,8 @@ class MethodHandlesAccessor<T> implements Accessor<T> {
 	public MethodHandlesAccessor(Field f) {
 		try {
 			f.setAccessible(true);
-			getter = MethodHandles.lookup().unreflectGetter(f);
-			setter = MethodHandles.lookup().unreflectSetter(f);
+			getter = MethodHandles.publicLookup().unreflectGetter(f);
+			setter = MethodHandles.publicLookup().unreflectSetter(f);
 		} catch (IllegalAccessException e) {
 			Throwables.propagate(e);
 		}
@@ -54,8 +54,8 @@ class MethodHandlesAccessor<T> implements Accessor<T> {
 		try {
 			get.setAccessible(true);
 			set.setAccessible(true);
-			getter = MethodHandles.lookup().unreflect(get);
-			setter = MethodHandles.lookup().unreflect(set);
+			getter = MethodHandles.publicLookup().unreflect(get);
+			setter = MethodHandles.publicLookup().unreflect(set);
 		} catch (IllegalAccessException e) {
 			Throwables.propagate(e);
 		}
