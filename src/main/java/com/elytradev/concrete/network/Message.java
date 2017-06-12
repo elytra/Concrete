@@ -123,7 +123,13 @@ public abstract class Message {
 		}
 	}
 	
-	protected abstract void handle(EntityPlayer sender);
+	/**
+	 * Handles this Message when received.
+	 *
+	 * @param player The player that sent this Message if received on the server.
+	 *               The player that received this Message if received on the client.
+	 */
+	protected abstract void handle(EntityPlayer player);
 	
 	Side getSide() {
 		return side;
