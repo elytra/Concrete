@@ -28,6 +28,7 @@
 
 package com.elytradev.concrete.config;
 
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
 import java.lang.annotation.ElementType;
@@ -51,7 +52,7 @@ public @interface ConfigValue {
 	/**
 	 * The configuration category for this field. Leave empty if not applicable.
 	 */
-	String category() default "";
+	String category() default Configuration.CATEGORY_GENERAL;
 
 	/**
 	 * The field key, the 'name' used in the configuration file. Leave empty if the field name should be used.
