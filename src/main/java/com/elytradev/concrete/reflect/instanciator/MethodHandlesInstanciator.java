@@ -40,7 +40,7 @@ public class MethodHandlesInstanciator<T> implements Instanciator<T> {
 	public MethodHandlesInstanciator(Constructor<T> c) {
 		try {
 			c.setAccessible(true);
-			handle = MethodHandles.lookup().unreflectConstructor(c);
+			handle = MethodHandles.publicLookup().unreflectConstructor(c);
 		} catch (IllegalAccessException e) {
 			Throwables.propagate(e);
 		}
