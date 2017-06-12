@@ -49,9 +49,9 @@ public @interface ConfigValue {
 	String comment() default "";
 
 	/**
-	 * The configuration category for this field. Leave empty if not applicable.
+	 * The configuration category for this field.
 	 */
-	String category() default "";
+	String category();
 
 	/**
 	 * The field key, the 'name' used in the configuration file. Leave empty if the field name should be used.
