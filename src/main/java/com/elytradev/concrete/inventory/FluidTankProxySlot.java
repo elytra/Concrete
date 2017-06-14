@@ -54,70 +54,70 @@ import javax.annotation.Nonnull;
  *
  */
 public class FluidTankProxySlot extends Slot {
-    private ConcreteFluidTank delegate;
+	private ConcreteFluidTank delegate;
 
-    public FluidTankProxySlot(ConcreteFluidTank delegate) {
-        super(null, 0, Integer.MIN_VALUE,Integer.MIN_VALUE);
-        this.delegate = delegate;
-    }
+	public FluidTankProxySlot(ConcreteFluidTank delegate) {
+		super(null, 0, Integer.MIN_VALUE,Integer.MIN_VALUE);
+		this.delegate = delegate;
+	}
 
-    @Override
-    @Nonnull
-    public ItemStack getStack() {
-        NBTTagCompound fluidTank = new NBTTagCompound();
-        NBTTagCompound fluidStack = new NBTTagCompound();
+	@Override
+	@Nonnull
+	public ItemStack getStack() {
+		NBTTagCompound fluidTank = new NBTTagCompound();
+		NBTTagCompound fluidStack = new NBTTagCompound();
 
-        /* Having a little fun with it... */
-        NBTTagCompound display = new NBTTagCompound();
-        NBTTagList garbageLore = new NBTTagList();
-        garbageLore.appendTag(new NBTTagString("What? How can you see this?"));
-        garbageLore.appendTag(new NBTTagString("Tell @CalmBit immediately."));
-        display.setTag("Name", new NBTTagString("Fluid Stick"));
-        display.setTag("Lore", garbageLore);
-        /* End fun */
+		/* Having a little fun with it... */
+		NBTTagCompound display = new NBTTagCompound();
+		NBTTagList garbageLore = new NBTTagList();
+		garbageLore.appendTag(new NBTTagString("What? How can you see this?"));
+		garbageLore.appendTag(new NBTTagString("Tell @CalmBit immediately."));
+		display.setTag("Name", new NBTTagString("Fluid Stick"));
+		display.setTag("Lore", garbageLore);
+		/* End fun */
 
-        delegate.writeToNBT(fluidStack);
-        fluidTank.setTag("fluid_tank", fluidStack);
-        fluidTank.setTag("display", display);
-        ItemStack result = new ItemStack(Items.STICK, 1, 0);
-        result.setTagCompound(fluidTank);
-        return result;
-    }
+		delegate.writeToNBT(fluidStack);
+		fluidTank.setTag("fluid_tank", fluidStack);
+		fluidTank.setTag("display", display);
+		ItemStack result = new ItemStack(Items.STICK, 1, 0);
+		result.setTagCompound(fluidTank);
+		return result;
+	}
 
-    @Override
-    public void putStack(@Nonnull ItemStack stack) {
-        if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("fluid_tank"))
-            delegate.readFromNBT(stack.getTagCompound().getCompoundTag("fluid_tank"));
-    }
+	@Override
+	public void putStack(@Nonnull ItemStack stack) {
+		if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("fluid_tank"))
+			delegate.readFromNBT(stack.getTagCompound().getCompoundTag("fluid_tank"));
+	}
 
-    @Override
-    public void onSlotChanged() {
-        this.delegate.markDirty();
-    }
+	@Override
+	public void onSlotChanged() {
+		this.delegate.markDirty();
+	}
 
-    @Override
-    public int getSlotStackLimit() {
-        return 1;
-    }
+	@Override
+	public int getSlotStackLimit() {
+		return 1;
+	}
 
-    @Override
-    @Nonnull
-    public ItemStack decrStackSize(int amount) {
-        return ItemStack.EMPTY;
-    }
+	@Override
+	@Nonnull
+	public ItemStack decrStackSize(int amount) {
+		return ItemStack.EMPTY;
+	}
 
-    @Override
-    public boolean isHere(IInventory inv, int slotIn) {
-        return false;
-    }
+	@Override
+	public boolean isHere(IInventory inv, int slotIn) {
+		return false;
+	}
 
-    @Override
-    public boolean isSameInventory(Slot other) {
-        if (other instanceof FluidTankProxySlot) {
-            FluidTankProxySlot slot = (FluidTankProxySlot)other;
-            if( slot.delegate == this.delegate)
-                return true;
-        }
-        return false;
-    }
+	@Override
+	public boolean isSameInventory(Slot other) {
+		if (other instanceof FluidTankProxySlot) {
+			FluidTankProxySlot slot = (FluidTankProxySlot)other;
+			if( slot.delegate == this.delegate)
+				return true;
+		}
+		return false;
+	}
 }

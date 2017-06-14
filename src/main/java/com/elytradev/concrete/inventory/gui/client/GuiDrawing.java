@@ -52,51 +52,51 @@ public class GuiDrawing {
 		//float scale = 0.00390625F;
 		
 		if (width<=0) width=1;
-	    if (height<=0) height=1;
-	    
-	    float r = (color >> 16 & 255) / 255.0F;
-	    float g = (color >> 8 & 255) / 255.0F;
-	    float b = (color & 255) / 255.0F;
-	    Tessellator tessellator = Tessellator.getInstance();
-	    VertexBuffer vertexbuffer = tessellator.getBuffer();
-	    GlStateManager.enableBlend();
-	    //GlStateManager.disableTexture2D();
-	    GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-	    GlStateManager.color(r, g, b, 1.0f);
-	    vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX); //I thought GL_QUADS was deprecated but okay, sure.
-	    vertexbuffer.pos(left,       top+height, 0.0D).tex(u1, v2).endVertex();
-	    vertexbuffer.pos(left+width, top+height, 0.0D).tex(u2, v2).endVertex();
-	    vertexbuffer.pos(left+width, top,        0.0D).tex(u2, v1).endVertex();
-	    vertexbuffer.pos(left,       top,        0.0D).tex(u1, v1).endVertex();
-	    tessellator.draw();
-	    //GlStateManager.enableTexture2D();
-	    GlStateManager.disableBlend();
+		if (height<=0) height=1;
+		
+		float r = (color >> 16 & 255) / 255.0F;
+		float g = (color >> 8 & 255) / 255.0F;
+		float b = (color & 255) / 255.0F;
+		Tessellator tessellator = Tessellator.getInstance();
+		VertexBuffer vertexbuffer = tessellator.getBuffer();
+		GlStateManager.enableBlend();
+		//GlStateManager.disableTexture2D();
+		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		GlStateManager.color(r, g, b, 1.0f);
+		vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX); //I thought GL_QUADS was deprecated but okay, sure.
+		vertexbuffer.pos(left,       top+height, 0.0D).tex(u1, v2).endVertex();
+		vertexbuffer.pos(left+width, top+height, 0.0D).tex(u2, v2).endVertex();
+		vertexbuffer.pos(left+width, top,        0.0D).tex(u2, v1).endVertex();
+		vertexbuffer.pos(left,       top,        0.0D).tex(u1, v1).endVertex();
+		tessellator.draw();
+		//GlStateManager.enableTexture2D();
+		GlStateManager.disableBlend();
 	}
 	
 	/**
 	 * Draws an untextured rectangle of the specified RGB color. Alpha is always 1.0f.
 	 */
 	public static void rect(int left, int top, int width, int height, int color) {
-	    if (width<=0) width=1;
-	    if (height<=0) height=1;
-	    
-	    float r = (color >> 16 & 255) / 255.0F;
-	    float g = (color >> 8 & 255) / 255.0F;
-	    float b = (color & 255) / 255.0F;
-	    Tessellator tessellator = Tessellator.getInstance();
-	    VertexBuffer vertexbuffer = tessellator.getBuffer();
-	    GlStateManager.enableBlend();
-	    GlStateManager.disableTexture2D();
-	    GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-	    GlStateManager.color(r, g, b, 1.0f);
-	    vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION); //I thought GL_QUADS was deprecated but okay, sure.
-	    vertexbuffer.pos(left,       top+height, 0.0D).endVertex();
-	    vertexbuffer.pos(left+width, top+height, 0.0D).endVertex();
-	    vertexbuffer.pos(left+width, top,        0.0D).endVertex();
-	    vertexbuffer.pos(left,       top,        0.0D).endVertex();
-	    tessellator.draw();
-	    GlStateManager.enableTexture2D();
-	    GlStateManager.disableBlend();
+		if (width<=0) width=1;
+		if (height<=0) height=1;
+		
+		float r = (color >> 16 & 255) / 255.0F;
+		float g = (color >> 8 & 255) / 255.0F;
+		float b = (color & 255) / 255.0F;
+		Tessellator tessellator = Tessellator.getInstance();
+		VertexBuffer vertexbuffer = tessellator.getBuffer();
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture2D();
+		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		GlStateManager.color(r, g, b, 1.0f);
+		vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION); //I thought GL_QUADS was deprecated but okay, sure.
+		vertexbuffer.pos(left,       top+height, 0.0D).endVertex();
+		vertexbuffer.pos(left+width, top+height, 0.0D).endVertex();
+		vertexbuffer.pos(left+width, top,        0.0D).endVertex();
+		vertexbuffer.pos(left,       top,        0.0D).endVertex();
+		tessellator.draw();
+		GlStateManager.enableTexture2D();
+		GlStateManager.disableBlend();
 	}
 
 	/**
@@ -130,12 +130,12 @@ public class GuiDrawing {
 		GlStateManager.disableBlend();
 	}
 
-    public static void rect(Fluid fluid, int left, int top, int width, int height, int color) {
-        rect(fluid, left, top, width, height,0,0,16,16, color);
-    }
-        /**
-         * Draws a beveled, round rectangle that is substantially similar to default Minecraft UI panels.
-         */
+	public static void rect(Fluid fluid, int left, int top, int width, int height, int color) {
+		rect(fluid, left, top, width, height,0,0,16,16, color);
+	}
+    /**
+	 * Draws a beveled, round rectangle that is substantially similar to default Minecraft UI panels.
+	 */
 	public static void drawGuiPanel(int x, int y, int width, int height) {
 		drawGuiPanel(x, y, width, height, 0x555555, 0xC6C6C6, 0xFFFFFF, 0x000000);
 	}
@@ -153,14 +153,14 @@ public class GuiDrawing {
 		rect(x+3,       y+3,        1,       1,        hilight); //Topleft round hilight pixel
 		rect(x+width-4, y+height-4, 1,       1,        shadow); //Bottomright round shadow pixel
 		
-	    rect(x+2,       y,          width-4, 1,        outline); //Top outline
-	    rect(x,         y+2,        1,       height-4, outline); //Left outline
-	    rect(x+width-1, y+2,        1,       height-4, outline); //Right outline
-	    rect(x+2,       y+height-1, width-4, 1, outline); //Bottom outline
-	    rect(x+1,       y+1,        1,       1, outline); //Topleft round pixel
-	    rect(x+1,       y+height-2, 1,       1, outline); //Bottomleft round pixel
-	    rect(x+width-2, y+1,        1,       1, outline); //Topright round pixel
-	    rect(x+width-2, y+height-2, 1,       1, outline); //Bottomright round pixel
+		rect(x+2,       y,          width-4, 1,        outline); //Top outline
+		rect(x,         y+2,        1,       height-4, outline); //Left outline
+		rect(x+width-1, y+2,        1,       height-4, outline); //Right outline
+		rect(x+2,       y+height-1, width-4, 1, outline); //Bottom outline
+		rect(x+1,       y+1,        1,       1, outline); //Topleft round pixel
+		rect(x+1,       y+height-2, 1,       1, outline); //Bottomleft round pixel
+		rect(x+width-2, y+1,        1,       1, outline); //Topright round pixel
+		rect(x+width-2, y+height-2, 1,       1, outline); //Bottomright round pixel
 	}
 
 	/**

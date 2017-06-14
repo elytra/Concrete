@@ -85,10 +85,10 @@ public class ConcreteContainer extends Container {
 	
 	public void initPlayerInventory(int x, int y) {
 		for (int yi = 0; yi < 3; yi++) {
-            for (int xi = 0; xi < 9; xi++) {
-                addSlotToContainer(new Slot(playerInventory, xi + (yi * 9) + 9, x + (xi * 18), y + (yi * 18)));
-            }
-        }
+			for (int xi = 0; xi < 9; xi++) {
+				addSlotToContainer(new Slot(playerInventory, xi + (yi * 9) + 9, x + (xi * 18), y + (yi * 18)));
+			}
+		}
 		
 		
 		for(int i=0; i<9; i++) {
@@ -98,9 +98,9 @@ public class ConcreteContainer extends Container {
 	
 	@Override
 	public void addListener(IContainerListener listener) {
-        super.addListener(listener);
-        if (container!=null) listener.sendAllWindowProperties(this, container);
-    }
+		super.addListener(listener);
+		if (container!=null) listener.sendAllWindowProperties(this, container);
+	}
 	
 	@Override
 	public void detectAndSendChanges() {
@@ -114,22 +114,22 @@ public class ConcreteContainer extends Container {
 			}
 			
 			for (IContainerListener listener : this.listeners) {
-	            for(int field = 0; field<numFields; field++) {
-	            	int newValue = container.getField(field);
-	            	if (syncFields[field]!=newValue) {
-	            		listener.sendProgressBarUpdate(this, field, newValue);
-	            		syncFields[field] = newValue;
-	            	}
-	            }
+				for(int field = 0; field<numFields; field++) {
+					int newValue = container.getField(field);
+					if (syncFields[field]!=newValue) {
+						listener.sendProgressBarUpdate(this, field, newValue);
+						syncFields[field] = newValue;
+					}
+				}
 			}
 		}
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void updateProgressBar(int id, int data) {
-        if(container!=null) container.setField(id, data);
-    }
+	public void updateProgressBar(int id, int data) {
+		if(container!=null) container.setField(id, data);
+	}
 	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
@@ -155,7 +155,7 @@ public class ConcreteContainer extends Container {
 		
 		src.putStack(srcStack);
 		return ItemStack.EMPTY;
-    }
+	}
 	
 	@Override
 	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
@@ -224,18 +224,18 @@ public class ConcreteContainer extends Container {
 	public boolean canStackTogether(ItemStack src, ItemStack dest) {
 		if (src.isEmpty() || dest.isEmpty()) return false; //Don't stack using itemstack counts if one or the other is empty.
 
-        boolean compoundComparison;
-        if(dest.hasTagCompound() && src.hasTagCompound()) {
-            compoundComparison = dest.getTagCompound().equals(src.getTagCompound());
-        }
-        else {
-            compoundComparison = !(dest.hasTagCompound() || src.hasTagCompound());
-        }
+		boolean compoundComparison;
+		if(dest.hasTagCompound() && src.hasTagCompound()) {
+			compoundComparison = dest.getTagCompound().equals(src.getTagCompound());
+		}
+		else {
+			compoundComparison = !(dest.hasTagCompound() || src.hasTagCompound());
+		}
 		return
 				dest.isStackable() &&
 				dest.getItem()==src.getItem() &&
 				dest.getItemDamage()==src.getItemDamage() &&
-                compoundComparison &&
+				compoundComparison &&
 				dest.areCapsCompatible(src);
 	}
 
