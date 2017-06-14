@@ -100,7 +100,7 @@ public class NBTHelper {
 			C extends Collection<T>> C deserializeInto(Supplier<T> constructor, NBTTagList in, C collection) {
 		for (int i = 0; i < in.tagCount(); i++) {
 			T t = constructor.get();
-			t.deserializeNBT((U)in.get(i));
+			t.deserializeNBT((U) in.get(i));
 			collection.add(t);
 		}
 		return collection;

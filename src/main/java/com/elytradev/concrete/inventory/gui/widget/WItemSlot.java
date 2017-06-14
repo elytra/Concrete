@@ -89,12 +89,12 @@ public class WItemSlot extends WWidget {
 	
 	@Override
 	public int getWidth() {
-		return slotsWide*18;
+		return slotsWide * 18;
 	}
 	
 	@Override
 	public int getHeight() {
-		return slotsHigh*18;
+		return slotsHigh * 18;
 	}
 	
 	@Override
@@ -103,18 +103,18 @@ public class WItemSlot extends WWidget {
 		int index = startIndex;
 		
 		if (ltr) {
-			for(int x=0; x<slotsWide; x++) {
-				for(int y=0; y<slotsHigh; y++) {
-					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX()+(x*18), this.getY()+(y*18));
+			for (int x = 0; x < slotsWide; x++) {
+				for (int y = 0; y < slotsHigh; y++) {
+					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX() + (x * 18), this.getY() + (y * 18));
 					peers.add(slot);
 					c.addSlotPeer(slot);
 					index++;
 				}
 			}
 		} else {
-			for(int y=0; y<slotsHigh; y++) {
-				for(int x=0; x<slotsWide; x++) {
-					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX()+(x*18), this.getY()+(y*18));
+			for (int y = 0; y < slotsHigh; y++) {
+				for (int x = 0; x < slotsWide; x++) {
+					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX() + (x * 18), this.getY() + (y * 18));
 					peers.add(slot);
 					c.addSlotPeer(slot);
 					index++;
@@ -126,12 +126,12 @@ public class WItemSlot extends WWidget {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void paintBackground(int x, int y) {
-		for(int xi=0; xi<slotsWide; xi++) {
-			for(int yi=0; yi<slotsHigh; yi++) {
+		for (int xi = 0; xi < slotsWide; xi++) {
+			for (int yi = 0; yi < slotsHigh; yi++) {
 				if (big) {
-					GuiDrawing.drawBeveledPanel((xi*18) + x - 4, (yi*18) + y - 4, 24, 24);
+					GuiDrawing.drawBeveledPanel((xi * 18) + x - 4, (yi * 18) + y - 4, 24, 24);
 				} else {
-					GuiDrawing.drawBeveledPanel((xi*18) + x - 1, (yi*18) + y - 1, 18, 18);
+					GuiDrawing.drawBeveledPanel((xi * 18) + x - 1, (yi * 18) + y - 1, 18, 18);
 				}
 			}
 		}

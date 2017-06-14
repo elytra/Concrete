@@ -43,8 +43,8 @@ public class ConcreteGui extends GuiContainer {
 	public ConcreteGui(ConcreteContainer container) {
 		super(container);
 		this.container = container;
-		this.xSize = 18*9;
-		this.ySize = 18*9;
+		this.xSize = 18 * 9;
+		this.ySize = 18 * 9;
 	}
 	
 	/*
@@ -97,7 +97,7 @@ public class ConcreteGui extends GuiContainer {
 	
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
-		if (keyCode==this.mc.gameSettings.keyBindInventory.getKeyCode()) {
+		if (keyCode == this.mc.gameSettings.keyBindInventory.getKeyCode()) {
 			this.mc.player.closeScreen();
 			return;
 		}
@@ -133,7 +133,7 @@ public class ConcreteGui extends GuiContainer {
 	@Override
 	public void setWorldAndResolution(Minecraft mc, int width, int height) {
 		super.setWorldAndResolution(mc, width, height);
-		//System.out.println("setWorldAndResolution:"+width+"x"+height);
+		//System.out.println("setWorldAndResolution:" + width + "x" + height);
 		
 		guiLeft = (width  / 2) - (xSize / 2);
 		guiTop =  (height / 2) - (ySize / 2);
@@ -143,7 +143,7 @@ public class ConcreteGui extends GuiContainer {
 	@Override
 	public void setGuiSize(int w, int h) {
 		super.setGuiSize(w, h);
-		//System.out.println("setGuiSize:"+w+"x"+h);
+		//System.out.println("setGuiSize:" + w + "x" + h);
 		guiLeft = (width  / 2) - (xSize / 2);
 		guiTop =  (height / 2) - (ySize / 2);
 		
@@ -156,13 +156,13 @@ public class ConcreteGui extends GuiContainer {
 	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GuiDrawing.drawGuiPanel(guiLeft-PADDING, guiTop-PADDING, xSize+((PADDING-1)*2), ySize+((PADDING-1)*2));
-		
-		if (inventorySlots!=null && this.container.getRootPanel()!=null) {
-			this.container.getRootPanel().paintBackground(guiLeft, guiTop);
-		}
-		
-		//TODO: Change this to a label that lives in the rootPanel instead
-		fontRenderer.drawString(container.getLocalizedName(), guiLeft, guiTop, 0xFF404040);
-	}
+        GuiDrawing.drawGuiPanel(guiLeft - PADDING, guiTop - PADDING, xSize + ((PADDING - 1) * 2), ySize + ((PADDING - 1) * 2));
+        
+        if (inventorySlots != null && this.container.getRootPanel() != null) {
+            this.container.getRootPanel().paintBackground(guiLeft, guiTop);
+        }
+        
+        //TODO: Change this to a label that lives in the rootPanel instead
+        fontRenderer.drawString(container.getLocalizedName(), guiLeft, guiTop, 0xFF404040);
+    }
 }

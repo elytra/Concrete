@@ -46,7 +46,7 @@ class ReflectionMethodAccessor<T> implements Accessor<T> {
 	@Override
 	public T get(Object owner) {
 		try {
-			return (T)get.invoke(owner);
+			return (T) get.invoke(owner);
 		} catch (Exception e) {
 			throw Throwables.propagate(e);
 		}

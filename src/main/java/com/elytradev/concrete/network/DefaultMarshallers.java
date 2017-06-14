@@ -335,7 +335,7 @@ public class DefaultMarshallers {
 			}
 			@Override
 			public T unmarshal(ByteBuf in) {
-				return (T)deserializer.deserialize(in);
+				return (T) deserializer.deserialize(in);
 			}
 		};
 	}
@@ -349,7 +349,7 @@ public class DefaultMarshallers {
 	
 	public static <T> Marshaller<T> getByName(String name) {
 		if (name.endsWith("-list")) {
-			name = name.substring(0, name.length()-5);
+			name = name.substring(0, name.length() - 5);
 			// lists of lists!
 			Marshaller<T> m = getByName(name);
 			if (m != null) {
@@ -359,7 +359,7 @@ public class DefaultMarshallers {
 			}
 		} else {
 			if (byName.containsKey(name.toLowerCase(Locale.ROOT))) {
-				return (Marshaller<T>)byName.get(name.toLowerCase(Locale.ROOT));
+				return (Marshaller<T>) byName.get(name.toLowerCase(Locale.ROOT));
 			} else {
 				Marshaller<T> marshaller = null;
 				try {
@@ -370,14 +370,14 @@ public class DefaultMarshallers {
 							inst.setAccessible(true);
 							marshaller = (Marshaller<T>) inst.get(null);
 						} catch (Exception e) {
-							ConcreteLog.warn(clazz.getName()+" does not appear to define an INSTANCE field, but it should");
+							ConcreteLog.warn(clazz.getName() + " does not appear to define an INSTANCE field, but it should");
 						}
 						if (marshaller == null) {
 							try {
 								Constructor<?> cons = clazz.getConstructor();
 								marshaller = (Marshaller<T>) cons.newInstance();
 							} catch (Exception e) {
-								throw new BadMessageException("Cannot instanciate marshaller class "+clazz.getName());
+								throw new BadMessageException("Cannot instanciate marshaller class " + clazz.getName());
 							}
 						}
 					}
@@ -391,17 +391,17 @@ public class DefaultMarshallers {
 
 	public static <T> Marshaller<T> getByType(Class<T> type) {
 		if (String.class.isAssignableFrom(type)) {
-			return (Marshaller<T>)STRING;
+			return (Marshaller<T>) STRING;
 		} else if (BlockPos.class.isAssignableFrom(type)) {
-			return (Marshaller<T>)BLOCKPOS;
+			return (Marshaller<T>) BLOCKPOS;
 		} else if (NBTTagCompound.class.isAssignableFrom(type)) {
-			return (Marshaller<T>)NBT;
+			return (Marshaller<T>) NBT;
 		} else if (type.isEnum()) {
 			return new EnumMarshaller(type);
 		} else if (ItemStack.class.isAssignableFrom(type)) {
-			return (Marshaller<T>)ITEMSTACK;
+			return (Marshaller<T>) ITEMSTACK;
 		} else if (ByteBuf.class.isAssignableFrom(type)) {
-			return (Marshaller<T>)BYTEBUF;
+			return (Marshaller<T>) BYTEBUF;
 		}
 		return null;
 	}

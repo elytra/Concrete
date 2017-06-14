@@ -84,122 +84,115 @@ public class WFluidBar extends WWidget {
 		if(concreteFluidTank.getFluid() == null)
 			return;
 
-		float percent = (float)concreteFluidTank.getFluidAmount()/(float)concreteFluidTank.getCapacity();
-		if (percent<0) percent=0f;
-		if (percent>1) percent=1f;
-
+		float percent = (float) concreteFluidTank.getFluidAmount() / (float) concreteFluidTank.getCapacity();
+		if (percent < 0) percent = 0f;
+		if (percent > 1) percent = 1f;
+		
 		int barMax = getWidth();
-		if (direction==Direction.DOWN || direction==Direction.UP) barMax = getHeight();
-		percent = ((int)(percent*barMax)) / (float)barMax; //Quantize to bar size
-
-		int barSize = (int)(barMax*percent);
-		if (barSize<=0) return;
+		if (direction == Direction.DOWN || direction == Direction.UP) barMax = getHeight();
+		percent = ((int) (percent * barMax)) / (float) barMax; //Quantize to bar size
+		
+		int barSize = (int) (barMax * percent);
+		if (barSize <= 0) return;
 
 		Fluid fluid = concreteFluidTank.getFluid().getFluid();
 
 		switch(direction) { //anonymous blocks in this switch statement are to sandbox variables
 			case UP: {
 				int left = x;
-				int bottom = y+getHeight();
+				int bottom = y + getHeight();
 				//top -= barSize;
 				int verticalSegments = barSize / 16;
 				int horizontalSegments = getWidth() / 16;
-				for(int dY=0;dY < verticalSegments;dY++)
-				{
-					for(int dX=0;dX < horizontalSegments;dX++)
-					{
-						GuiDrawing.rect(fluid, left+(dX*16), bottom-((dY+1)*16), 16, 16, 0.0f, 0.0f, 16.0f, 16.0f, 0xFFFFFFFF);
+				for (int dY = 0; dY < verticalSegments; dY++) {
+					for (int dX = 0; dX < horizontalSegments; dX++) {
+						GuiDrawing.rect(fluid, left + (dX * 16), bottom - ((dY + 1) * 16), 16, 16, 0.0f, 0.0f, 16.0f, 16.0f, 0xFFFFFFFF);
 					}
-					GuiDrawing.rect(fluid, left+(horizontalSegments*16), bottom-((dY+1)*16), getWidth()%16, 16,0.0f,0.0f, getWidth()%16, 16.0f, 0xFFFFFFFF);
+					GuiDrawing.rect(fluid, left + (horizontalSegments * 16), bottom - ((dY + 1) * 16), getWidth() % 16, 16, 0.0f, 0.0f, getWidth() % 16, 16.0f, 0xFFFFFFFF);
 				}
 
-				for(int dX=0;dX < horizontalSegments;dX++)
-				{
-					GuiDrawing.rect(fluid, left+(dX*16), bottom-((verticalSegments)*16)-(barSize%16), 16, (barSize%16), 0.0f, 16-(barSize%16), 16.0f, 16.0f, 0xFFFFFFFF);
+				for (int dX = 0; dX < horizontalSegments; dX++) {
+					GuiDrawing.rect(fluid, left + (dX * 16), bottom - ((verticalSegments) * 16) - (barSize % 16), 16, (barSize % 16), 0.0f, 16 - (barSize % 16), 16.0f, 16.0f, 0xFFFFFFFF);
 				}
-				GuiDrawing.rect(fluid, left+(horizontalSegments*16), bottom-(verticalSegments*16)-(barSize%16), getWidth()%16, (barSize%16), 0.0f,16-(barSize%16), getWidth()%16, 16.0f, 0xFFFFFFFF);
+				GuiDrawing.rect(fluid, left + (horizontalSegments * 16), bottom - (verticalSegments * 16) - (barSize % 16), getWidth() % 16, (barSize % 16), 0.0f, 16 - (barSize % 16), getWidth() % 16, 16.0f, 0xFFFFFFFF);
+
+				break;
 			}
-			break;
 			case LEFT: {
 				int left = x + getWidth();
 				left -= barSize;
 				int top = y;
 				int verticalSegments = getHeight() / 16;
 				int horizontalSegments = barSize / 16;
-				for(int dX=0;dX < horizontalSegments;dX++)
-				{
-					for(int dY=0;dY < verticalSegments;dY++)
-					{
-						//GuiDrawing.rect(concreteFluidTank.getFluid().getFluid(), left+(dX*16), y+(dY*16), 16, 16, 0, 0, 1, 1, 0xFFFFFFFF);
-						GuiDrawing.rect(fluid, left+(dX*16), y+(dY*16), 16, 16, 0.0f,0.0f,16.0f, 16.0f, 0xFFFFFFFF);
+				for (int dX = 0; dX < horizontalSegments; dX++) {
+					for (int dY = 0; dY < verticalSegments; dY++) {
+						//GuiDrawing.rect(concreteFluidTank.getFluid().getFluid(), left + (dX * 16), y + (dY * 16), 16, 16, 0, 0, 1, 1, 0xFFFFFFFF);
+						GuiDrawing.rect(fluid, left + (dX * 16), y + (dY * 16), 16, 16, 0.0f, 0.0f, 16.0f, 16.0f, 0xFFFFFFFF);
 					}
-					GuiDrawing.rect(fluid, left+(dX*16), y+(verticalSegments*16), 16, getHeight()%16, 0.0f,0.0f, 16, getHeight()%16, 0xFFFFFFFF);
+					GuiDrawing.rect(fluid, left + (dX * 16), y + (verticalSegments * 16), 16, getHeight() % 16, 0.0f, 0.0f, 16, getHeight() % 16, 0xFFFFFFFF);
 				}
 
-				if(barSize % 16 != 0) {
+				if (barSize % 16 != 0) {
 					for (int dY = 0; dY < verticalSegments; dY++) {
 						GuiDrawing.rect(fluid, left + (horizontalSegments * 16), y + (dY * 16), (barSize % 16), 16, 0.0f, 0.0f, (barSize % 16), 16, 0xFFFFFFFF);
 					}
 					GuiDrawing.rect(fluid, left + (horizontalSegments * 16), y + (verticalSegments * 16), (barSize % 16), getHeight() % 16, 0.0f, 0.0f, (barSize % 16), getHeight() % 16, 0xFFFFFFFF);
 				}
+
+				break;
 			}
-			break;
 			case DOWN: {
 				int left = x;
 				int top = y + getHeight();
 				top -= barSize;
 				int verticalSegments = barSize / 16;
 				int horizontalSegments = getWidth() / 16;
-				for(int dY=0;dY < verticalSegments;dY++)
-				{
-					for(int dX=0;dX < horizontalSegments;dX++)
-					{
-						//GuiDrawing.rect(concreteFluidTank.getFluid().getFluid(), left+(dX*16), y+(dY*16), 16, 16, 0, 0, 1, 1, 0xFFFFFFFF);
-						GuiDrawing.rect(fluid, left+(dX*16), y+(dY*16), 16, 16, 0.0f,0.0f,16.0f, 16.0f, 0xFFFFFFFF);
+				for (int dY = 0; dY < verticalSegments; dY++) {
+					for (int dX = 0; dX < horizontalSegments; dX++) {
+						//GuiDrawing.rect(concreteFluidTank.getFluid().getFluid(), left + (dX * 16), y + (dY * 16), 16, 16, 0, 0, 1, 1, 0xFFFFFFFF);
+						GuiDrawing.rect(fluid, left + (dX * 16), y + (dY * 16), 16, 16, 0.0f, 0.0f, 16.0f, 16.0f, 0xFFFFFFFF);
 					}
-					GuiDrawing.rect(fluid, left+(horizontalSegments*16), y+(dY*16), getWidth()%16, 16, 0.0f,0.0f, getWidth()%16, 16.0f, 0xFFFFFFFF);
+					GuiDrawing.rect(fluid, left + (horizontalSegments * 16), y + (dY * 16), getWidth() % 16, 16, 0.0f, 0.0f, getWidth() % 16, 16.0f, 0xFFFFFFFF);
 				}
 
-				for(int dX=0;dX < horizontalSegments;dX++)
-				{
-					GuiDrawing.rect(fluid, left+(dX*16), y+(verticalSegments*16), 16, (barSize%16), 0.0f,0.0f,16, (barSize%16), 0xFFFFFFFF);
+				for (int dX = 0; dX < horizontalSegments; dX++) {
+					GuiDrawing.rect(fluid, left + (dX * 16), y + (verticalSegments * 16), 16, (barSize % 16), 0.0f, 0.0f, 16, (barSize % 16), 0xFFFFFFFF);
 				}
-				GuiDrawing.rect(fluid, left+(horizontalSegments*16), y+(verticalSegments*16), getWidth()%16, (barSize%16),0.0f,0.0f, getWidth()%16, (barSize%16), 0xFFFFFFFF);
+				GuiDrawing.rect(fluid, left + (horizontalSegments * 16), y + (verticalSegments * 16), getWidth() % 16, (barSize % 16), 0.0f, 0.0f, getWidth() % 16, (barSize % 16), 0xFFFFFFFF);
+
+				break;
 			}
-			break;
 			case RIGHT: {
 				int left = x;
 				int top = y;
 				int verticalSegments = getHeight() / 16;
 				int horizontalSegments = barSize / 16;
-				for(int dX=0;dX < horizontalSegments;dX++)
-				{
-					for(int dY=0;dY < verticalSegments;dY++)
-					{
-						//GuiDrawing.rect(concreteFluidTank.getFluid().getFluid(), left+(dX*16), y+(dY*16), 16, 16, 0, 0, 1, 1, 0xFFFFFFFF);
-						GuiDrawing.rect(fluid, left+(dX*16), y+(dY*16), 16, 16, 0.0f,0.0f,16.0f, 16.0f, 0xFFFFFFFF);
+				for (int dX = 0; dX < horizontalSegments; dX++) {
+					for (int dY = 0; dY < verticalSegments; dY++) {
+						//GuiDrawing.rect(concreteFluidTank.getFluid().getFluid(), left + (dX * 16), y + (dY * 16), 16, 16, 0, 0, 1, 1, 0xFFFFFFFF);
+						GuiDrawing.rect(fluid, left + (dX * 16), y + (dY * 16), 16, 16, 0.0f, 0.0f, 16.0f, 16.0f, 0xFFFFFFFF);
 					}
-					GuiDrawing.rect(fluid, left+(dX*16), y+(verticalSegments*16), 16, getHeight()%16, 0.0f,0.0f, 16, getHeight()%16, 0xFFFFFFFF);
+					GuiDrawing.rect(fluid, left + (dX * 16), y + (verticalSegments * 16), 16, getHeight() % 16, 0.0f, 0.0f, 16, getHeight() % 16, 0xFFFFFFFF);
 				}
 
-				if(barSize % 16 != 0) {
+				if (barSize % 16 != 0) {
 					for (int dY = 0; dY < verticalSegments; dY++) {
 						GuiDrawing.rect(fluid, left + (horizontalSegments * 16), y + (dY * 16), (barSize % 16), 16, 0.0f, 0.0f, (barSize % 16), 16, 0xFFFFFFFF);
 					}
 					GuiDrawing.rect(fluid, left + (horizontalSegments * 16), y + (verticalSegments * 16), (barSize % 16), getHeight() % 16, 0.0f, 0.0f, (barSize % 16), getHeight() % 16, 0xFFFFFFFF);
 				}
+
+				break;
 			}
-			break;
 		}
 
 		if(fg != null)
 			GuiDrawing.rect(fg, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
 
+		//GuiDrawing.rect(bar, x, y + (getHeight() - barHeight), getWidth(), barHeight, 0xFFFFFFFF);
 
-		//GuiDrawing.rect(bar, x, y+(getHeight()-barHeight), getWidth(), barHeight, 0xFFFFFFFF);
-
-		//GuiDrawing.drawString(""+inventory.getField(field)+"/", x+18, y+9, 0xFF000000);
-		//GuiDrawing.drawString(""+inventory.getField(max)+"", x+32, y+9, 0xFF000000);*/
+		//GuiDrawing.drawString("" + inventory.getField(field) + "/", x + 18, y + 9, 0xFF000000);
+		//GuiDrawing.drawString("" + inventory.getField(max) + "", x + 32, y + 9, 0xFF000000);*/
 	}
 
 	public enum Direction {

@@ -108,7 +108,7 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 	}
 	
 	public final ConcreteItemStorage setCanExtract(int index, boolean canExtract) {
-		if (index<extractMask.length) extractMask[index] = canExtract;
+		if (index < extractMask.length) extractMask[index] = canExtract;
 		return this;
 	}
 
@@ -148,7 +148,7 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 	}
 	
 	public boolean hasValidator(int slot) {
-		return validators.size()>slot;
+		return validators.size() > slot;
 	}
 	
 	/**

@@ -114,7 +114,7 @@ public class FluidTankProxySlot extends Slot {
 	@Override
 	public boolean isSameInventory(Slot other) {
 		if (other instanceof FluidTankProxySlot) {
-			FluidTankProxySlot slot = (FluidTankProxySlot)other;
+			FluidTankProxySlot slot = (FluidTankProxySlot) other;
 			if( slot.delegate == this.delegate)
 				return true;
 		}

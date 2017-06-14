@@ -49,7 +49,7 @@ public class MethodHandlesInvoker implements Invoker {
 
 	@Override
 	public Object invoke(Object owner, Object... args) {
-		Object[] joined = new Object[args.length+1];
+		Object[] joined = new Object[args.length + 1];
 		joined[0] = owner;
 		System.arraycopy(args, 0, joined, 1, args.length);
 		try {

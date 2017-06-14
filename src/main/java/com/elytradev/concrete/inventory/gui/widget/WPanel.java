@@ -67,7 +67,7 @@ public class WPanel extends WWidget {
 	 */
 	public void layout() {
 		for(WWidget child : children) {
-			if (child instanceof WPanel) ((WPanel)child).layout();
+			if (child instanceof WPanel) ((WPanel) child).layout();
 		}
 	}
 	
@@ -82,7 +82,7 @@ public class WPanel extends WWidget {
 	@Override
 	public void paintBackground(int x, int y) {
 		for(WWidget child : children) {
-			child.paintBackground(x+child.getX(), y+child.getY());
+			child.paintBackground(x + child.getX(), y + child.getY());
 		}
 	}
 }

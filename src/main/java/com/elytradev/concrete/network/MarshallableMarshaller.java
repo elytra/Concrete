@@ -44,7 +44,7 @@ public class MarshallableMarshaller<T extends Marshallable> implements Marshalle
 		try {
 			t = clazz.newInstance();
 		} catch (Exception e) {
-			throw new BadMessageException("Cannot instanciate marshallable "+clazz);
+			throw new BadMessageException("Cannot instanciate marshallable " + clazz);
 		}
 		t.readFromNetwork(in);
 		return t;

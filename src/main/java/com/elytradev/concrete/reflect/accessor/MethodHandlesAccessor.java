@@ -64,7 +64,7 @@ class MethodHandlesAccessor<T> implements Accessor<T> {
 	@Override
 	public T get(Object owner) {
 		try {
-			return (T)getter.invoke(owner);
+			return (T) getter.invoke(owner);
 		} catch (Throwable e) {
 			throw Throwables.propagate(e);
 		}

@@ -49,7 +49,7 @@ public class MethodHandlesInstanciator<T> implements Instanciator<T> {
 	@Override
 	public T newInstance(Object... args) {
 		try {
-			return (T)handle.invokeWithArguments(args);
+			return (T) handle.invokeWithArguments(args);
 		} catch (Throwable e) {
 			throw Throwables.propagate(e);
 		}
