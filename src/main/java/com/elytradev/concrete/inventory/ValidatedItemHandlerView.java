@@ -34,7 +34,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 
 public class ValidatedItemHandlerView implements IItemHandler {
-	private ConcreteItemStorage delegate;
+	private final ConcreteItemStorage delegate;
 	
 	public ValidatedItemHandlerView(ConcreteItemStorage delegate) {
 		this.delegate = delegate;

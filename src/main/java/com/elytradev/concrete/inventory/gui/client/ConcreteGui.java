@@ -38,7 +38,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 
 public class ConcreteGui extends GuiContainer {
 	public static final int PADDING = 8;
-	private ConcreteContainer container;
+	private final ConcreteContainer container;
 	
 	public ConcreteGui(ConcreteContainer container) {
 		super(container);

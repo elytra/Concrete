@@ -54,7 +54,7 @@ import javax.annotation.Nonnull;
  *
  */
 public class FluidTankProxySlot extends Slot {
-	private ConcreteFluidTank delegate;
+	private final ConcreteFluidTank delegate;
 
 	public FluidTankProxySlot(ConcreteFluidTank delegate) {
 		super(null, 0, Integer.MIN_VALUE, Integer.MIN_VALUE);

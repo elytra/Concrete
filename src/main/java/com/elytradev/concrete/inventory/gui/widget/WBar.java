@@ -36,12 +36,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WBar extends WWidget {
-	private ResourceLocation bg;
-	private ResourceLocation bar;
-	private int field;
-	private int max = 100;
-	private IInventory inventory;
-	private Direction direction;
+	private final ResourceLocation bg;
+	private final ResourceLocation bar;
+	private final int field;
+	private final int max;
+	private final IInventory inventory;
+	private final Direction direction;
 	
 	public WBar(ResourceLocation bg, ResourceLocation bar, IInventory inventory, int field, int maxfield) {
 		this(bg, bar, inventory, field, maxfield, Direction.UP);

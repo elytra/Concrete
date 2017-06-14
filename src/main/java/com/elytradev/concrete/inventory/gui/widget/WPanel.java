@@ -41,7 +41,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * WContainer such that it isn't confused with Container, and we don't lose anything from the lack of abstraction.
  */
 public class WPanel extends WWidget {
-	protected List<WWidget> children = new ArrayList<>();
+	protected final List<WWidget> children = new ArrayList<>();
 	protected boolean valid;
 	
 	@Override

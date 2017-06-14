@@ -41,13 +41,24 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WItemSlot extends WWidget {
-	private List<Slot> peers = new ArrayList<>();
+	private final List<Slot> peers = new ArrayList<>();
 	private IInventory inventory;
 	private int startIndex = 0;
 	private int slotsWide = 1;
 	private int slotsHigh = 1;
 	private boolean big = false;
 	private boolean ltr = true;
+	
+	public WItemSlot(IInventory inventory, int startIndex, int slotsWide, int slotsHigh, boolean big, boolean ltr) {
+		this.inventory = inventory;
+		this.startIndex = startIndex;
+		this.slotsWide = slotsWide;
+		this.slotsHigh = slotsHigh;
+		this.big = big;
+		this.ltr = ltr;
+	}
+	
+	private WItemSlot() {}
 	
 	public static WItemSlot of(IInventory inventory, int index) {
 		WItemSlot w = new WItemSlot();

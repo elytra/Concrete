@@ -35,7 +35,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import javax.annotation.Nullable;
 
 public class ValidatedFluidTankWrapper implements IFluidTank {
-	private ConcreteFluidTank delegate;
+	private final ConcreteFluidTank delegate;
 
 	public ValidatedFluidTankWrapper(ConcreteFluidTank delegate) {
 		this.delegate = delegate;

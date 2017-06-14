@@ -32,9 +32,9 @@ import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
 import net.minecraft.inventory.IInventory;
 
 public class WFieldedLabel extends WLabel {
-	protected IInventory inventory;
-	protected int field;
-	protected int fieldMax;
+	protected final IInventory inventory;
+	protected final int field;
+	protected final int fieldMax;
 
 	public WFieldedLabel(IInventory inventory, int field, int fieldMax, String format, int color) {
 		super(format, color);

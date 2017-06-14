@@ -42,7 +42,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 public class ValidatedInventoryView implements IInventory {
 	private final ConcreteItemStorage delegate;
 	private int[] fields = new int[0];
-	private Map<Integer, Supplier<Integer>> fieldDelegates = new HashMap<>();
+	private final Map<Integer, Supplier<Integer>> fieldDelegates = new HashMap<>();
 	
 	public ValidatedInventoryView(ConcreteItemStorage delegate) {
 		this.delegate = delegate;

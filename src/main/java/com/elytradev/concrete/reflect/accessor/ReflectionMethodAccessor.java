@@ -33,8 +33,8 @@ import java.lang.reflect.Method;
 import com.google.common.base.Throwables;
 
 class ReflectionMethodAccessor<T> implements Accessor<T> {
-	private Method get;
-	private Method set;
+	private final Method get;
+	private final Method set;
 	
 	public ReflectionMethodAccessor(Method get, Method set) {
 		get.setAccessible(true);

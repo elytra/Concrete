@@ -33,7 +33,7 @@ import java.lang.reflect.Field;
 import com.google.common.base.Throwables;
 
 class ReflectionFieldAccessor<T> implements Accessor<T> {
-	private Field f;
+	private final Field f;
 	
 	public ReflectionFieldAccessor(Field f) {
 		f.setAccessible(true);

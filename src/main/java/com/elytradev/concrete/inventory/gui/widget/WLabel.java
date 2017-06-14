@@ -32,8 +32,8 @@ import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
 import net.minecraft.client.Minecraft;
 
 public class WLabel extends WWidget {
-	protected String text;
-	protected int color;
+	protected final String text;
+	protected final int color;
 
 	public static final int DEFAULT_TEXT_COLOR = 0x404040;
 

@@ -40,11 +40,11 @@ import com.google.common.base.Throwables;
 import io.netty.buffer.ByteBuf;
 
 class WireField<T> {
-	private Field f;
-	private Accessor<T> accessor;
-	private Marshaller<T> marshaller;
-	private Class<T> type;
-	private boolean optional;
+	private final Field f;
+	private final Accessor<T> accessor;
+	private final Marshaller<T> marshaller;
+	private final Class<T> type;
+	private final boolean optional;
 	
 	public WireField(Field f) {
 		f.setAccessible(true);

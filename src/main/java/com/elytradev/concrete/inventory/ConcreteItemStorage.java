@@ -84,10 +84,10 @@ import net.minecraftforge.items.ItemStackHandler;
  * 
  */
 public class ConcreteItemStorage extends ItemStackHandler implements IObservableItemHandler {
-	private List<Runnable> listeners = new ArrayList<>();
-	private List<Predicate<ItemStack>> validators = new ArrayList<>();
-	private boolean[] extractMask;
-	private String name = "";
+	private final List<Runnable> listeners = new ArrayList<>();
+	private final List<Predicate<ItemStack>> validators = new ArrayList<>();
+	private final boolean[] extractMask;
+	private String name = null;
 	
 	public ConcreteItemStorage(int slots) {
 		super(slots);

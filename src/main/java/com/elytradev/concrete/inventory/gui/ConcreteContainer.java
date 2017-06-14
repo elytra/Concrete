@@ -48,8 +48,8 @@ import javax.annotation.Nullable;
  * "Container" is Minecraft's way of managing shared state for a block whose GUI is currently open.
  */
 public class ConcreteContainer extends Container {
-	private IInventory playerInventory;
-	private IInventory container;
+	private final IInventory playerInventory;
+	private final IInventory container;
 	private WPanel rootPanel;
 	private int[] syncFields = new int[0];
 	

@@ -35,14 +35,14 @@ import com.google.common.base.Throwables;
 
 public class MethodHandlesInstanciator<T> implements Instanciator<T> {
 
-	private MethodHandle handle;
+	private final MethodHandle handle;
 
 	public MethodHandlesInstanciator(Constructor<T> c) {
 		try {
 			c.setAccessible(true);
 			handle = MethodHandles.publicLookup().unreflectConstructor(c);
 		} catch (IllegalAccessException e) {
-			Throwables.propagate(e);
+			throw Throwables.propagate(e);
 		}
 	}
 

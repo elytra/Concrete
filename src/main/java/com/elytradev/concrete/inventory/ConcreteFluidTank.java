@@ -77,7 +77,7 @@ import java.util.function.Predicate;
  *
  */
 public class ConcreteFluidTank extends FluidTank implements IObservableFluidTank {
-	private List<Runnable> listeners = new ArrayList<>();
+	private final List<Runnable> listeners = new ArrayList<>();
 	private Predicate<FluidStack> fillValidator = Validators.ANY_FLUID;
 
 	public ConcreteFluidTank(int capacity) {

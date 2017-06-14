@@ -212,7 +212,7 @@ public class DefaultMarshallers {
 	
 	
 	public static class ListMarshaller<T> implements Marshaller<List<T>> {
-		private Marshaller<T> underlying;
+		private final Marshaller<T> underlying;
 		
 		public ListMarshaller(Marshaller<T> underlying) {
 			this.underlying = underlying;

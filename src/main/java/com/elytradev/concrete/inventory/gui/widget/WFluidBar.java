@@ -38,10 +38,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WFluidBar extends WWidget {
-	private ResourceLocation bg;
-	private ResourceLocation fg;
-	private ConcreteFluidTank concreteFluidTank;
-	private Direction direction;
+	private final ResourceLocation bg;
+	private final ResourceLocation fg;
+	private final ConcreteFluidTank concreteFluidTank;
+	private final Direction direction;
 
 	public WFluidBar(ResourceLocation bg, ConcreteFluidTank tank) {
 		this(bg, tank, Direction.UP);

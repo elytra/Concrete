@@ -36,14 +36,14 @@ import com.google.common.base.Throwables;
 
 public class MethodHandlesInvoker implements Invoker {
 
-	private MethodHandle handle;
+	private final MethodHandle handle;
 
 	public MethodHandlesInvoker(Method m) {
 		try {
 			m.setAccessible(true);
 			handle = MethodHandles.publicLookup().unreflect(m);
 		} catch (IllegalAccessException e) {
-			Throwables.propagate(e);
+			throw Throwables.propagate(e);
 		}
 	}
 
