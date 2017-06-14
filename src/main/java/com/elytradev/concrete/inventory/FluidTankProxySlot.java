@@ -57,7 +57,7 @@ public class FluidTankProxySlot extends Slot {
 	private ConcreteFluidTank delegate;
 
 	public FluidTankProxySlot(ConcreteFluidTank delegate) {
-		super(null, 0, Integer.MIN_VALUE,Integer.MIN_VALUE);
+		super(null, 0, Integer.MIN_VALUE, Integer.MIN_VALUE);
 		this.delegate = delegate;
 	}
 

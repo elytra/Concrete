@@ -131,7 +131,7 @@ public class GuiDrawing {
 	}
 
 	public static void rect(Fluid fluid, int left, int top, int width, int height, int color) {
-		rect(fluid, left, top, width, height,0,0,16,16, color);
+		rect(fluid, left, top, width, height, 0, 0, 16, 16, color);
 	}
 	/**
 	 * Draws a beveled, round rectangle that is substantially similar to default Minecraft UI panels.
@@ -167,14 +167,14 @@ public class GuiDrawing {
 	 * Draws a default-sized recessed itemslot panel
 	 */
 	public static void drawBeveledPanel(int x, int y) {
-		drawBeveledPanel(x,y,18,18,0x373737,0x8b8b8b,0xFFFFFF);
+		drawBeveledPanel(x, y, 18, 18, 0x373737, 0x8b8b8b, 0xFFFFFF);
 	}
 	
 	/**
 	 * Draws a default-color recessed itemslot panel of variable size
 	 */
 	public static void drawBeveledPanel(int x, int y, int width, int height) {
-		drawBeveledPanel(x,y,width,height,0x373737,0x8b8b8b,0xFFFFFF);
+		drawBeveledPanel(x, y, width, height, 0x373737, 0x8b8b8b, 0xFFFFFF);
 	}
 	
 	/**
