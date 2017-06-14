@@ -126,29 +126,17 @@ public final class ConcreteBlock extends Block {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public BlockRenderLayer getBlockLayer() {
-		if (this.concreteTranslucent) {
-			return BlockRenderLayer.TRANSLUCENT;
-		} else {
-			return super.getBlockLayer();
-		}
+		return this.concreteTranslucent ? BlockRenderLayer.TRANSLUCENT : super.getBlockLayer();
 	}
 
 	@Override
 	public boolean isFullCube(IBlockState state) {
-		if (this.concreteTranslucent) {
-			return false;
-		} else {
-			return super.isFullCube(state);
-		}
+		return !this.concreteTranslucent && super.isFullCube(state);
 	}
 
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
-		if (this.concreteTranslucent) {
-			return false;
-		} else {
-			return super.isOpaqueCube(state);
-		}
+		return !this.concreteTranslucent && super.isOpaqueCube(state);
 	}
 
 	@Override

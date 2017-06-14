@@ -29,8 +29,7 @@
 package com.elytradev.concrete.network;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Nullable;
 
@@ -39,7 +38,6 @@ import com.elytradev.concrete.network.annotation.type.ReceivedOn;
 import com.elytradev.concrete.network.exception.BadMessageException;
 import com.elytradev.concrete.network.exception.WrongSideException;
 import com.google.common.base.Predicates;
-import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -69,7 +67,7 @@ public abstract class Message {
 			this.side = side;
 		}
 	}
-	private static final Map<Class<?>, ClassInfo> classInfo = Maps.newHashMap();
+	private static final Map<Class<?>, ClassInfo> classInfo = new HashMap<>();
 	
 	
 	private transient final NetworkContext ctx;
@@ -90,7 +88,7 @@ public abstract class Message {
 			}
 			
 			async = getClass().getDeclaredAnnotation(Asynchronous.class) != null;
-			ci = new ClassInfo(async, side);
+			classInfo.put(getClass(), new ClassInfo(async, side));
 		} else {
 			async = ci.async;
 			side = ci.side;
@@ -117,9 +115,7 @@ public abstract class Message {
 		if (async) {
 			handle(sender);
 		} else {
-			((WorldServer)sender.world).addScheduledTask(() -> {
-				handle(sender);
-			});
+			((WorldServer)sender.world).addScheduledTask(() -> handle(sender));
 		}
 	}
 	

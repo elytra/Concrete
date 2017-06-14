@@ -30,7 +30,7 @@ package com.elytradev.concrete.common;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import com.google.common.base.Supplier;
+import java.util.function.Supplier;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;

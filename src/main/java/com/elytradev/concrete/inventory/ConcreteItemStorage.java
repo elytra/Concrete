@@ -30,6 +30,8 @@ package com.elytradev.concrete.inventory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
@@ -82,8 +84,8 @@ import net.minecraftforge.items.ItemStackHandler;
  * 
  */
 public class ConcreteItemStorage extends ItemStackHandler implements IObservableItemHandler {
-	private ArrayList<Runnable> listeners = new ArrayList<>();
-	private ArrayList<Predicate<ItemStack>> validators = new ArrayList<>();
+	private List<Runnable> listeners = new ArrayList<>();
+	private List<Predicate<ItemStack>> validators = new ArrayList<>();
 	private boolean[] extractMask;
 	private String name = "";
 	
@@ -101,7 +103,7 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 	@SafeVarargs
 	public final ConcreteItemStorage withValidators(Predicate<ItemStack>... predicates) {
 		validators.clear();
-		for(Predicate<ItemStack> predicate : predicates) validators.add(predicate);
+		Collections.addAll(validators, predicates);
 		return this;
 	}
 	
@@ -111,9 +113,7 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 	}
 
 	public void markDirty() {
-		for(Runnable r : listeners) {
-			r.run();
-		}
+		listeners.forEach(Runnable::run);
 	}
 	
 	@Override
@@ -121,6 +121,7 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 		listeners.add(r);
 	}
 	
+	@Nonnull
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
 		ItemStack stack = super.extractItem(slot, amount, simulate);
@@ -155,12 +156,10 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 	 */
 	@Nonnull
 	public Predicate<ItemStack> getValidator(int slot) {
-		if (validators.size()<=slot) return Validators.ANYTHING;
-		return validators.get(slot);
+		return hasValidator(slot) ? validators.get(slot) : Validators.ANYTHING;
 	}
 	
 	public boolean getCanExtract(int slot) {
-		if (extractMask.length<=slot) return false;
-		return extractMask[slot];
+		return hasValidator(slot) && extractMask[slot];
 	}
 }

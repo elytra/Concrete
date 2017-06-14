@@ -43,5 +43,5 @@ import net.minecraftforge.fml.relauncher.Side;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ReceivedOn {
-	public Side value();
+	Side value();
 }

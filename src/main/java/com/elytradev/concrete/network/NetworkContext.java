@@ -31,7 +31,6 @@ package com.elytradev.concrete.network;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,7 +46,6 @@ import com.elytradev.concrete.reflect.instanciator.Instanciators;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multiset;
@@ -80,7 +78,7 @@ public class NetworkContext {
 	private NetworkContext(String channel) {
 		ShadingValidator.ensureShaded();
 		this.channel = channel;
-		NetworkRegistry.INSTANCE.newEventDrivenChannel(channel).register(this);;
+		NetworkRegistry.INSTANCE.newEventDrivenChannel(channel).register(this);
 	}
 	
 	public NetworkContext register(Class<? extends Message> clazz) {
@@ -141,11 +139,7 @@ public class NetworkContext {
 				payload.writeByte(by);
 			}
 		}
-		Iterator<WireField<?>> iter = Iterators.filter(marshallers.get(m.getClass()).iterator(), (it) -> it.getType() != Boolean.TYPE);
-		while (iter.hasNext()) {
-			WireField<?> wf = iter.next();
-			wf.marshal(m, payload);
-		}
+		marshallers.get(m.getClass()).stream().filter((it) -> it.getType() != Boolean.TYPE).forEach((it) -> it.marshal(m, payload));
 		return new FMLProxyPacket(payload, channel);
 	}
 
@@ -207,17 +201,9 @@ public class NetworkContext {
 				}
 			}
 		} else {
-			for (WireField<?> wf : marshallers.get(m.getClass())) {
-				present.add(wf);
-			}
+			present.addAll(marshallers.get(m.getClass()));
 		}
-		Iterator<WireField<?>> iter = Iterators.filter(marshallers.get(m.getClass()).iterator(), (it) -> it.getType() != Boolean.TYPE);
-		while (iter.hasNext()) {
-			WireField<?> wf = iter.next();
-			if (present.contains(wf)) {
-				wf.unmarshal(m, payload);
-			}
-		}
+		marshallers.get(m.getClass()).stream().filter((it) -> it.getType() != Boolean.TYPE && present.contains(it)).forEach((it) -> it.unmarshal(m, payload));
 		return m;
 	}
 	

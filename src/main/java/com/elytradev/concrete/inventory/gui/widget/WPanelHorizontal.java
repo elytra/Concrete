@@ -74,8 +74,7 @@ public class WPanelHorizontal extends WPanel {
 		
 		int centerline = this.getHeight()/2;
 		int curLeft = 0;
-		for(int i=0; i<children.size(); i++) {
-			WWidget w = children.get(i);
+		for(WWidget w : children) {
 			if (w.canResize()) {
 				w.setSize(resizeEach, this.getHeight());
 			}

@@ -71,8 +71,7 @@ public class ConcreteContainer extends Container {
 	
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn) {
-		if (container!=null) return container.isUsableByPlayer(playerIn);
-		return true;
+		return container == null || container.isUsableByPlayer(playerIn);
 	}
 
 	public void addSlotPeer(Slot slot) {
@@ -225,7 +224,7 @@ public class ConcreteContainer extends Container {
 	public boolean canStackTogether(ItemStack src, ItemStack dest) {
 		if (src.isEmpty() || dest.isEmpty()) return false; //Don't stack using itemstack counts if one or the other is empty.
 
-        boolean compoundComparison = false;
+        boolean compoundComparison;
         if(dest.hasTagCompound() && src.hasTagCompound()) {
             compoundComparison = dest.getTagCompound().equals(src.getTagCompound());
         }

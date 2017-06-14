@@ -34,7 +34,7 @@ import net.minecraft.block.material.Material;
 import java.util.function.Consumer;
 
 /**
- * A psuedo-enum of presets for the Concrete block builder system.
+ * A pseudo-enum of presets for the Concrete block builder system.
  */
 public final class Presets {
 

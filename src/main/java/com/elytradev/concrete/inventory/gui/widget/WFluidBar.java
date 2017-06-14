@@ -202,10 +202,10 @@ public class WFluidBar extends WWidget {
         //GuiDrawing.drawString(""+inventory.getField(max)+"", x+32, y+9, 0xFF000000);*/
     }
 
-    public static enum Direction {
+    public enum Direction {
         UP,
         RIGHT,
         DOWN,
-        LEFT;
+        LEFT
     }
 }

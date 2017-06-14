@@ -28,7 +28,6 @@
 
 package com.elytradev.concrete.inventory;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
