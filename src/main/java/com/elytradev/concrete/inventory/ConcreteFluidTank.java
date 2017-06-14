@@ -36,7 +36,7 @@ import net.minecraftforge.fluids.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -77,7 +77,7 @@ import java.util.ArrayList;
  *
  */
 public class ConcreteFluidTank extends FluidTank implements IObservableFluidTank {
-    private ArrayList<Runnable> listeners = Lists.newArrayList();
+    private List<Runnable> listeners = Lists.newArrayList();
     private Predicate<FluidStack> fillValidator = Validators.ANY_FLUID;
 
     public ConcreteFluidTank(int capacity) {

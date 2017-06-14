@@ -34,6 +34,7 @@ targetCompatibility = 1.8
 
 retrolambda {
 	javaVersion JavaVersion.VERSION_1_6
+	defaultMethods true
 }
 
 configurations {

@@ -28,7 +28,7 @@
 
 package com.elytradev.concrete.inventory;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
@@ -42,7 +42,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 public class ValidatedInventoryView implements IInventory {
 	private final ConcreteItemStorage delegate;
 	private int[] fields = new int[0];
-	private HashMap<Integer, Supplier<Integer>> fieldDelegates = Maps.newHashMap();
+	private Map<Integer, Supplier<Integer>> fieldDelegates = Maps.newHashMap();
 	
 	public ValidatedInventoryView(ConcreteItemStorage delegate) {
 		this.delegate = delegate;

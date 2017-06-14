@@ -29,9 +29,9 @@
 package com.elytradev.concrete.config;
 
 import com.elytradev.concrete.common.ConcreteLog;
+import com.google.common.base.Objects;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -66,7 +66,7 @@ public abstract class ConcreteConfig {
 				String valueComment = cfgValue.comment();
 				String valueCategory = cfgValue.category();
 
-				if (ObjectUtils.equals(valueKey, "")) {
+				if (Objects.equal(valueKey, "")) {
 					valueKey = field.getName();
 				}
 

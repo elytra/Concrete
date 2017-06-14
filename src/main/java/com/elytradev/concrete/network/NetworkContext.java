@@ -100,7 +100,7 @@ public class NetworkContext {
 					if (f.getAnnotation(Optional.class) != null) {
 						optionalCount.add(clazz);
 					}
-					WireField<?> wf = new WireField(f);
+					WireField<?> wf = new WireField<>(f);
 					fields.add(wf);
 				}
 			}
