@@ -28,8 +28,7 @@
 
 package com.elytradev.concrete.inventory;
 
-import java.util.function.Predicate;
-
+import com.google.common.base.Predicate;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;

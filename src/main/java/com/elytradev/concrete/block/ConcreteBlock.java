@@ -44,11 +44,11 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.Optional;
 import java.util.Random;
-import java.util.function.Consumer;
 
+import com.elytradev.concrete.common.Consumer;
 import com.elytradev.concrete.common.ShadingValidator;
+import com.google.common.base.Optional;
 
 /**
  * An extension of {@link Block} used by the Concrete block builder system, to allow for
@@ -171,15 +171,15 @@ public final class ConcreteBlock extends Block {
 	public static class Builder {
 
 		private String identifier;
-		private Optional<CreativeTabs> creativeTab = Optional.empty();
+		private Optional<CreativeTabs> creativeTab = Optional.absent();
 		private Material material = Material.ROCK;
 		private boolean translucent = false;
 		private boolean silkHarvest = false;
-		private Optional<SoundType> soundType = Optional.empty();
+		private Optional<SoundType> soundType = Optional.absent();
 		private ItemDropBehaviour itemDropBehaviour = ItemDropBehaviour.DEFAULT;
 		private ExpDropBehaviour expDropBehaviour = ExpDropBehaviour.DEFAULT;
-		private Optional<Float> hardness = Optional.empty();
-		private Optional<Float> resistance = Optional.empty();
+		private Optional<Float> hardness = Optional.absent();
+		private Optional<Float> resistance = Optional.absent();
 
 		private Builder() {
 		}
@@ -245,10 +245,14 @@ public final class ConcreteBlock extends Block {
 			final ConcreteBlock block = new ConcreteBlock(this.identifier, this.material, this.translucent, this.silkHarvest,
 					this.itemDropBehaviour, this.expDropBehaviour);
 
-			this.creativeTab.ifPresent(block::setCreativeTab);
-			this.hardness.ifPresent(block::setHardness);
-			this.resistance.ifPresent(block::setResistance);
-			this.soundType.ifPresent(block::setSoundType);
+			if (this.creativeTab.isPresent())
+				block.setCreativeTab(this.creativeTab.get());
+			if (this.hardness.isPresent())
+				block.setHardness(this.hardness.get());
+			if (this.resistance.isPresent())
+				block.setResistance(this.resistance.get());
+			if (this.soundType.isPresent())
+				block.setSoundType(this.soundType.get());
 
 			return block;
 		}

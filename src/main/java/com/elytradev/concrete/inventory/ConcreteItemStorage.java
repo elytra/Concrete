@@ -28,13 +28,14 @@
 
 package com.elytradev.concrete.inventory;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.function.Predicate;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -82,8 +83,8 @@ import net.minecraftforge.items.ItemStackHandler;
  * 
  */
 public class ConcreteItemStorage extends ItemStackHandler implements IObservableItemHandler {
-	private ArrayList<Runnable> listeners = new ArrayList<>();
-	private ArrayList<Predicate<ItemStack>> validators = new ArrayList<>();
+	private List<Runnable> listeners = Lists.newArrayList();
+	private List<Predicate<ItemStack>> validators = Lists.newArrayList();
 	private boolean[] extractMask;
 	private String name = "";
 	
@@ -98,7 +99,6 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 		return this;
 	}
 	
-	@SafeVarargs
 	public final ConcreteItemStorage withValidators(Predicate<ItemStack>... predicates) {
 		validators.clear();
 		for(Predicate<ItemStack> predicate : predicates) validators.add(predicate);

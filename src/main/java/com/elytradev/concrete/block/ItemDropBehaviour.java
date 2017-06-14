@@ -28,13 +28,13 @@
 
 package com.elytradev.concrete.block;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Supplier;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.MathHelper;
 
-import java.util.Optional;
 import java.util.Random;
-import java.util.function.Supplier;
 
 /**
  * An interface used to describe the behaviour for item drops for a {@link ConcreteBlock}.
@@ -156,12 +156,12 @@ public abstract class ItemDropBehaviour {
 
 	/**
 	 * Gets the {@link Item} that will be dropped.
-	 * If this is {@code Optional.empty()}, the block will be dropped.
+	 * If this is {@code Optional.absent()}, the block will be dropped.
 	 *
 	 * @return The item to be dropped
 	 */
 	public Optional<Supplier<Item>> getDrop() {
-		return Optional.empty();
+		return Optional.absent();
 	}
 
 	/**

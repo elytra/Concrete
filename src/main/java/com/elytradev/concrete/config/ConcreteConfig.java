@@ -29,12 +29,12 @@
 package com.elytradev.concrete.config;
 
 import com.elytradev.concrete.common.ConcreteLog;
+import com.google.common.base.Objects;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.Objects;
 
 /**
  * Configuration base class, uses annotated fields instead of direct configuration calls for configuration data.
@@ -66,7 +66,7 @@ public abstract class ConcreteConfig {
 				String valueComment = cfgValue.comment();
 				String valueCategory = cfgValue.category();
 
-				if (Objects.equals(valueKey, "")) {
+				if (Objects.equal(valueKey, "")) {
 					valueKey = field.getName();
 				}
 
