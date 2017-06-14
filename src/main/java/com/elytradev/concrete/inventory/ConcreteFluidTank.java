@@ -28,6 +28,8 @@
 
 package com.elytradev.concrete.inventory;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -35,7 +37,6 @@ import net.minecraftforge.fluids.FluidTank;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.function.Predicate;
 
 
 /**
@@ -76,7 +77,7 @@ import java.util.function.Predicate;
  *
  */
 public class ConcreteFluidTank extends FluidTank implements IObservableFluidTank {
-    private ArrayList<Runnable> listeners = new ArrayList<>();
+    private ArrayList<Runnable> listeners = Lists.newArrayList();
     private Predicate<FluidStack> fillValidator = Validators.ANY_FLUID;
 
     public ConcreteFluidTank(int capacity) {

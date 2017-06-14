@@ -40,7 +40,7 @@ public class ValidatedItemHandlerView implements IItemHandler {
 
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-		if (!delegate.getValidator(slot).test(stack)) return stack;
+		if (!delegate.getValidator(slot).apply(stack)) return stack;
 		else return delegate.insertItem(slot, stack, simulate);
 	}
 

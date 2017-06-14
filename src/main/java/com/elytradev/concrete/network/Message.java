@@ -29,6 +29,7 @@
 package com.elytradev.concrete.network;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 
@@ -82,15 +83,25 @@ public abstract class Message {
 		
 		ClassInfo ci = classInfo.get(getClass());
 		if (ci == null) {
-			ReceivedOn ro = getClass().getDeclaredAnnotation(ReceivedOn.class);
+			ReceivedOn ro = null;
+			Asynchronous a = null;
+
+			for (Annotation annotation : getClass().getDeclaredAnnotations()) {
+				Class<? extends Annotation> cls = annotation.annotationType();
+				if (cls == ReceivedOn.class) {
+					ro = (ReceivedOn) annotation;
+				} else if (cls == Asynchronous.class) {
+					a = (Asynchronous) annotation;
+				}
+			}
+
 			if (ro == null) {
 				throw new BadMessageException("Must specify @ReceivedOn");
 			} else {
 				side = ro.value();
 			}
 			
-			async = getClass().getDeclaredAnnotation(Asynchronous.class) != null;
-			ci = new ClassInfo(async, side);
+			async = a != null;
 		} else {
 			async = ci.async;
 			side = ci.side;

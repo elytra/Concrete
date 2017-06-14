@@ -28,10 +28,9 @@
 
 package com.elytradev.concrete.block;
 
+import com.elytradev.concrete.common.Consumer;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-
-import java.util.function.Consumer;
 
 /**
  * A psuedo-enum of presets for the Concrete block builder system.

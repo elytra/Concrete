@@ -29,9 +29,10 @@
 package com.elytradev.concrete.inventory;
 
 import java.util.HashMap;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Supplier;
+import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -41,7 +42,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 public class ValidatedInventoryView implements IInventory {
 	private final ConcreteItemStorage delegate;
 	private int[] fields = new int[0];
-	private HashMap<Integer, Supplier<Integer>> fieldDelegates = new HashMap<>();
+	private HashMap<Integer, Supplier<Integer>> fieldDelegates = Maps.newHashMap();
 	
 	public ValidatedInventoryView(ConcreteItemStorage delegate) {
 		this.delegate = delegate;
@@ -132,7 +133,7 @@ public class ValidatedInventoryView implements IInventory {
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return delegate.getValidator(index).test(stack);
+		return delegate.getValidator(index).apply(stack);
 	}
 
 	@Override

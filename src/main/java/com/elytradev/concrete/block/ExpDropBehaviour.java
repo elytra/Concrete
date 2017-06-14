@@ -39,12 +39,12 @@ import java.util.Random;
 /**
  * An interface used to describe the behaviour for exp drops for a {@link ConcreteBlock}.
  */
-public interface ExpDropBehaviour {
+public abstract class ExpDropBehaviour {
 
 	/**
 	 * The default drop behaviour.
 	 */
-	ExpDropBehaviour DEFAULT = of(0);
+	public static ExpDropBehaviour DEFAULT = of(0);
 
 	/**
 	 * Creates a drop behaviour that drops the given exp quantity.
@@ -52,8 +52,13 @@ public interface ExpDropBehaviour {
 	 * @param quantity The quantity of exp to drop
 	 * @return The drop behaviour
 	 */
-	static ExpDropBehaviour of(int quantity) {
-		return (state, world, pos, fortune) -> quantity;
+	public static ExpDropBehaviour of(int quantity) {
+		return new ExpDropBehaviour() {
+			@Override
+			public int getQuantityDropped(IBlockState state, IBlockAccess world, BlockPos pos, int fortune) {
+				return quantity;
+			}
+		};
 	}
 
 	/**
@@ -63,10 +68,13 @@ public interface ExpDropBehaviour {
 	 * @param maximum The maximum quantity of exp to drop
 	 * @return The drop behaviour
 	 */
-	static ExpDropBehaviour of(int minimum, int maximum) {
-		return (state, world, pos, fortune) -> {
-			final Random random = world instanceof World ? ((World) world).rand : new Random();
-			return MathHelper.getInt(random, minimum, maximum);
+	public static ExpDropBehaviour of(int minimum, int maximum) {
+		return new ExpDropBehaviour() {
+			@Override
+			public int getQuantityDropped(IBlockState state, IBlockAccess world, BlockPos pos, int fortune) {
+				final Random random = world instanceof World ? ((World) world).rand : new Random();
+				return MathHelper.getInt(random, minimum, maximum);
+			}
 		};
 	}
 
@@ -79,6 +87,6 @@ public interface ExpDropBehaviour {
 	 * @param fortune The fortune
 	 * @return The quantity dropped
 	 */
-	int getQuantityDropped(IBlockState state, IBlockAccess world, BlockPos pos, int fortune);
+	public abstract int getQuantityDropped(IBlockState state, IBlockAccess world, BlockPos pos, int fortune);
 
 }

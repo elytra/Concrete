@@ -35,9 +35,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import com.elytradev.concrete.common.ConcreteLog;
+import com.elytradev.concrete.common.Consumer;
 import com.elytradev.concrete.common.ShadingValidator;
 import com.elytradev.concrete.network.annotation.field.Optional;
 import com.elytradev.concrete.network.exception.BadMessageException;
@@ -100,7 +100,7 @@ public class NetworkContext {
 					if (f.getAnnotation(Optional.class) != null) {
 						optionalCount.add(clazz);
 					}
-					WireField<?> wf = new WireField<>(f);
+					WireField<?> wf = new WireField(f);
 					fields.add(wf);
 				}
 			}
