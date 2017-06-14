@@ -156,13 +156,13 @@ public class ConcreteGui extends GuiContainer {
 	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        GuiDrawing.drawGuiPanel(guiLeft - PADDING, guiTop - PADDING, xSize + ((PADDING - 1) * 2), ySize + ((PADDING - 1) * 2));
-        
-        if (inventorySlots != null && this.container.getRootPanel() != null) {
-            this.container.getRootPanel().paintBackground(guiLeft, guiTop);
-        }
-        
-        //TODO: Change this to a label that lives in the rootPanel instead
-        fontRenderer.drawString(container.getLocalizedName(), guiLeft, guiTop, 0xFF404040);
-    }
+		GuiDrawing.drawGuiPanel(guiLeft - PADDING, guiTop - PADDING, xSize + ((PADDING - 1) * 2), ySize + ((PADDING - 1) * 2));
+		
+		if (inventorySlots != null && this.container.getRootPanel() != null) {
+			this.container.getRootPanel().paintBackground(guiLeft, guiTop);
+		}
+		
+		//TODO: Change this to a label that lives in the rootPanel instead
+		fontRenderer.drawString(container.getLocalizedName(), guiLeft, guiTop, 0xFF404040);
+	}
 }

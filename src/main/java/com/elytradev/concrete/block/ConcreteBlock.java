@@ -28,8 +28,6 @@
 
 package com.elytradev.concrete.block;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -49,6 +47,8 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 import com.elytradev.concrete.common.ShadingValidator;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An extension of {@link Block} used by the Concrete block builder system, to allow for
@@ -126,17 +126,29 @@ public final class ConcreteBlock extends Block {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public BlockRenderLayer getBlockLayer() {
-		return this.concreteTranslucent ? BlockRenderLayer.TRANSLUCENT : super.getBlockLayer();
+		if (this.concreteTranslucent) {
+			return BlockRenderLayer.TRANSLUCENT;
+		} else {
+			return super.getBlockLayer();
+		}
 	}
 
 	@Override
 	public boolean isFullCube(IBlockState state) {
-		return !this.concreteTranslucent && super.isFullCube(state);
+		if (this.concreteTranslucent) {
+			return false;
+		} else {
+			return super.isFullCube(state);
+		}
 	}
 
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
-		return !this.concreteTranslucent && super.isOpaqueCube(state);
+		if (this.concreteTranslucent) {
+			return false;
+		} else {
+			return super.isOpaqueCube(state);
+		}
 	}
 
 	@Override

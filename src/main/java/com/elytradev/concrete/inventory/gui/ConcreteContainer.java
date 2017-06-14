@@ -32,7 +32,11 @@ import com.elytradev.concrete.common.ShadingValidator;
 import com.elytradev.concrete.inventory.ValidatedSlot;
 import com.elytradev.concrete.inventory.gui.widget.WPanel;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.ClickType;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IContainerListener;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -71,7 +75,8 @@ public class ConcreteContainer extends Container {
 	
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn) {
-		return container == null || container.isUsableByPlayer(playerIn);
+		if (container != null) return container.isUsableByPlayer(playerIn);
+		return true;
 	}
 
 	public void addSlotPeer(Slot slot) {

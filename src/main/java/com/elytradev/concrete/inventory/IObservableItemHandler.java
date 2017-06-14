@@ -33,5 +33,5 @@ import javax.annotation.Nonnull;
 import net.minecraftforge.items.IItemHandler;
 
 public interface IObservableItemHandler extends IItemHandler {
-	void listen(@Nonnull Runnable r);
+	public void listen(@Nonnull Runnable r);
 }

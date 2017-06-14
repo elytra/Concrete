@@ -110,10 +110,10 @@ public class WBar extends WWidget {
 		//GuiDrawing.drawString("" + inventory.getField(max) + "", x + 32, y + 9, 0xFF000000);
 	}
 	
-	public enum Direction {
+	public static enum Direction {
 		UP,
 		RIGHT,
 		DOWN,
-		LEFT
+		LEFT;
 	}
 }

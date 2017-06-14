@@ -31,5 +31,5 @@ package com.elytradev.concrete.inventory;
 import net.minecraft.inventory.IInventory;
 
 public interface IContainerInventoryHolder {
-	IInventory getContainerInventory();
+	public IInventory getContainerInventory();
 }

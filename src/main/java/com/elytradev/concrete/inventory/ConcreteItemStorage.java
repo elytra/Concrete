@@ -156,10 +156,12 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 	 */
 	@Nonnull
 	public Predicate<ItemStack> getValidator(int slot) {
-		return hasValidator(slot) ? validators.get(slot) : Validators.ANYTHING;
+		if (validators.size() <= slot) return Validators.ANYTHING;
+		return validators.get(slot);
 	}
 	
 	public boolean getCanExtract(int slot) {
-		return hasValidator(slot) && extractMask[slot];
+		if (extractMask.length <= slot) return false;
+		return extractMask[slot];
 	}
 }

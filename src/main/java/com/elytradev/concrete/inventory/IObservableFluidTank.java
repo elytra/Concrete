@@ -33,5 +33,5 @@ import net.minecraftforge.fluids.IFluidTank;
 import javax.annotation.Nonnull;
 
 public interface IObservableFluidTank extends IFluidTank {
-	void listen(@Nonnull Runnable r);
+	public void listen(@Nonnull Runnable r);
 }

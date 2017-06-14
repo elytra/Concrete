@@ -133,7 +133,7 @@ public class GuiDrawing {
 	public static void rect(Fluid fluid, int left, int top, int width, int height, int color) {
 		rect(fluid, left, top, width, height,0,0,16,16, color);
 	}
-    /**
+	/**
 	 * Draws a beveled, round rectangle that is substantially similar to default Minecraft UI panels.
 	 */
 	public static void drawGuiPanel(int x, int y, int width, int height) {

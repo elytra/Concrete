@@ -139,7 +139,9 @@ public class NetworkContext {
 				payload.writeByte(by);
 			}
 		}
-		marshallers.get(m.getClass()).stream().filter((it) -> it.getType() != Boolean.TYPE).forEach((it) -> it.marshal(m, payload));
+		marshallers.get(m.getClass()).stream()
+		                             .filter((it) -> it.getType() != Boolean.TYPE)
+		                             .forEach((it) -> it.marshal(m, payload));
 		return new FMLProxyPacket(payload, channel);
 	}
 
@@ -203,7 +205,9 @@ public class NetworkContext {
 		} else {
 			present.addAll(marshallers.get(m.getClass()));
 		}
-		marshallers.get(m.getClass()).stream().filter((it) -> it.getType() != Boolean.TYPE && present.contains(it)).forEach((it) -> it.unmarshal(m, payload));
+		marshallers.get(m.getClass()).stream()
+		                             .filter((it) -> it.getType() != Boolean.TYPE && present.contains(it))
+		                             .forEach((it) -> it.unmarshal(m, payload));
 		return m;
 	}
 	
