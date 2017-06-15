@@ -28,12 +28,12 @@
 
 package com.elytradev.concrete.inventory.gui.widget;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.elytradev.concrete.inventory.ValidatedSlot;
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
+import com.google.common.collect.Lists;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -41,7 +41,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WItemSlot extends WWidget {
-	private final List<Slot> peers = new ArrayList<>();
+	private final List<Slot> peers = Lists.newArrayList();
 	private IInventory inventory;
 	private int startIndex = 0;
 	private int slotsWide = 1;

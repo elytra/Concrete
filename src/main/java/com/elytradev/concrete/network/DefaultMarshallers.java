@@ -30,14 +30,14 @@ package com.elytradev.concrete.network;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import com.elytradev.concrete.common.ConcreteLog;
 import com.elytradev.concrete.network.exception.BadMessageException;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.primitives.Ints;
 
 import io.netty.buffer.ByteBuf;
@@ -171,7 +171,7 @@ public class DefaultMarshallers {
 	
 	
 	
-	private static final Map<String, Marshaller<?>> byName = new HashMap<>();
+	private static final Map<String, Marshaller<?>> byName = Maps.newHashMap();
 	
 	
 	static {
@@ -221,7 +221,7 @@ public class DefaultMarshallers {
 		@Override
 		public List<T> unmarshal(ByteBuf in) {
 			int size = ByteBufUtils.readVarInt(in, 5);
-			List<T> li = new ArrayList<>(size);
+			List<T> li = Lists.newArrayListWithCapacity(size);
 			for (int i = 0; i < size; i++) {
 				li.add(underlying.unmarshal(in));
 			}

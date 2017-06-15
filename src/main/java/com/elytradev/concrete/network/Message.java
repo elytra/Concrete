@@ -29,7 +29,6 @@
 package com.elytradev.concrete.network;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +39,7 @@ import com.elytradev.concrete.network.annotation.type.ReceivedOn;
 import com.elytradev.concrete.network.exception.BadMessageException;
 import com.elytradev.concrete.network.exception.WrongSideException;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -69,7 +69,7 @@ public abstract class Message {
 			this.side = side;
 		}
 	}
-	private static final Map<Class<?>, ClassInfo> classInfo = new HashMap<>();
+	private static final Map<Class<?>, ClassInfo> classInfo = Maps.newHashMap();
 	
 	
 	private transient final NetworkContext ctx;
