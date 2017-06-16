@@ -1,3 +1,31 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2016-2017:
+ * 	William Thompson (unascribed),
+ * 	Isaac Ellingson (Falkreon),
+ * 	Jamie Mansfield (jamierocks),
+ * 	and contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.elytradev.concrete.resgen;
 
 import com.elytradev.concrete.common.ConcreteLog;
@@ -52,7 +80,7 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 	public List<ResourceProvider> providers;
 
 	/**
-	 * Create a ConcreteResourcePack for the specified mod, SimplePacks will auto gen simplemodels if you lack a blockstate or model file.
+	 * Create a ConcreteResourcePack for the specified mod, will auto gen simplemodels if you lack a blockstate or model file.
 	 * If the applicable file exists it will simply default to it.
 	 *
 	 * @param modID the id of the mod you want a simple pack for.
@@ -129,7 +157,7 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 	}
 
 	@Override
-	protected InputStream getInputStreamByName(String name) throws IOException {
+	public InputStream getInputStreamByName(String name) throws IOException {
 		// Return a stream corresponding to a matching location.
 		ConcreteLog.debug("ConcreteResourcePack was asked to obtain: {}", name);
 		for (int i = 0; i < providers.size(); i++) {
@@ -144,7 +172,7 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 	}
 
 	@Override
-	protected boolean hasResourceName(String name) {
+	public boolean hasResourceName(String name) {
 		for (ResourceProvider provider : providers) {
 			if (provider.canProvide(name))
 				return true;
@@ -220,10 +248,10 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 	}
 
 	/**
-	 * Wrapper for getInputStreamByName, used to gibe resource providers access if needed.
+	 * Wrapper for getInputStreamByName, used to give resource providers access if needed.
 	 *
 	 * @param name the resource name.
-	 * @return the realpack inputstream for the specified resource.
+	 * @return the realpack input stream for the specified resource.
 	 */
 	public InputStream getRealpackInputStreamByName(String name) {
 		return (InputStream) getInputStreamByName.invoke(realResourcePack, name);
