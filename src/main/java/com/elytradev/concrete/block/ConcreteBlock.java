@@ -28,8 +28,6 @@
 
 package com.elytradev.concrete.block;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -49,6 +47,8 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 import com.elytradev.concrete.common.ShadingValidator;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An extension of {@link Block} used by the Concrete block builder system, to allow for

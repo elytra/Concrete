@@ -31,7 +31,6 @@ package com.elytradev.concrete.network;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,7 +46,6 @@ import com.elytradev.concrete.reflect.instanciator.Instanciators;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multiset;
@@ -80,7 +78,7 @@ public class NetworkContext {
 	private NetworkContext(String channel) {
 		ShadingValidator.ensureShaded();
 		this.channel = channel;
-		NetworkRegistry.INSTANCE.newEventDrivenChannel(channel).register(this);;
+		NetworkRegistry.INSTANCE.newEventDrivenChannel(channel).register(this);
 	}
 	
 	public NetworkContext register(Class<? extends Message> clazz) {
@@ -118,22 +116,22 @@ public class NetworkContext {
 	
 	
 	protected FMLProxyPacket getPacketFrom(Message m) {
-		if (!packetIds.containsKey(m.getClass())) throw new BadMessageException(m.getClass()+" is not registered");
+		if (!packetIds.containsKey(m.getClass())) throw new BadMessageException(m.getClass() + " is not registered");
 		PacketBuffer payload = new PacketBuffer(Unpooled.buffer());
 		payload.writeByte(packetIds.get(m.getClass()));
-		int bools = booleanCount.count(m.getClass())+optionalCount.count(m.getClass());
+		int bools = booleanCount.count(m.getClass()) + optionalCount.count(m.getClass());
 		if (bools > 0) {
 			List<Boolean> li = Lists.newArrayListWithCapacity(bools);
 			for (WireField<?> wf : marshallers.get(m.getClass())) {
 				if (wf.getType() == Boolean.TYPE) {
-					li.add((Boolean)wf.get(m));
+					li.add((Boolean) wf.get(m));
 				} else if (wf.isOptional()) {
 					li.add(wf.get(m) != null);
 				}
 			}
-			for (int i = 0; i < (bools+7)/8; i++) {
+			for (int i = 0; i < (bools + 7) / 8; i++) {
 				int by = 0;
-				for (int j = i*8; j < Math.min(li.size(), i+8); j++) {
+				for (int j = i * 8; j < Math.min(li.size(), i + 8); j++) {
 					if (li.get(j)) {
 						by |= (1 << j);
 					}
@@ -141,11 +139,9 @@ public class NetworkContext {
 				payload.writeByte(by);
 			}
 		}
-		Iterator<WireField<?>> iter = Iterators.filter(marshallers.get(m.getClass()).iterator(), (it) -> it.getType() != Boolean.TYPE);
-		while (iter.hasNext()) {
-			WireField<?> wf = iter.next();
-			wf.marshal(m, payload);
-		}
+		marshallers.get(m.getClass()).stream()
+		                             .filter((it) -> it.getType() != Boolean.TYPE)
+		                             .forEach((it) -> it.marshal(m, payload));
 		return new FMLProxyPacket(payload, channel);
 	}
 
@@ -154,7 +150,7 @@ public class NetworkContext {
 	public void onServerCustomPacket(ServerCustomPacketEvent e) {
 		ByteBuf payload = e.getPacket().payload();
 		Message m = readPacket(e.side(), payload);
-		m.doHandleServer(((NetHandlerPlayServer)e.getHandler()).player);
+		m.doHandleServer(((NetHandlerPlayServer) e.getHandler()).player);
 	}
 	
 	@SubscribeEvent
@@ -169,7 +165,7 @@ public class NetworkContext {
 	private Message readPacket(Side side, ByteBuf payload) {
 		int id = payload.readUnsignedByte();
 		if (!packetIds.containsValue(id)) {
-			throw new IllegalArgumentException("Unknown packet id "+id);
+			throw new IllegalArgumentException("Unknown packet id " + id);
 		}
 		Class<? extends Message> clazz = packetIds.inverse().get(id);
 		Message m;
@@ -180,18 +176,18 @@ public class NetworkContext {
 			}
 			m = instanciators.get(clazz).newInstance(this);
 		} catch (Throwable t) {
-			throw new BadMessageException("Cannot instanciate message class "+clazz, t);
+			throw new BadMessageException("Cannot instanciate message class " + clazz, t);
 		}
 		if (m.getSide() != side) {
-			throw new WrongSideException("Cannot receive packet of type "+clazz+" on side "+side);
+			throw new WrongSideException("Cannot receive packet of type " + clazz + " on side " + side);
 		}
 		Set<WireField<?>> present = Sets.newHashSetWithExpectedSize(marshallers.get(m.getClass()).size());
-		int bools = booleanCount.count(m.getClass())+optionalCount.count(m.getClass());
+		int bools = booleanCount.count(m.getClass()) + optionalCount.count(m.getClass());
 		if (bools > 0) {
 			List<Consumer<Boolean>> li = Lists.newArrayListWithCapacity(bools);
 			for (WireField<?> wf : marshallers.get(m.getClass())) {
 				if (wf.getType() == Boolean.TYPE) {
-					li.add((b) -> ((WireField<Boolean>)wf).set(m, b));
+					li.add((b) -> ((WireField<Boolean>) wf).set(m, b));
 					present.add(wf);
 				} else if (wf.isOptional()) {
 					li.add((b) -> { if (b) { present.add(wf); } });
@@ -199,25 +195,19 @@ public class NetworkContext {
 					present.add(wf);
 				}
 			}
-			for (int i = 0; i < (bools+7)/8; i++) {
+			for (int i = 0; i < (bools + 7) / 8; i++) {
 				int by = payload.readUnsignedByte();
-				for (int j = i*8; j < Math.min(li.size(), i+8); j++) {
-					boolean val = (by & (1 << (j-i))) != 0;
+				for (int j = i * 8; j < Math.min(li.size(), i + 8); j++) {
+					boolean val = (by & (1 << (j - i))) != 0;
 					li.get(j).accept(val);
 				}
 			}
 		} else {
-			for (WireField<?> wf : marshallers.get(m.getClass())) {
-				present.add(wf);
-			}
+			present.addAll(marshallers.get(m.getClass()));
 		}
-		Iterator<WireField<?>> iter = Iterators.filter(marshallers.get(m.getClass()).iterator(), (it) -> it.getType() != Boolean.TYPE);
-		while (iter.hasNext()) {
-			WireField<?> wf = iter.next();
-			if (present.contains(wf)) {
-				wf.unmarshal(m, payload);
-			}
-		}
+		marshallers.get(m.getClass()).stream()
+		                             .filter((it) -> it.getType() != Boolean.TYPE && present.contains(it))
+		                             .forEach((it) -> it.unmarshal(m, payload));
 		return m;
 	}
 	

@@ -28,9 +28,11 @@
 
 package com.elytradev.concrete.inventory;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import com.google.common.collect.Maps;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -41,7 +43,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 public class ValidatedInventoryView implements IInventory {
 	private final ConcreteItemStorage delegate;
 	private int[] fields = new int[0];
-	private HashMap<Integer, Supplier<Integer>> fieldDelegates = new HashMap<>();
+	private final Map<Integer, Supplier<Integer>> fieldDelegates = Maps.newHashMap();
 	
 	public ValidatedInventoryView(ConcreteItemStorage delegate) {
 		this.delegate = delegate;
@@ -54,7 +56,7 @@ public class ValidatedInventoryView implements IInventory {
 
 	@Override
 	public boolean hasCustomName() {
-		return delegate.getName()!=null;
+		return delegate.getName() != null;
 	}
 
 	@Override
@@ -69,7 +71,7 @@ public class ValidatedInventoryView implements IInventory {
 
 	@Override
 	public boolean isEmpty() {
-		for(int i=0; i<delegate.getSlots(); i++) {
+		for (int i = 0; i < delegate.getSlots(); i++) {
 			if (!delegate.getStackInSlot(i).isEmpty()) return false;
 		}
 		
@@ -84,7 +86,7 @@ public class ValidatedInventoryView implements IInventory {
 
 	@Override
 	public ItemStack getStackInSlot(int index) {
-		if (index>=delegate.getSlots()) return ItemStack.EMPTY;
+		if (index >= delegate.getSlots()) return ItemStack.EMPTY;
 		return delegate.getStackInSlot(index);
 	}
 
@@ -138,17 +140,17 @@ public class ValidatedInventoryView implements IInventory {
 	@Override
 	public int getField(int id) {
 		Supplier<Integer> delegate = fieldDelegates.get(id);
-		if (delegate!=null) return delegate.get();
-		if (fields.length>id) return fields[id];
+		if (delegate != null) return delegate.get();
+		if (fields.length > id) return fields[id];
 		return 0;
 	}
 
 	@Override
 	public void setField(int id, int value) {
-		//System.out.println("SetField id:"+id+" val:"+value);
-		if (fields.length<=id) {
-			int[] newFields = new int[id+1];
-			if (fields.length>0) System.arraycopy(fields, 0, newFields, 0, fields.length);
+		//System.out.println("SetField id:" + id + " val:" + value);
+		if (fields.length <= id) {
+			int[] newFields = new int[id + 1];
+			if (fields.length > 0) System.arraycopy(fields, 0, newFields, 0, fields.length);
 			fields = newFields;
 		}
 		fields[id] = value;
@@ -162,7 +164,7 @@ public class ValidatedInventoryView implements IInventory {
 
 	@Override
 	public void clear() {
-		for(int i=0; i<delegate.getSlots(); i++) {
+		for (int i = 0; i < delegate.getSlots(); i++) {
 			setInventorySlotContents(i, ItemStack.EMPTY);
 		}
 	}

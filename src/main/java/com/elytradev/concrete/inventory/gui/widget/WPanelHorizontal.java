@@ -68,18 +68,17 @@ public class WPanelHorizontal extends WPanel {
 				unresizable += wid;
 			}
 		}
-		int resizeSpace = getWidth()-unresizable;
+		int resizeSpace = getWidth() - unresizable;
 		int resizeEach = resizeSpace / numResizable;
-		if (resizeEach<18) resizeEach = 18; //Don't squish things beyond a minimum reasonable size! Better for them to overlap :/
+		if (resizeEach < 18) resizeEach = 18; //Don't squish things beyond a minimum reasonable size! Better for them to overlap :/
 		
-		int centerline = this.getHeight()/2;
+		int centerline = this.getHeight() / 2;
 		int curLeft = 0;
-		for(int i=0; i<children.size(); i++) {
-			WWidget w = children.get(i);
+		for (WWidget w : children) {
 			if (w.canResize()) {
 				w.setSize(resizeEach, this.getHeight());
 			}
-			w.setLocation(curLeft, centerline - (w.getHeight()/2));
+			w.setLocation(curLeft, centerline - (w.getHeight() / 2));
 			curLeft += w.getWidth();
 		}
 		

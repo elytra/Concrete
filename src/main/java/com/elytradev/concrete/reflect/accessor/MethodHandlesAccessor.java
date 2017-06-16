@@ -37,8 +37,8 @@ import com.google.common.base.Throwables;
 
 class MethodHandlesAccessor<T> implements Accessor<T> {
 	
-	private MethodHandle getter;
-	private MethodHandle setter;
+	private final MethodHandle getter;
+	private final MethodHandle setter;
 	
 	public MethodHandlesAccessor(Field f) {
 		try {
@@ -46,7 +46,7 @@ class MethodHandlesAccessor<T> implements Accessor<T> {
 			getter = MethodHandles.publicLookup().unreflectGetter(f);
 			setter = MethodHandles.publicLookup().unreflectSetter(f);
 		} catch (IllegalAccessException e) {
-			Throwables.propagate(e);
+			throw Throwables.propagate(e);
 		}
 	}
 	
@@ -57,14 +57,14 @@ class MethodHandlesAccessor<T> implements Accessor<T> {
 			getter = MethodHandles.publicLookup().unreflect(get);
 			setter = MethodHandles.publicLookup().unreflect(set);
 		} catch (IllegalAccessException e) {
-			Throwables.propagate(e);
+			throw Throwables.propagate(e);
 		}
 	}
 	
 	@Override
 	public T get(Object owner) {
 		try {
-			return (T)getter.invoke(owner);
+			return (T) getter.invoke(owner);
 		} catch (Throwable e) {
 			throw Throwables.propagate(e);
 		}

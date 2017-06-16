@@ -28,11 +28,12 @@
 
 package com.elytradev.concrete.inventory.gui.widget;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.elytradev.concrete.inventory.ValidatedSlot;
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
+import com.google.common.collect.Lists;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -40,13 +41,24 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WItemSlot extends WWidget {
-	private ArrayList<Slot> peers = new ArrayList<>();
+	private final List<Slot> peers = Lists.newArrayList();
 	private IInventory inventory;
 	private int startIndex = 0;
 	private int slotsWide = 1;
 	private int slotsHigh = 1;
 	private boolean big = false;
 	private boolean ltr = true;
+	
+	public WItemSlot(IInventory inventory, int startIndex, int slotsWide, int slotsHigh, boolean big, boolean ltr) {
+		this.inventory = inventory;
+		this.startIndex = startIndex;
+		this.slotsWide = slotsWide;
+		this.slotsHigh = slotsHigh;
+		this.big = big;
+		this.ltr = ltr;
+	}
+	
+	private WItemSlot() {}
 	
 	public static WItemSlot of(IInventory inventory, int index) {
 		WItemSlot w = new WItemSlot();
@@ -88,12 +100,12 @@ public class WItemSlot extends WWidget {
 	
 	@Override
 	public int getWidth() {
-		return slotsWide*18;
+		return slotsWide * 18;
 	}
 	
 	@Override
 	public int getHeight() {
-		return slotsHigh*18;
+		return slotsHigh * 18;
 	}
 	
 	@Override
@@ -102,18 +114,18 @@ public class WItemSlot extends WWidget {
 		int index = startIndex;
 		
 		if (ltr) {
-			for(int x=0; x<slotsWide; x++) {
-				for(int y=0; y<slotsHigh; y++) {
-					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX()+(x*18), this.getY()+(y*18));
+			for (int x = 0; x < slotsWide; x++) {
+				for (int y = 0; y < slotsHigh; y++) {
+					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX() + (x * 18), this.getY() + (y * 18));
 					peers.add(slot);
 					c.addSlotPeer(slot);
 					index++;
 				}
 			}
 		} else {
-			for(int y=0; y<slotsHigh; y++) {
-				for(int x=0; x<slotsWide; x++) {
-					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX()+(x*18), this.getY()+(y*18));
+			for (int y = 0; y < slotsHigh; y++) {
+				for (int x = 0; x < slotsWide; x++) {
+					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX() + (x * 18), this.getY() + (y * 18));
 					peers.add(slot);
 					c.addSlotPeer(slot);
 					index++;
@@ -125,12 +137,12 @@ public class WItemSlot extends WWidget {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void paintBackground(int x, int y) {
-		for(int xi=0; xi<slotsWide; xi++) {
-			for(int yi=0; yi<slotsHigh; yi++) {
+		for (int xi = 0; xi < slotsWide; xi++) {
+			for (int yi = 0; yi < slotsHigh; yi++) {
 				if (big) {
-					GuiDrawing.drawBeveledPanel((xi*18) + x - 4, (yi*18) + y - 4, 24, 24);
+					GuiDrawing.drawBeveledPanel((xi * 18) + x - 4, (yi * 18) + y - 4, 24, 24);
 				} else {
-					GuiDrawing.drawBeveledPanel((xi*18) + x - 1, (yi*18) + y - 1, 18, 18);
+					GuiDrawing.drawBeveledPanel((xi * 18) + x - 1, (yi * 18) + y - 1, 18, 18);
 				}
 			}
 		}

@@ -35,21 +35,21 @@ import com.google.common.base.Throwables;
 
 public class MethodHandlesInstanciator<T> implements Instanciator<T> {
 
-	private MethodHandle handle;
+	private final MethodHandle handle;
 
 	public MethodHandlesInstanciator(Constructor<T> c) {
 		try {
 			c.setAccessible(true);
 			handle = MethodHandles.publicLookup().unreflectConstructor(c);
 		} catch (IllegalAccessException e) {
-			Throwables.propagate(e);
+			throw Throwables.propagate(e);
 		}
 	}
 
 	@Override
 	public T newInstance(Object... args) {
 		try {
-			return (T)handle.invokeWithArguments(args);
+			return (T) handle.invokeWithArguments(args);
 		} catch (Throwable e) {
 			throw Throwables.propagate(e);
 		}

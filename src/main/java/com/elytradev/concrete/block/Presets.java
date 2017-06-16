@@ -34,7 +34,7 @@ import net.minecraft.block.material.Material;
 import java.util.function.Consumer;
 
 /**
- * A psuedo-enum of presets for the Concrete block builder system.
+ * A pseudo-enum of presets for the Concrete block builder system.
  */
 public final class Presets {
 
@@ -43,7 +43,7 @@ public final class Presets {
 	 *
 	 * @see ConcreteBlock.Builder#preset(Consumer)
 	 */
-	public static Consumer<ConcreteBlock.Builder> ORE = builder -> builder
+	public static final Consumer<ConcreteBlock.Builder> ORE = builder -> builder
 			.drop(ItemDropBehaviour.Fortune.DEFAULT);
 
 	/**
@@ -51,7 +51,7 @@ public final class Presets {
 	 *
 	 * @see ConcreteBlock.Builder#preset(Consumer)
 	 */
-	public static Consumer<ConcreteBlock.Builder> GLASS = builder -> builder
+	public static final Consumer<ConcreteBlock.Builder> GLASS = builder -> builder
 			.material(Material.GLASS)
 			.soundType(SoundType.GLASS)
 			.drop(ItemDropBehaviour.DROP_NONE)

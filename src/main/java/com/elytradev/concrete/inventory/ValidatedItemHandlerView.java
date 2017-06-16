@@ -31,15 +31,18 @@ package com.elytradev.concrete.inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class ValidatedItemHandlerView implements IItemHandler {
-	private ConcreteItemStorage delegate;
+	private final ConcreteItemStorage delegate;
 	
 	public ValidatedItemHandlerView(ConcreteItemStorage delegate) {
 		this.delegate = delegate;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 		if (!delegate.getValidator(slot).test(stack)) return stack;
 		else return delegate.insertItem(slot, stack, simulate);
 	}
@@ -49,11 +52,13 @@ public class ValidatedItemHandlerView implements IItemHandler {
 		return delegate.getSlots();
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getStackInSlot(int slot) {
 		return delegate.getStackInSlot(slot);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
 		if (!delegate.getCanExtract(slot)) return ItemStack.EMPTY;

@@ -44,12 +44,12 @@ public abstract class ItemDropBehaviour {
 	/**
 	 * A drop behaviour for dropping no items.
 	 */
-	public static ItemDropBehaviour DROP_NONE = of(0);
+	public static final ItemDropBehaviour DROP_NONE = of(0);
 
 	/**
 	 * The default drop behaviour.
 	 */
-	public static ItemDropBehaviour DEFAULT = of(1);
+	public static final ItemDropBehaviour DEFAULT = of(1);
 
 	/**
 	 * Creates a drop behaviour that drops the given item quantity.
@@ -183,7 +183,7 @@ public abstract class ItemDropBehaviour {
 		/**
 		 * The default drop behaviour.
 		 */
-		public static Fortune DEFAULT = of(1);
+		public static final Fortune DEFAULT = of(1);
 
 		/**
 		 * Creates a drop behaviour that drops the given item quantity
