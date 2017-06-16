@@ -48,8 +48,8 @@ public class ShadingValidator {
 	public static void ensureShaded() {
 		if (validated) return;
 		if (ShadingValidator.class.getName().startsWith(DEFAULT_PACKAGE)) {
-			if (!((Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment"))) {
-				throw new RuntimeException("Concrete is designed to be shaded and must not be left in the default package! (Offending mod: "+Loader.instance().activeModContainer().getName()+")");
+			if (!((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))) {
+				throw new RuntimeException("Concrete is designed to be shaded and must not be left in the default package! (Offending mod: " + Loader.instance().activeModContainer().getName() + ")");
 			} else {
 				ConcreteLog.warn("Concrete is in the default package. This is not a fatal error, as you are in a development environment, but remember to repackage it!");
 			}

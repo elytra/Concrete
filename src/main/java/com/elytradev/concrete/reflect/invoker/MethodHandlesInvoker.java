@@ -36,20 +36,20 @@ import com.google.common.base.Throwables;
 
 public class MethodHandlesInvoker implements Invoker {
 
-	private MethodHandle handle;
+	private final MethodHandle handle;
 
 	public MethodHandlesInvoker(Method m) {
 		try {
 			m.setAccessible(true);
 			handle = MethodHandles.publicLookup().unreflect(m);
 		} catch (IllegalAccessException e) {
-			Throwables.propagate(e);
+			throw Throwables.propagate(e);
 		}
 	}
 
 	@Override
 	public Object invoke(Object owner, Object... args) {
-		Object[] joined = new Object[args.length+1];
+		Object[] joined = new Object[args.length + 1];
 		joined[0] = owner;
 		System.arraycopy(args, 0, joined, 1, args.length);
 		try {

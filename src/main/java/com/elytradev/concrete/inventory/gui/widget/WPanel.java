@@ -28,9 +28,10 @@
 
 package com.elytradev.concrete.inventory.gui.widget;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
+import com.google.common.collect.Lists;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -40,7 +41,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * WContainer such that it isn't confused with Container, and we don't lose anything from the lack of abstraction.
  */
 public class WPanel extends WWidget {
-	protected ArrayList<WWidget> children = new ArrayList<>();
+	protected final List<WWidget> children = Lists.newArrayList();
 	protected boolean valid;
 	
 	@Override
@@ -66,7 +67,7 @@ public class WPanel extends WWidget {
 	 */
 	public void layout() {
 		for(WWidget child : children) {
-			if (child instanceof WPanel) ((WPanel)child).layout();
+			if (child instanceof WPanel) ((WPanel) child).layout();
 		}
 	}
 	
@@ -81,7 +82,7 @@ public class WPanel extends WWidget {
 	@Override
 	public void paintBackground(int x, int y) {
 		for(WWidget child : children) {
-			child.paintBackground(x+child.getX(), y+child.getY());
+			child.paintBackground(x + child.getX(), y + child.getY());
 		}
 	}
 }

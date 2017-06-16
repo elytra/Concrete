@@ -34,8 +34,10 @@ import net.minecraftforge.fluids.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
+
+import com.google.common.collect.Lists;
 
 
 /**
@@ -76,48 +78,46 @@ import java.util.function.Predicate;
  *
  */
 public class ConcreteFluidTank extends FluidTank implements IObservableFluidTank {
-    private ArrayList<Runnable> listeners = new ArrayList<>();
-    private Predicate<FluidStack> fillValidator = Validators.ANY_FLUID;
+	private final List<Runnable> listeners = Lists.newArrayList();
+	private Predicate<FluidStack> fillValidator = Validators.ANY_FLUID;
 
-    public ConcreteFluidTank(int capacity) {
-        this(null, capacity);
-    }
+	public ConcreteFluidTank(int capacity) {
+		this(null, capacity);
+	}
 
-    public ConcreteFluidTank(Fluid fluid, int amount, int capacity) {
-        this(new FluidStack(fluid, amount), capacity);
-    }
+	public ConcreteFluidTank(Fluid fluid, int amount, int capacity) {
+		this(new FluidStack(fluid, amount), capacity);
+	}
 
-    public ConcreteFluidTank(@Nullable FluidStack fluidStack, int capacity) {
-        super(fluidStack, capacity);
-    }
+	public ConcreteFluidTank(@Nullable FluidStack fluidStack, int capacity) {
+		super(fluidStack, capacity);
+	}
 
-    public final ConcreteFluidTank withFillValidator(Predicate<FluidStack> fillValidator) {
-        this.fillValidator = fillValidator;
-        return this;
-    }
+	public final ConcreteFluidTank withFillValidator(Predicate<FluidStack> fillValidator) {
+		this.fillValidator = fillValidator;
+		return this;
+	}
 
 
-    public void markDirty() {
-        for(Runnable r : listeners) {
-            r.run();
-        }
-    }
+	public void markDirty() {
+		listeners.forEach(Runnable::run);
+	}
 
-    @Override
-    public void listen(@Nonnull Runnable r) {
-        listeners.add(r);
-    }
+	@Override
+	public void listen(@Nonnull Runnable r) {
+		listeners.add(r);
+	}
 
-    @Override
-    protected void onContentsChanged() {
-        this.markDirty();
-        super.onContentsChanged();
-    }
+	@Override
+	protected void onContentsChanged() {
+		this.markDirty();
+		super.onContentsChanged();
+	}
 
-    @Nonnull
-    public Predicate<FluidStack> getFillValidator() {
-        return this.fillValidator;
-    }
+	@Nonnull
+	public Predicate<FluidStack> getFillValidator() {
+		return this.fillValidator;
+	}
 
 
 }

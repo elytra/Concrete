@@ -30,7 +30,7 @@ package com.elytradev.concrete.common;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import com.google.common.base.Supplier;
+import java.util.function.Supplier;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -100,7 +100,7 @@ public class NBTHelper {
 			C extends Collection<T>> C deserializeInto(Supplier<T> constructor, NBTTagList in, C collection) {
 		for (int i = 0; i < in.tagCount(); i++) {
 			T t = constructor.get();
-			t.deserializeNBT((U)in.get(i));
+			t.deserializeNBT((U) in.get(i));
 			collection.add(t);
 		}
 		return collection;

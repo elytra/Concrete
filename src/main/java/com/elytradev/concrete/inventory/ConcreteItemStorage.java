@@ -28,12 +28,15 @@
 
 package com.elytradev.concrete.inventory;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
@@ -82,10 +85,10 @@ import net.minecraftforge.items.ItemStackHandler;
  * 
  */
 public class ConcreteItemStorage extends ItemStackHandler implements IObservableItemHandler {
-	private ArrayList<Runnable> listeners = new ArrayList<>();
-	private ArrayList<Predicate<ItemStack>> validators = new ArrayList<>();
-	private boolean[] extractMask;
-	private String name = "";
+	private final List<Runnable> listeners = Lists.newArrayList();
+	private final List<Predicate<ItemStack>> validators = Lists.newArrayList();
+	private final boolean[] extractMask;
+	private String name = null;
 	
 	public ConcreteItemStorage(int slots) {
 		super(slots);
@@ -101,19 +104,17 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 	@SafeVarargs
 	public final ConcreteItemStorage withValidators(Predicate<ItemStack>... predicates) {
 		validators.clear();
-		for(Predicate<ItemStack> predicate : predicates) validators.add(predicate);
+		Collections.addAll(validators, predicates);
 		return this;
 	}
 	
 	public final ConcreteItemStorage setCanExtract(int index, boolean canExtract) {
-		if (index<extractMask.length) extractMask[index] = canExtract;
+		if (index < extractMask.length) extractMask[index] = canExtract;
 		return this;
 	}
 
 	public void markDirty() {
-		for(Runnable r : listeners) {
-			r.run();
-		}
+		listeners.forEach(Runnable::run);
 	}
 	
 	@Override
@@ -121,6 +122,7 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 		listeners.add(r);
 	}
 	
+	@Nonnull
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
 		ItemStack stack = super.extractItem(slot, amount, simulate);
@@ -147,7 +149,7 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 	}
 	
 	public boolean hasValidator(int slot) {
-		return validators.size()>slot;
+		return validators.size() > slot;
 	}
 	
 	/**
@@ -155,12 +157,12 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 	 */
 	@Nonnull
 	public Predicate<ItemStack> getValidator(int slot) {
-		if (validators.size()<=slot) return Validators.ANYTHING;
+		if (validators.size() <= slot) return Validators.ANYTHING;
 		return validators.get(slot);
 	}
 	
 	public boolean getCanExtract(int slot) {
-		if (extractMask.length<=slot) return false;
+		if (extractMask.length <= slot) return false;
 		return extractMask[slot];
 	}
 }

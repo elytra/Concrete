@@ -90,7 +90,7 @@ public abstract class Message {
 			}
 			
 			async = getClass().getDeclaredAnnotation(Asynchronous.class) != null;
-			ci = new ClassInfo(async, side);
+			classInfo.put(getClass(), new ClassInfo(async, side));
 		} else {
 			async = ci.async;
 			side = ci.side;
@@ -117,9 +117,7 @@ public abstract class Message {
 		if (async) {
 			handle(sender);
 		} else {
-			((WorldServer)sender.world).addScheduledTask(() -> {
-				handle(sender);
-			});
+			((WorldServer) sender.world).addScheduledTask(() -> handle(sender));
 		}
 	}
 	
@@ -142,7 +140,7 @@ public abstract class Message {
 		if (side.isServer()) wrongSide();
 		if (player instanceof EntityPlayerMP) {
 			for (Packet<INetHandlerPlayClient> p : toClientboundVanillaPackets()) {
-				((EntityPlayerMP)player).connection.sendPacket(p);
+				((EntityPlayerMP) player).connection.sendPacket(p);
 			}
 		}
 	}
@@ -202,7 +200,7 @@ public abstract class Message {
 	 * this is only useful for certain special cases.</i>
 	 */
 	public final void sendToAllAroundExcept(World world, Vec3i pos, double radius, @Nullable EntityPlayer exclude) {
-		sendToAllAroundExcept(world, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, radius, exclude);
+		sendToAllAroundExcept(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, radius, exclude);
 	}
 	
 	/**
@@ -220,7 +218,7 @@ public abstract class Message {
 	 */
 	public final void sendToAllAroundExcept(World world, double x, double y, double z, double radius, @Nullable EntityPlayer exclude) {
 		if (side.isServer()) wrongSide();
-		double sq = radius*radius;
+		double sq = radius * radius;
 		List<Packet<INetHandlerPlayClient>> packets = toClientboundVanillaPackets();
 		for (EntityPlayerMP ep : world.getPlayers(EntityPlayerMP.class, Predicates.alwaysTrue())) {
 			if (ep == exclude) continue;
@@ -247,7 +245,7 @@ public abstract class Message {
 	public final void sendToAllWatchingExcept(World world, BlockPos pos, @Nullable EntityPlayer exclude) {
 		if (side.isServer()) wrongSide();
 		if (world instanceof WorldServer) {
-			WorldServer srv = (WorldServer)world;
+			WorldServer srv = (WorldServer) world;
 			Chunk c = srv.getChunkFromBlockCoords(pos);
 			if (srv.getPlayerChunkMap().contains(c.xPosition, c.zPosition)) {
 				List<Packet<INetHandlerPlayClient>> packets = toClientboundVanillaPackets();
@@ -295,13 +293,13 @@ public abstract class Message {
 	public final void sendToAllWatchingExcept(Entity e, @Nullable EntityPlayer exclude) {
 		if (side.isServer()) wrongSide();
 		if (e.world instanceof WorldServer) {
-			WorldServer srv = (WorldServer)e.world;
+			WorldServer srv = (WorldServer) e.world;
 			List<Packet<INetHandlerPlayClient>> packets = toClientboundVanillaPackets();
 			for (EntityPlayer ep : srv.getEntityTracker().getTrackingPlayers(e)) {
 				if (ep == exclude) continue;
 				if (ep instanceof EntityPlayerMP) {
 					for (Packet<INetHandlerPlayClient> packet : packets) {
-						((EntityPlayerMP)ep).connection.sendPacket(packet);
+						((EntityPlayerMP) ep).connection.sendPacket(packet);
 					}
 				}
 			}
@@ -325,19 +323,19 @@ public abstract class Message {
 	public final void sendToAllWatchingAndSelfExcept(Entity e, @Nullable EntityPlayer exclude) {
 		if (side.isServer()) wrongSide();
 		if (e.world instanceof WorldServer) {
-			WorldServer srv = (WorldServer)e.world;
+			WorldServer srv = (WorldServer) e.world;
 			List<Packet<INetHandlerPlayClient>> packets = toClientboundVanillaPackets();
 			for (EntityPlayer ep : srv.getEntityTracker().getTrackingPlayers(e)) {
 				if (ep == exclude) continue;
 				if (ep instanceof EntityPlayerMP) {
 					for (Packet<INetHandlerPlayClient> packet : packets) {
-						((EntityPlayerMP)ep).connection.sendPacket(packet);
+						((EntityPlayerMP) ep).connection.sendPacket(packet);
 					}
 				}
 			}
 			if (e instanceof EntityPlayerMP) {
 				for (Packet<INetHandlerPlayClient> packet : packets) {
-					((EntityPlayerMP)e).connection.sendPacket(packet);
+					((EntityPlayerMP) e).connection.sendPacket(packet);
 				}
 			}
 		}
@@ -415,6 +413,6 @@ public abstract class Message {
 	
 	
 	private void wrongSide() {
-		throw new WrongSideException(getClass()+" cannot be sent from side "+side);
+		throw new WrongSideException(getClass() + " cannot be sent from side " + side);
 	}
 }

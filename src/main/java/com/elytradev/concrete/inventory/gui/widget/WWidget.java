@@ -78,8 +78,8 @@ public class WWidget {
 	/**
 	 * Draw this Widget at the specified coordinates. The coordinates provided are the top-level device coordinates of
 	 * this widget's topleft corner, so don't translate by the widget X/Y! That's already been done. Your "valid"
-	 * drawing space is from (x,y) to (x+width-1, y+height-1) inclusive. However, no scissor or depth masking is done,
-	 * so please take care to respect your boundaries.
+	 * drawing space is from (x, y) to (x + width - 1, y + height - 1) inclusive. However, no scissor or depth masking
+	 * is done, so please take care to respect your boundaries.
 	 * @param x The X coordinate of the leftmost pixels of this widget in device (opengl) coordinates
 	 * @param y The Y coordinate of the topmost pixels of this widget in device (opengl) coordinates
 	 */
