@@ -130,7 +130,7 @@ reobf {
 	reflectJar { mappingType = 'SEARGE' }
 	inventoryJar { mappingType = 'SEARGE' }
 	configJar { mappingType = 'SEARGE' }
-  resgenJar { mappingType = 'SEARGE' }
+	resgenJar { mappingType = 'SEARGE' }
 }
 
 artifacts {
