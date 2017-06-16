@@ -26,33 +26,51 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.reflect.instanciator;
+package com.elytradev.concrete.inventory;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
-import com.google.common.base.Throwables;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidTank;
 
-public class MethodHandlesInstanciator<T> implements Instanciator<T> {
+import javax.annotation.Nullable;
 
-	private MethodHandle handle;
+public class ValidatedFluidTankWrapper implements IFluidTank {
+    private ConcreteFluidTank delegate;
 
-	public MethodHandlesInstanciator(Constructor<T> c) {
-		try {
-			c.setAccessible(true);
-			handle = MethodHandles.publicLookup().unreflectConstructor(c);
-		} catch (IllegalAccessException e) {
-			Throwables.propagate(e);
-		}
-	}
+    public ValidatedFluidTankWrapper(ConcreteFluidTank delegate) {
+        this.delegate = delegate;
+    }
 
-	@Override
-	public T newInstance(Object... args) {
-		try {
-			return (T)handle.invokeWithArguments(args);
-		} catch (Throwable e) {
-			throw Throwables.propagate(e);
-		}
-	}
+    @Nullable
+    @Override
+    public FluidStack getFluid() {
+        return delegate.getFluid();
+    }
 
+    @Override
+    public int getFluidAmount() {
+        return delegate.getFluidAmount();
+    }
+
+    @Override
+    public int getCapacity() {
+        return delegate.getCapacity();
+    }
+
+    @Override
+    public FluidTankInfo getInfo() {
+        return delegate.getInfo();
+    }
+
+    @Override
+    public int fill(FluidStack resource, boolean doFill) {
+        if(!delegate.getFillValidator().test(resource)) return 0;
+        else return delegate.fill(resource, doFill);
+    }
+
+    @Nullable
+    @Override
+    public FluidStack drain(int maxDrain, boolean doDrain) {
+        return delegate.drain(maxDrain, doDrain);
+    }
 }

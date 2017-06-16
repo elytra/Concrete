@@ -1,5 +1,5 @@
 <img src="https://rawgit.com/elytra/Concrete/1.11.2/doc/emblem.svg" align="right" width="180px"/>
-
+ 
 # Concrete
 *A solid foundation for Elytra mods.*
 
@@ -40,6 +40,10 @@ assets directory explaining your use of ResGen. An example is provided in
 ### Reflect
 Contains a set of method invokers, field accessors, and class instanciators that
 take advantage of MethodHandles when they are available.
+
+### Config
+Adds a dead-simple annotation-based configuration system, similar to the Network
+module.
 
 ## Depending on Concrete
 

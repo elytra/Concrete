@@ -26,33 +26,23 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.reflect.instanciator;
+package com.elytradev.concrete.inventory.gui.widget;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
-import com.google.common.base.Throwables;
+public class WPlainPanel extends WPanel {
+    public void add(WWidget w, int x, int y) {
+        children.add(w);
+        w.setLocation(x, y);
+        if (w.canResize()) {
+            w.setSize(18, 18);
+        }
+        valid = false;
+    }
 
-public class MethodHandlesInstanciator<T> implements Instanciator<T> {
-
-	private MethodHandle handle;
-
-	public MethodHandlesInstanciator(Constructor<T> c) {
-		try {
-			c.setAccessible(true);
-			handle = MethodHandles.publicLookup().unreflectConstructor(c);
-		} catch (IllegalAccessException e) {
-			Throwables.propagate(e);
-		}
-	}
-
-	@Override
-	public T newInstance(Object... args) {
-		try {
-			return (T)handle.invokeWithArguments(args);
-		} catch (Throwable e) {
-			throw Throwables.propagate(e);
-		}
-	}
-
+    public void add(WWidget w, int x, int y, int width, int height) {
+        children.add(w);
+        w.setLocation(x, y);
+        if (w.canResize()) {
+            w.setSize(width, height);
+        }
+    }
 }

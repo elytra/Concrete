@@ -26,33 +26,42 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.reflect.instanciator;
+package com.elytradev.concrete.config;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
-import com.google.common.base.Throwables;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 
-public class MethodHandlesInstanciator<T> implements Instanciator<T> {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-	private MethodHandle handle;
+/**
+ * Used on fields in a ConcreteConfig implementation.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface ConfigValue {
 
-	public MethodHandlesInstanciator(Constructor<T> c) {
-		try {
-			c.setAccessible(true);
-			handle = MethodHandles.publicLookup().unreflectConstructor(c);
-		} catch (IllegalAccessException e) {
-			Throwables.propagate(e);
-		}
-	}
+	/**
+	 * The configuration comment for this field, provides information to end users.
+	 * There's very few cases where you shouldn't include this.
+	 */
+	String comment() default "";
 
-	@Override
-	public T newInstance(Object... args) {
-		try {
-			return (T)handle.invokeWithArguments(args);
-		} catch (Throwable e) {
-			throw Throwables.propagate(e);
-		}
-	}
+	/**
+	 * The configuration category for this field. Leave empty if not applicable.
+	 */
+	String category() default Configuration.CATEGORY_GENERAL;
+
+	/**
+	 * The field key, the 'name' used in the configuration file. Leave empty if the field name should be used.
+	 */
+	String key() default "";
+
+	/**
+	 * The property type for this config field. Determines how the field will be serialized.
+	 */
+	Property.Type type();
 
 }
