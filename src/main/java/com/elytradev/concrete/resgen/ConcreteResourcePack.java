@@ -37,7 +37,11 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.resources.*;
+import net.minecraft.client.resources.AbstractResourcePack;
+import net.minecraft.client.resources.FallbackResourceManager;
+import net.minecraft.client.resources.IResourcePack;
+import net.minecraft.client.resources.LegacyV2Adapter;
+import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -265,7 +269,7 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 	 * @return true if matches, false otherwise.
 	 */
 	private boolean isLocation(String place, String validation) {
-		return place.startsWith(("assets/" + modID + validation)) && place.endsWith(".json");
+		return place.startsWith("assets/" + modID + validation) && place.endsWith(".json");
 	}
 
 }
