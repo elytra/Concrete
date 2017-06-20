@@ -72,55 +72,7 @@ public abstract class ConcreteConfig {
 
 				try {
 					Object fieldValue = field.get(this);
-
-					if (field.getType().isArray()) {
-						switch (cfgValue.type()) {
-							case INTEGER: {
-								Property property = configuration.get(valueCategory, valueKey,
-										(int[]) fieldValue, valueComment);
-								field.set(this, property.getIntList());
-								break;
-							}
-							case BOOLEAN: {
-								Property property = configuration.get(valueCategory, valueKey, (boolean[]) fieldValue, valueComment);
-								field.set(this, property.getBooleanList());
-								break;
-							}
-							case DOUBLE: {
-								Property property = configuration.get(valueCategory, valueKey, (double[]) fieldValue, valueComment);
-								field.set(this, property.getDoubleList());
-								break;
-							}
-							case STRING: {
-								Property property = configuration.get(valueCategory, valueKey, (String[]) fieldValue, valueComment);
-								field.set(this, property.getStringList());
-								break;
-							}
-						}
-					} else {
-						switch (cfgValue.type()) {
-							case INTEGER: {
-								Property property = configuration.get(valueCategory, valueKey, (Integer) fieldValue, valueComment);
-								field.set(this, property.getInt());
-								break;
-							}
-							case BOOLEAN: {
-								Property property = configuration.get(valueCategory, valueKey, (Boolean) fieldValue, valueComment);
-								field.set(this, property.getBoolean());
-								break;
-							}
-							case DOUBLE: {
-								Property property = configuration.get(valueCategory, valueKey, (Double) fieldValue, valueComment);
-								field.set(this, property.getDouble());
-								break;
-							}
-							case STRING: {
-								Property property = configuration.get(valueCategory, valueKey, (String) fieldValue, valueComment);
-								field.set(this, property.getString());
-								break;
-							}
-						}
-					}
+					saveConfigValue(field, fieldValue, valueKey, valueComment, valueCategory);
 				} catch (IllegalAccessException e) {
 					ConcreteLog.error("Failed to access field when loading a concrete configuration. {}", e);
 				}
@@ -134,6 +86,59 @@ public abstract class ConcreteConfig {
 	 */
 	public Configuration getConfiguration() {
 		return configuration;
+	}
+
+	protected void saveConfigValue(Field field, Object fieldValue, String valueKey, String valueComment, String valueCategory) throws IllegalAccessException {
+		if (field.getAnnotation(ConfigValueType.class) != null) {
+			Property.Type type = field.getAnnotation(ConfigValueType.class).value();
+			if (field.getType().isArray()) {
+				switch (type) {
+					case INTEGER: {
+						Property property = configuration.get(valueCategory, valueKey, (int[]) fieldValue, valueComment);
+						field.set(this, property.getIntList());
+						break;
+					}
+					case BOOLEAN: {
+						Property property = configuration.get(valueCategory, valueKey, (boolean[]) fieldValue, valueComment);
+						field.set(this, property.getBooleanList());
+						break;
+					}
+					case DOUBLE: {
+						Property property = configuration.get(valueCategory, valueKey, (double[]) fieldValue, valueComment);
+						field.set(this, property.getDoubleList());
+						break;
+					}
+					case STRING: {
+						Property property = configuration.get(valueCategory, valueKey, (String[]) fieldValue, valueComment);
+						field.set(this, property.getStringList());
+						break;
+					}
+				}
+			} else {
+				switch (type) {
+					case INTEGER: {
+						Property property = configuration.get(valueCategory, valueKey, (Integer) fieldValue, valueComment);
+						field.set(this, property.getInt());
+						break;
+					}
+					case BOOLEAN: {
+						Property property = configuration.get(valueCategory, valueKey, (Boolean) fieldValue, valueComment);
+						field.set(this, property.getBoolean());
+						break;
+					}
+					case DOUBLE: {
+						Property property = configuration.get(valueCategory, valueKey, (Double) fieldValue, valueComment);
+						field.set(this, property.getDouble());
+						break;
+					}
+					case STRING: {
+						Property property = configuration.get(valueCategory, valueKey, (String) fieldValue, valueComment);
+						field.set(this, property.getString());
+						break;
+					}
+				}
+			}
+		}
 	}
 
 }
