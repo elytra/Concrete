@@ -429,16 +429,8 @@ public class DefaultMarshallers {
 	}
 
 	public static <T> Marshaller<T> getByType(Class<T> type) {
-		if (byte.class.isAssignableFrom(type) || Byte.class.isAssignableFrom(type)) {
-			return (Marshaller<T>) INT8;
-		} else if (char.class.isAssignableFrom(type) || Character.class.isAssignableFrom(type)) {
+		if (char.class.isAssignableFrom(type) || Character.class.isAssignableFrom(type)) {
 			return (Marshaller<T>) CHAR;
-		} else if (short.class.isAssignableFrom(type) || Short.class.isAssignableFrom(type)) {
-			return (Marshaller<T>) INT16;
-		} else if (int.class.isAssignableFrom(type) || Integer.class.isAssignableFrom(type)) {
-			return (Marshaller<T>) INT32;
-		} else if (long.class.isAssignableFrom(type) || Long.class.isAssignableFrom(type)) {
-			return (Marshaller<T>) INT64;
 		} else if (float.class.isAssignableFrom(type) || Float.class.isAssignableFrom(type)) {
 			return (Marshaller<T>) FLOAT;
 		} else if (double.class.isAssignableFrom(type) || Double.class.isAssignableFrom(type)) {
