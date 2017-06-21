@@ -33,6 +33,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
 
 import com.elytradev.concrete.common.ConcreteLog;
 import com.elytradev.concrete.network.exception.BadMessageException;
@@ -58,27 +59,33 @@ public class DefaultMarshallers {
 	 * <p>
 	 * Aliases: u8, uint8, ubyte
 	 */
-	public static final Marshaller<? extends Number> UINT8 = weld(ByteBuf::writeByte, ByteBuf::readUnsignedByte);
+	public static final Marshaller<? extends Number> UINT8 = weld(Number::intValue, ByteBuf::writeByte, ByteBuf::readUnsignedByte);
 	/**
 	 * Signed 8-bit (1 byte) integer.
 	 * <p>
 	 * Aliases: i8, int8, byte
 	 */
-	public static final Marshaller<? extends Number> INT8 = weld(ByteBuf::writeByte, ByteBuf::readByte);
+	public static final Marshaller<? extends Number> INT8 = weld(Number::intValue, ByteBuf::writeByte, ByteBuf::readByte);
 	
 	
 	/**
 	 * Unsigned 16-bit (2 byte) integer.
 	 * <p>
-	 * Aliases: u16, uint16, char, ushort
+	 * Aliases: u16, uint16, ushort
 	 */
-	public static final Marshaller<? extends Number> UINT16 = weld(ByteBuf::writeShort, ByteBuf::readUnsignedShort);
+	public static final Marshaller<? extends Number> UINT16 = weld(Number::intValue, ByteBuf::writeShort, ByteBuf::readUnsignedShort);
+	/**
+	 * 16-bit (2 byte) character.
+	 * <p>
+	 * Aliases: char
+	 */
+	public static final Marshaller<Character> CHAR = new CharacterMarshaller();
 	/**
 	 * Signed 16-bit (2 byte) integer.
 	 * <p>
 	 * Aliases: i16, int16, short
 	 */
-	public static final Marshaller<? extends Number> INT16 = weld(ByteBuf::writeShort, ByteBuf::readShort);
+	public static final Marshaller<? extends Number> INT16 = weld(Number::intValue, ByteBuf::writeShort, ByteBuf::readShort);
 	
 	
 	/**
@@ -86,13 +93,13 @@ public class DefaultMarshallers {
 	 * <p>
 	 * Aliases: u24, uint24, umedium
 	 */
-	public static final Marshaller<? extends Number> UINT24 = weld(ByteBuf::writeMedium, ByteBuf::readUnsignedMedium);
+	public static final Marshaller<? extends Number> UINT24 = weld(Number::intValue, ByteBuf::writeMedium, ByteBuf::readUnsignedMedium);
 	/**
 	 * Signed 24-bit (3 byte) integer.
 	 * <p>
 	 * Aliases: i24, int24, medium
 	 */
-	public static final Marshaller<? extends Number> INT24 = weld(ByteBuf::writeMedium, ByteBuf::readMedium);
+	public static final Marshaller<? extends Number> INT24 = weld(Number::intValue, ByteBuf::writeMedium, ByteBuf::readMedium);
 	
 	
 	/**
@@ -100,13 +107,13 @@ public class DefaultMarshallers {
 	 * <p>
 	 * Aliases: u32, uint32, uint, uinteger
 	 */
-	public static final Marshaller<? extends Number> UINT32 = weld(ByteBuf::writeInt, ByteBuf::readUnsignedInt);
+	public static final Marshaller<? extends Number> UINT32 = weld(Number::intValue, ByteBuf::writeInt, ByteBuf::readUnsignedInt);
 	/**
 	 * Signed 32-bit (4 byte) integer.
 	 * <p>
 	 * Aliases: i32, int32, int, integer
 	 */
-	public static final Marshaller<? extends Number> INT32 = weld(ByteBuf::writeInt, ByteBuf::readInt);
+	public static final Marshaller<? extends Number> INT32 = weld(Number::intValue, ByteBuf::writeInt, ByteBuf::readInt);
 	
 	
 	/**
@@ -114,7 +121,7 @@ public class DefaultMarshallers {
 	 * <p>
 	 * Aliases: i64, int64, long
 	 */
-	public static final Marshaller<? extends Number> INT64 = weld(ByteBuf::writeLong, ByteBuf::readLong);
+	public static final Marshaller<? extends Number> INT64 = weld(Number::longValue, ByteBuf::writeLong, ByteBuf::readLong);
 	
 	
 	/**
@@ -122,7 +129,7 @@ public class DefaultMarshallers {
 	 * <p>
 	 * Aliases: f32, float
 	 */
-	public static final Marshaller<? extends Number> FLOAT = weld(ByteBuf::writeFloat, ByteBuf::readFloat);
+	public static final Marshaller<? extends Number> FLOAT = weld(Number::floatValue, ByteBuf::writeFloat, ByteBuf::readFloat);
 	
 	
 	/**
@@ -130,7 +137,7 @@ public class DefaultMarshallers {
 	 * <p>
 	 * Aliases: f64, double
 	 */
-	public static final Marshaller<? extends Number> DOUBLE = weld(ByteBuf::writeDouble, ByteBuf::readDouble);
+	public static final Marshaller<? extends Number> DOUBLE = weld(Number::doubleValue, ByteBuf::writeDouble, ByteBuf::readDouble);
 	
 	
 	/**
@@ -178,7 +185,8 @@ public class DefaultMarshallers {
 		put(UINT8, "u8", "uint8", "ubyte");
 		put(INT8, "i8", "int8", "byte");
 		
-		put(UINT16, "u16", "uint16", "char", "ushort");
+		put(UINT16, "u16", "uint16", "ushort");
+		put(CHAR, "char");
 		put(INT16, "i16", "int16", "short");
 		
 		put(UINT24, "u24", "uint24", "umedium");
@@ -330,8 +338,35 @@ public class DefaultMarshallers {
 		
 	}
 	
+	private static class CharacterMarshaller implements Marshaller<Character> {
+		
+		@Override
+		public Character unmarshal(ByteBuf in) {
+			return in.readChar();
+		}
+		
+		@Override
+		public void marshal(ByteBuf out, Character t) {
+			out.writeChar((int) t);
+		}
+		
+	}
 	
-	private static <T> Marshaller<T> weld(Serializer<T> serializer, Deserializer deserializer) {
+	
+	private static <F, R extends Number> Marshaller<? extends Number> weld(Function<Number, F> converter, Serializer<F> serializer, Deserializer<R> deserializer) {
+		return new Marshaller<Number>() {
+			@Override
+			public void marshal(ByteBuf out, Number number) {
+				serializer.serialize(out, converter.apply(number));
+			}
+			@Override
+			public R unmarshal(ByteBuf in) {
+				return deserializer.deserialize(in);
+			}
+		};
+	}
+	
+	private static <T> Marshaller<T> weld(Serializer<T> serializer, Deserializer<T> deserializer) {
 		return new Marshaller<T>() {
 			@Override
 			public void marshal(ByteBuf out, T t) {
@@ -339,7 +374,7 @@ public class DefaultMarshallers {
 			}
 			@Override
 			public T unmarshal(ByteBuf in) {
-				return (T) deserializer.deserialize(in);
+				return deserializer.deserialize(in);
 			}
 		};
 	}
@@ -347,8 +382,8 @@ public class DefaultMarshallers {
 	private interface Serializer<T> {
 		void serialize(ByteBuf out, T t);
 	}
-	private interface Deserializer {
-		Object deserialize(ByteBuf in);
+	private interface Deserializer<T> {
+		T deserialize(ByteBuf in);
 	}
 	
 	public static <T> Marshaller<T> getByName(String name) {
@@ -394,7 +429,21 @@ public class DefaultMarshallers {
 	}
 
 	public static <T> Marshaller<T> getByType(Class<T> type) {
-		if (String.class.isAssignableFrom(type)) {
+		if (byte.class.isAssignableFrom(type) || Byte.class.isAssignableFrom(type)) {
+			return (Marshaller<T>) INT8;
+		} else if (char.class.isAssignableFrom(type) || Character.class.isAssignableFrom(type)) {
+			return (Marshaller<T>) CHAR;
+		} else if (short.class.isAssignableFrom(type) || Short.class.isAssignableFrom(type)) {
+			return (Marshaller<T>) INT16;
+		} else if (int.class.isAssignableFrom(type) || Integer.class.isAssignableFrom(type)) {
+			return (Marshaller<T>) INT32;
+		} else if (long.class.isAssignableFrom(type) || Long.class.isAssignableFrom(type)) {
+			return (Marshaller<T>) INT64;
+		} else if (float.class.isAssignableFrom(type) || Float.class.isAssignableFrom(type)) {
+			return (Marshaller<T>) FLOAT;
+		} else if (double.class.isAssignableFrom(type) || Double.class.isAssignableFrom(type)) {
+			return (Marshaller<T>) DOUBLE;
+		} else if (String.class.isAssignableFrom(type)) {
 			return (Marshaller<T>) STRING;
 		} else if (BlockPos.class.isAssignableFrom(type)) {
 			return (Marshaller<T>) BLOCKPOS;
