@@ -39,6 +39,7 @@ import java.util.Random;
 /**
  * An interface used to describe the behaviour for exp drops for a {@link ConcreteBlock}.
  */
+@FunctionalInterface
 public interface ExpDropBehaviour {
 
 	/**
