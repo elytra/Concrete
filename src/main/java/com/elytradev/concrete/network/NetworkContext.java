@@ -171,10 +171,10 @@ public class NetworkContext {
 		Message m;
 		try {
 			if (!instanciators.containsKey(clazz)) {
-				Constructor<? extends Message> cons = clazz.getConstructor(NetworkContext.class);
+				Constructor<? extends Message> cons = clazz.getDeclaredConstructor();
 				instanciators.put(clazz, Instanciators.from(cons));
 			}
-			m = instanciators.get(clazz).newInstance(this);
+			m = instanciators.get(clazz).newInstance();
 		} catch (Throwable t) {
 			throw new BadMessageException("Cannot instanciate message class " + clazz, t);
 		}

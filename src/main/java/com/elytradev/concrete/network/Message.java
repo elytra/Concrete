@@ -71,15 +71,10 @@ public abstract class Message {
 	}
 	private static final Map<Class<?>, ClassInfo> classInfo = Maps.newHashMap();
 	
-	
-	private transient final NetworkContext ctx;
-	
 	private transient final Side side;
 	private transient final boolean async;
 	
-	public Message(NetworkContext ctx) {
-		this.ctx = ctx;
-		
+	public Message() {
 		ClassInfo ci = classInfo.get(getClass());
 		if (ci == null) {
 			ReceivedOn ro = getClass().getDeclaredAnnotation(ReceivedOn.class);
@@ -97,6 +92,8 @@ public abstract class Message {
 		}
 		
 	}
+	
+	protected abstract NetworkContext getNetworkContext();
 	
 	@SideOnly(Side.CLIENT)
 	void doHandleClient() {
@@ -396,7 +393,7 @@ public abstract class Message {
 	 * use cases.
 	 */
 	public final Packet<INetHandlerPlayServer> toServerboundVanillaPacket() {
-		return ctx.getPacketFrom(this).toC17Packet();
+		return getNetworkContext().getPacketFrom(this).toC17Packet();
 	}
 	
 	/**
@@ -405,7 +402,7 @@ public abstract class Message {
 	 */
 	public final List<Packet<INetHandlerPlayClient>> toClientboundVanillaPackets() {
 		try {
-			return ctx.getPacketFrom(this).toS3FPackets();
+			return getNetworkContext().getPacketFrom(this).toS3FPackets();
 		} catch (IOException e) {
 			throw new BadMessageException(e);
 		}
