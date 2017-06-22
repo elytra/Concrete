@@ -170,11 +170,7 @@ public class NetworkContext {
 		Class<? extends Message> clazz = packetIds.inverse().get(id);
 		Message m;
 		try {
-			if (!instanciators.containsKey(clazz)) {
-				Constructor<? extends Message> cons = clazz.getDeclaredConstructor();
-				instanciators.put(clazz, Instanciators.from(cons));
-			}
-			m = instanciators.get(clazz).newInstance();
+			m = instantiateMessage(clazz);
 		} catch (Throwable t) {
 			throw new BadMessageException("Cannot instanciate message class " + clazz, t);
 		}
@@ -209,6 +205,25 @@ public class NetworkContext {
 		                             .filter((it) -> it.getType() != Boolean.TYPE && present.contains(it))
 		                             .forEach((it) -> it.unmarshal(m, payload));
 		return m;
+	}
+	
+	private Message instantiateMessage(Class<? extends Message> clazz) throws Throwable {
+		Instanciator<? extends Message> instanciator = instanciators.get(clazz);
+		if (instanciator == null) {
+			Constructor<? extends Message> cons;
+			try {
+				cons = clazz.getDeclaredConstructor(NetworkContext.class);
+			} catch (Throwable t) {
+				cons = clazz.getDeclaredConstructor();
+			}
+			instanciator = Instanciators.from(cons);
+			instanciators.put(clazz, instanciator);
+		}
+		try {
+			return instanciator.newInstance(this);
+		} catch (Throwable t) {
+			return instanciator.newInstance();
+		}
 	}
 	
 	
