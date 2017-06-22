@@ -31,7 +31,7 @@ package com.elytradev.concrete.common;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.Loader;
 
-public class ShadingValidator {
+public final class ShadingValidator {
 
 	private static final String DEFAULT_PACKAGE;
 	
@@ -57,4 +57,5 @@ public class ShadingValidator {
 		}
 	}
 
+	private ShadingValidator() {}
 }
