@@ -40,7 +40,8 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiDrawing {
+public final class GuiDrawing {
+	private GuiDrawing() {}
 	
 	public static void rect(ResourceLocation texture, int left, int top, int width, int height, int color) {
 		rect(texture, left, top, width, height, 0, 0, 1, 1, color);
