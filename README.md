@@ -84,11 +84,11 @@ artifacts {
 }
 
 dependencies {
-	deobfCompile 'com.elytradev:concrete:0.2.2:common'
-	shadow 'com.elytradev:concrete:0.2.2:common'
+	deobfCompile 'com.elytradev:concrete:0.3.0:common'
+	shadow 'com.elytradev:concrete:0.3.0:common'
 
-	deobfCompile 'com.elytradev:concrete:0.2.2:<module name>'
-	shadow 'com.elytradev:concrete:0.2.2:<module name>'
+	deobfCompile 'com.elytradev:concrete:0.3.0:<module name>'
+	shadow 'com.elytradev:concrete:0.3.0:<module name>'
 }
 ```
 
