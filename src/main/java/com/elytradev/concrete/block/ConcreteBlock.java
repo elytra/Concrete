@@ -60,6 +60,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class ConcreteBlock extends Block {
 
+	static {
+		ShadingValidator.ensureShaded();
+	}
+
 	public static Builder builder() {
 		return new Builder();
 	}
@@ -72,7 +76,6 @@ public final class ConcreteBlock extends Block {
 	private ConcreteBlock(String identifier, Material materialIn, boolean translucent, boolean silkHarvest,
 			ItemDropBehaviour itemDropBehaviour, ExpDropBehaviour expDropBehaviour) {
 		super(materialIn);
-		ShadingValidator.ensureShaded();
 		this.concreteTranslucent = translucent;
 		this.silkHarvest = silkHarvest;
 		this.itemDropBehaviour = itemDropBehaviour;
@@ -168,7 +171,7 @@ public final class ConcreteBlock extends Block {
 	// Translucent: End
 	///////////////////
 
-	public static class Builder {
+	public static final class Builder {
 
 		private String identifier;
 		private Optional<CreativeTabs> creativeTab = Optional.empty();

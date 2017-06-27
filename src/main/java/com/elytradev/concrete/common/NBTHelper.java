@@ -42,17 +42,21 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-public class NBTHelper {
+public final class NBTHelper {
 
-	public NBTHelper() {
+	static {
 		ShadingValidator.ensureShaded();
 	}
+	
+	// Keep public constructor for backwards compatibility
+	@Deprecated
+	public NBTHelper() {}
 	
 	/**
 	 * Convert the given Collection of INBTSerializable objects into an
 	 * NBTTagList.
 	 */
-	public <T extends INBTSerializable<U>,
+	public static <T extends INBTSerializable<U>,
 			U extends NBTBase> NBTTagList serialize(Collection<T> in) {
 		NBTTagList out = new NBTTagList();
 		for (T t : in) {
@@ -67,7 +71,7 @@ public class NBTHelper {
 	 * <p>
 	 * Example: {@code NBTHelper.deserialize(MyObject::new, myNBTList)}
 	 */
-	public <T extends INBTSerializable<U>,
+	public static <T extends INBTSerializable<U>,
 			U extends NBTBase> ArrayList<T> deserialize(Supplier<T> constructor, NBTTagList in) {
 		return deserialize(constructor, in, ArrayList::new);
 	}
@@ -79,7 +83,7 @@ public class NBTHelper {
 	 * <p>
 	 * Example: {@code NBTHelper.deserialize(MyObject::new, myNBTList, ArrayList::new)}
 	 */
-	public <T extends INBTSerializable<U>,
+	public static <T extends INBTSerializable<U>,
 			U extends NBTBase,
 			C extends Collection<T>> C deserialize(Supplier<T> constructor, NBTTagList in, Supplier<C> collectionConstructor) {
 		return deserializeInto(constructor, in, collectionConstructor.get());
@@ -95,7 +99,7 @@ public class NBTHelper {
 	 * <p>
 	 * Example: {@code NBTHelper.deserialize(MyObject::new, myNBTList, myList)}
 	 */
-	public <T extends INBTSerializable<U>,
+	public static <T extends INBTSerializable<U>,
 			U extends NBTBase,
 			C extends Collection<T>> C deserializeInto(Supplier<T> constructor, NBTTagList in, C collection) {
 		for (int i = 0; i < in.tagCount(); i++) {
@@ -109,15 +113,15 @@ public class NBTHelper {
 	
 	
 	
-	public NBTTagList serializeInventory(IInventory in) {
+	public static NBTTagList serializeInventory(IInventory in) {
 		return serializeInventory(new InvWrapper(in));
 	}
 	
-	public void deserializeInventory(IInventory out, NBTTagList in) {
+	public static void deserializeInventory(IInventory out, NBTTagList in) {
 		deserializeInventory(new InvWrapper(out), in);
 	}
 	
-	public NBTTagList serializeInventory(IItemHandler in) {
+	public static NBTTagList serializeInventory(IItemHandler in) {
 		NBTTagList out = new NBTTagList();
 		for (int i = 0; i < in.getSlots(); i++) {
 			ItemStack is = in.getStackInSlot(i);
@@ -129,7 +133,7 @@ public class NBTHelper {
 		return out;
 	}
 	
-	public void deserializeInventory(IItemHandlerModifiable out, NBTTagList in) {
+	public static void deserializeInventory(IItemHandlerModifiable out, NBTTagList in) {
 		for (int i = 0; i < out.getSlots(); i++) {
 			out.setStackInSlot(i, ItemStack.EMPTY);
 		}
