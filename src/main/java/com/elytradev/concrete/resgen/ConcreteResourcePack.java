@@ -47,7 +47,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.registry.RegistryDelegate;
+import net.minecraftforge.registries.IRegistryDelegate;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -76,8 +76,8 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 	private static Accessor<Map<String, FallbackResourceManager>> domainResourceManagers = Accessors.findField(SimpleReloadableResourceManager.class, "field_110548_a", "domainResourceManagers");
 	private static Accessor<List<IResourcePack>> resourcePacks = Accessors.findField(FallbackResourceManager.class, "field_110540_a", "resourcePacks");
 
-	private static Invoker hasResourceName = Invokers.findMethod(AbstractResourcePack.class, null, new String[]{"func_110593_b", "hasResourceName"}, String.class);
-	private static Invoker getInputStreamByName = Invokers.findMethod(AbstractResourcePack.class, null, new String[]{"func_110591_a", "getInputStreamByName"}, String.class);
+	private static Invoker hasResourceName = Invokers.findMethod(AbstractResourcePack.class,"hasResourceName", "func_110593_b", String.class);
+	private static Invoker getInputStreamByName = Invokers.findMethod(AbstractResourcePack.class, "getInputStreamByName", "func_110591_a", String.class);
 
 	public AbstractResourcePack realResourcePack;
 	public String modID;
@@ -149,10 +149,10 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 	 *
 	 * @return the value of ModelLoader.customModels
 	 */
-	public static Map<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation> getCustomModels() {
+	public static Map<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation> getCustomModels() {
 		try {
 			Field field = ModelLoader.class.getDeclaredField("customModels");
-			return (Map<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation>) FieldUtils.readStaticField(field, true);
+			return (Map<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation>) FieldUtils.readStaticField(field, true);
 		} catch (Exception e) {
 			ConcreteLog.error("Caught exception getting customModels from the model loader, ", e);
 		}
@@ -203,7 +203,7 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 		} else {
 			ResourceLocation location = nameToLocation(name);
 			try {
-				HashBiMap<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation> customModelsMap = HashBiMap.create(getCustomModels());
+				HashBiMap<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation> customModelsMap = HashBiMap.create(getCustomModels());
 				String resourcePath = location.getResourcePath();
 				resourcePath = resourcePath.substring(resourcePath.lastIndexOf("/") + 1);
 				resourcePath = resourcePath.substring(0, resourcePath.lastIndexOf("."));
@@ -227,7 +227,7 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 	public Integer getMetaFromName(String name) {
 		ResourceLocation location = nameToLocation(name);
 		try {
-			HashBiMap<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation> customModelsMap = HashBiMap.create(getCustomModels());
+			HashBiMap<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation> customModelsMap = HashBiMap.create(getCustomModels());
 			String resourcePath = location.getResourcePath();
 			resourcePath = resourcePath.substring(resourcePath.lastIndexOf("/") + 1);
 			resourcePath = resourcePath.substring(0, resourcePath.lastIndexOf("."));

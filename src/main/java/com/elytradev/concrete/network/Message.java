@@ -208,7 +208,7 @@ public abstract class Message {
 	 * within the given radius of the given position, except the given player.
 	 */
 	public final void sendToAllAroundExcept(World world, Vec3d pos, double radius, @Nullable EntityPlayer exclude) {
-		sendToAllAroundExcept(world, pos.xCoord, pos.yCoord, pos.zCoord, radius, exclude);
+		sendToAllAroundExcept(world, pos.x, pos.y, pos.z, radius, exclude);
 	}
 	
 	
@@ -247,11 +247,11 @@ public abstract class Message {
 		if (world instanceof WorldServer) {
 			WorldServer srv = (WorldServer) world;
 			Chunk c = srv.getChunkFromBlockCoords(pos);
-			if (srv.getPlayerChunkMap().contains(c.xPosition, c.zPosition)) {
+			if (srv.getPlayerChunkMap().contains(c.x, c.z)) {
 				List<Packet<INetHandlerPlayClient>> packets = toClientboundVanillaPackets();
 				for (EntityPlayerMP ep : world.getPlayers(EntityPlayerMP.class, Predicates.alwaysTrue())) {
 					if (ep == exclude) continue;
-					if (srv.getPlayerChunkMap().isPlayerWatchingChunk(ep, c.xPosition, c.zPosition)) {
+					if (srv.getPlayerChunkMap().isPlayerWatchingChunk(ep, c.x, c.z)) {
 						for (Packet<INetHandlerPlayClient> packet : packets) {
 							ep.connection.sendPacket(packet);
 						}
