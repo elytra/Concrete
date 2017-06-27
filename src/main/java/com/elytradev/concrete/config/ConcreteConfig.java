@@ -30,12 +30,18 @@ package com.elytradev.concrete.config;
 
 import com.elytradev.concrete.common.ConcreteLog;
 import com.elytradev.concrete.common.ShadingValidator;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -47,8 +53,28 @@ public abstract class ConcreteConfig {
 		ShadingValidator.ensureShaded();
 	}
 
+	private static final Map<Class<? extends ConcreteConfig>, List<ConfigField>> serializers = Maps.newHashMap();
+
+	private final Class<? extends ConcreteConfig> clazz = this.getClass().asSubclass(ConcreteConfig.class);
+
 	// The real configuration that all writing is done to.
 	private final Configuration configuration;
+
+	// An optional mod ID that is used to handle OnConfigChangedEvent.
+	private String modID;
+
+	/**
+	 * Create a new configuration with the given file and register it to the Forge
+	 * event bus with the given mod ID.
+	 *
+	 * @param configFile
+	 * @param modID
+	 */
+	protected ConcreteConfig(File configFile, String modID) {
+		this(configFile);
+		this.modID = modID;
+		MinecraftForge.EVENT_BUS.register(this);
+	}
 
 	/**
 	 * Create a new configuration with the given file.
@@ -63,83 +89,40 @@ public abstract class ConcreteConfig {
 	 * Saves config values, and writes to disk.
 	 */
 	public void loadConfig() {
-		Class clazz = this.getClass();
-
-		for (Field field : clazz.getDeclaredFields()) {
-			if (field.getAnnotation(ConfigValue.class) != null) {
-				ConfigValue cfgValue = field.getAnnotation(ConfigValue.class);
-				String valueKey = cfgValue.key();
-				String valueComment = cfgValue.comment();
-				String valueCategory = cfgValue.category();
-
-				if (Objects.equals(valueKey, "")) {
-					valueKey = field.getName();
-				}
-
-				try {
-					Object fieldValue = field.get(this);
-
-					if (field.getType().isArray()) {
-						switch (cfgValue.type()) {
-							case INTEGER: {
-								Property property = configuration.get(valueCategory, valueKey,
-										(int[]) fieldValue, valueComment);
-								field.set(this, property.getIntList());
-								break;
-							}
-							case BOOLEAN: {
-								Property property = configuration.get(valueCategory, valueKey, (boolean[]) fieldValue, valueComment);
-								field.set(this, property.getBooleanList());
-								break;
-							}
-							case DOUBLE: {
-								Property property = configuration.get(valueCategory, valueKey, (double[]) fieldValue, valueComment);
-								field.set(this, property.getDoubleList());
-								break;
-							}
-							case STRING: {
-								Property property = configuration.get(valueCategory, valueKey, (String[]) fieldValue, valueComment);
-								field.set(this, property.getStringList());
-								break;
-							}
-						}
-					} else {
-						switch (cfgValue.type()) {
-							case INTEGER: {
-								Property property = configuration.get(valueCategory, valueKey, (Integer) fieldValue, valueComment);
-								field.set(this, property.getInt());
-								break;
-							}
-							case BOOLEAN: {
-								Property property = configuration.get(valueCategory, valueKey, (Boolean) fieldValue, valueComment);
-								field.set(this, property.getBoolean());
-								break;
-							}
-							case DOUBLE: {
-								Property property = configuration.get(valueCategory, valueKey, (Double) fieldValue, valueComment);
-								field.set(this, property.getDouble());
-								break;
-							}
-							case STRING: {
-								Property property = configuration.get(valueCategory, valueKey, (String) fieldValue, valueComment);
-								field.set(this, property.getString());
-								break;
-							}
+		try {
+			List<ConfigField> fields = serializers.get(clazz);
+			if (fields == null) {
+				fields = Lists.newArrayList();
+				for (Class<?> cursor = clazz; cursor != null && cursor != Object.class; cursor = cursor.getSuperclass()) {
+					for (Field f : cursor.getDeclaredFields()) {
+						if (f.isAnnotationPresent(ConfigValue.class)) {
+							fields.add(new ConfigField(this, f));
 						}
 					}
-				} catch (IllegalAccessException e) {
-					ConcreteLog.error("Failed to access field when loading a concrete configuration. {}", e);
 				}
+				serializers.put(clazz, fields);
 			}
+			for (ConfigField field : fields) {
+				field.load();
+			}
+		} catch (IllegalAccessException e) {
+			ConcreteLog.error("Failed to access field when loading a concrete configuration.", e);
 		}
 		configuration.save();
 	}
 
 	/**
-	 * Get the forge configuration that is written to, use if you need direct access.
+	 * Get the Forge configuration that is written to, use if you need direct access.
 	 */
 	public Configuration getConfiguration() {
 		return configuration;
+	}
+
+	@SubscribeEvent
+	public void onConfigChanged(OnConfigChangedEvent event) {
+		if (Objects.equals(modID, event.getModID())) {
+			loadConfig();
+		}
 	}
 
 }

@@ -50,7 +50,7 @@ public @interface ConfigValue {
 	String comment() default "";
 
 	/**
-	 * The configuration category for this field. Leave empty if not applicable.
+	 * The configuration category for this field.
 	 */
 	String category() default Configuration.CATEGORY_GENERAL;
 
@@ -63,5 +63,26 @@ public @interface ConfigValue {
 	 * The property type for this config field. Determines how the field will be serialized.
 	 */
 	Property.Type type();
+
+	/**
+	 * Whether or not this field should be shown on configuration GUIs.
+	 */
+	boolean showInGui() default true;
+
+	/**
+	 * The language key, used in configuration GUIs. Leave empty if the field name should be used.
+	 */
+	String langKey() default "";
+
+	/**
+	 * Whether or not this field can be edited while a world is running.
+	 */
+	boolean requiresWorldRestart() default false;
+
+	/**
+	 * Whether or not this field requires Minecraft to be restarted when changed.
+	 * Setting this flag to true will also disable editing of this field while a world is running.
+	 */
+	boolean requiresMcRestart() default false;
 
 }
