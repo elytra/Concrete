@@ -29,6 +29,8 @@
 package com.elytradev.concrete.config;
 
 import com.elytradev.concrete.common.ConcreteLog;
+import com.elytradev.concrete.common.ShadingValidator;
+
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -40,6 +42,10 @@ import java.util.Objects;
  * Configuration base class, uses annotated fields instead of direct configuration calls for configuration data.
  */
 public abstract class ConcreteConfig {
+
+	static {
+		ShadingValidator.ensureShaded();
+	}
 
 	// The real configuration that all writing is done to.
 	private final Configuration configuration;

@@ -28,6 +28,7 @@
 
 package com.elytradev.concrete.reflect.instanciator;
 
+@FunctionalInterface
 public interface Instanciator<T> {
 	T newInstance(Object... args);
 }

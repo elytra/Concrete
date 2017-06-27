@@ -29,6 +29,7 @@
 package com.elytradev.concrete.resgen;
 
 import com.elytradev.concrete.common.ConcreteLog;
+import com.elytradev.concrete.common.ShadingValidator;
 import com.elytradev.concrete.reflect.accessor.Accessor;
 import com.elytradev.concrete.reflect.accessor.Accessors;
 import com.elytradev.concrete.reflect.invoker.Invoker;
@@ -68,6 +69,10 @@ import java.util.Set;
  * @see ResourceProvider for custom asset types, and methods to provide those assets.
  */
 public class ConcreteResourcePack extends AbstractResourcePack {
+
+	static {
+		ShadingValidator.ensureShaded();
+	}
 
 	private static Accessor<List<IResourcePack>> resourcePackList = Accessors.findField(FMLClientHandler.class, "resourcePackList");
 

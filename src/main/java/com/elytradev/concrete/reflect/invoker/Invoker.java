@@ -28,6 +28,7 @@
 
 package com.elytradev.concrete.reflect.invoker;
 
+@FunctionalInterface
 public interface Invoker {
 	Object invoke(Object owner, Object... args);
 }

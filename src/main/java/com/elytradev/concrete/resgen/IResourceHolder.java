@@ -34,6 +34,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
+@FunctionalInterface
 public interface IResourceHolder {
 
 	@Nullable

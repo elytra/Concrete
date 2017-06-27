@@ -52,7 +52,7 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
  * <p>
  * Any marshaller can be used for lists by putting "-list" after its name.
  */
-public class DefaultMarshallers {
+public final class DefaultMarshallers {
 	
 	/**
 	 * Unsigned 8-bit (1 byte) integer.
@@ -450,4 +450,6 @@ public class DefaultMarshallers {
 		}
 		return null;
 	}
+	
+	private DefaultMarshallers() {}
 }

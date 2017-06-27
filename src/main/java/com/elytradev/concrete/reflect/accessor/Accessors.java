@@ -38,6 +38,8 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public final class Accessors {
 	private static final boolean methodHandlesAvailable;
 	static {
+		ShadingValidator.ensureShaded();
+		
 		boolean hasMethodHandles;
 		try {
 			Class.forName("java.lang.invoke.MethodHandles");
@@ -61,7 +63,6 @@ public final class Accessors {
 	}
 	
 	public static <T> Accessor<T> from(Method get, Method set) {
-		ShadingValidator.ensureShaded();
 		if (methodHandlesAvailable) {
 			return new MethodHandlesAccessor<>(get, set);
 		} else {

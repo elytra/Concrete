@@ -63,7 +63,11 @@ import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class NetworkContext {
+public final class NetworkContext {
+	static {
+		ShadingValidator.ensureShaded();
+	}
+	
 	protected static final Map<Class<? extends Message>, Instanciator<? extends Message>> instanciators = Maps.newHashMap();
 	
 	protected final BiMap<Class<? extends Message>, Integer> packetIds = HashBiMap.create();
@@ -76,7 +80,6 @@ public class NetworkContext {
 	private int nextPacketId = 0;
 	
 	private NetworkContext(String channel) {
-		ShadingValidator.ensureShaded();
 		this.channel = channel;
 		NetworkRegistry.INSTANCE.newEventDrivenChannel(channel).register(this);
 	}

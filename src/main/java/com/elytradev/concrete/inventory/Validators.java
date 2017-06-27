@@ -36,7 +36,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-public class Validators {
+public final class Validators {
 	public static final Predicate<ItemStack> ANYTHING = (it) -> true;
 	public static final Predicate<ItemStack> NOTHING = (it) -> false;
 	public static final Predicate<ItemStack> FURNACE_FUELS = TileEntityFurnace::isItemFuel; //This is actually the most correct/accurate way to read the furnace registry!
@@ -72,4 +72,5 @@ public class Validators {
 	 */
 	public static final Predicate<FluidStack> GASES = (fs) -> fs.getFluid().isGaseous();
 
+	private Validators() {}
 }
