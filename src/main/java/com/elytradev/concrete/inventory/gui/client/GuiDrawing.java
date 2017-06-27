@@ -28,6 +28,7 @@
 
 package com.elytradev.concrete.inventory.gui.client;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraftforge.fluids.Fluid;
@@ -36,7 +37,6 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
@@ -58,16 +58,16 @@ public class GuiDrawing {
 		float g = (color >> 8 & 255) / 255.0F;
 		float b = (color & 255) / 255.0F;
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer vertexbuffer = tessellator.getBuffer();
+		BufferBuilder buffer = tessellator.getBuffer();
 		GlStateManager.enableBlend();
 		//GlStateManager.disableTexture2D();
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.color(r, g, b, 1.0f);
-		vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX); //I thought GL_QUADS was deprecated but okay, sure.
-		vertexbuffer.pos(left,         top + height, 0.0D).tex(u1, v2).endVertex();
-		vertexbuffer.pos(left + width, top + height, 0.0D).tex(u2, v2).endVertex();
-		vertexbuffer.pos(left + width, top,          0.0D).tex(u2, v1).endVertex();
-		vertexbuffer.pos(left,         top,          0.0D).tex(u1, v1).endVertex();
+		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX); //I thought GL_QUADS was deprecated but okay, sure.
+		buffer.pos(left,         top + height, 0.0D).tex(u1, v2).endVertex();
+		buffer.pos(left + width, top + height, 0.0D).tex(u2, v2).endVertex();
+		buffer.pos(left + width, top,          0.0D).tex(u2, v1).endVertex();
+		buffer.pos(left,         top,          0.0D).tex(u1, v1).endVertex();
 		tessellator.draw();
 		//GlStateManager.enableTexture2D();
 		GlStateManager.disableBlend();
@@ -84,16 +84,16 @@ public class GuiDrawing {
 		float g = (color >> 8 & 255) / 255.0F;
 		float b = (color & 255) / 255.0F;
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer vertexbuffer = tessellator.getBuffer();
+		BufferBuilder buffer = tessellator.getBuffer();
 		GlStateManager.enableBlend();
 		GlStateManager.disableTexture2D();
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.color(r, g, b, 1.0f);
-		vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION); //I thought GL_QUADS was deprecated but okay, sure.
-		vertexbuffer.pos(left,         top + height, 0.0D).endVertex();
-		vertexbuffer.pos(left + width, top + height, 0.0D).endVertex();
-		vertexbuffer.pos(left + width, top,          0.0D).endVertex();
-		vertexbuffer.pos(left,         top,          0.0D).endVertex();
+		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION); //I thought GL_QUADS was deprecated but okay, sure.
+		buffer.pos(left,         top + height, 0.0D).endVertex();
+		buffer.pos(left + width, top + height, 0.0D).endVertex();
+		buffer.pos(left + width, top,          0.0D).endVertex();
+		buffer.pos(left,         top,          0.0D).endVertex();
 		tessellator.draw();
 		GlStateManager.enableTexture2D();
 		GlStateManager.disableBlend();
@@ -115,16 +115,16 @@ public class GuiDrawing {
 		float g = (color >> 8 & 255) / 255.0F;
 		float b = (color & 255) / 255.0F;
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer vertexbuffer = tessellator.getBuffer();
+		BufferBuilder buffer = tessellator.getBuffer();
 		GlStateManager.enableBlend();
 		//GlStateManager.disableTexture2D();
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.color(r, g, b, 1.0f);
-		vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX); //I thought GL_QUADS was deprecated but okay, sure.
-		vertexbuffer.pos(left,         top + height, 0.0D).tex(tas.getInterpolatedU(u1), tas.getInterpolatedV(v2)).endVertex();
-		vertexbuffer.pos(left + width, top + height, 0.0D).tex(tas.getInterpolatedU(u2), tas.getInterpolatedV(v2)).endVertex();
-		vertexbuffer.pos(left + width, top,          0.0D).tex(tas.getInterpolatedU(u2), tas.getInterpolatedV(v1)).endVertex();
-		vertexbuffer.pos(left,         top,          0.0D).tex(tas.getInterpolatedU(u1), tas.getInterpolatedV(v1)).endVertex();
+		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX); //I thought GL_QUADS was deprecated but okay, sure.
+		buffer.pos(left,         top + height, 0.0D).tex(tas.getInterpolatedU(u1), tas.getInterpolatedV(v2)).endVertex();
+		buffer.pos(left + width, top + height, 0.0D).tex(tas.getInterpolatedU(u2), tas.getInterpolatedV(v2)).endVertex();
+		buffer.pos(left + width, top,          0.0D).tex(tas.getInterpolatedU(u2), tas.getInterpolatedV(v1)).endVertex();
+		buffer.pos(left,         top,          0.0D).tex(tas.getInterpolatedU(u1), tas.getInterpolatedV(v1)).endVertex();
 		tessellator.draw();
 		//GlStateManager.enableTexture2D();
 		GlStateManager.disableBlend();

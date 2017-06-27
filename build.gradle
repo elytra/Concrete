@@ -12,8 +12,7 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
-		classpath 'me.tatarka:gradle-retrolambda:3.2.0'
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
 	}
 }
 
@@ -22,7 +21,6 @@ plugins {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'maven'
 
 group = "com.elytradev"
@@ -31,10 +29,6 @@ version = "0.2.3"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-retrolambda {
-	javaVersion JavaVersion.VERSION_1_6
-}
 
 configurations {
 	deploy
@@ -45,8 +39,8 @@ dependencies {
 }
 
 minecraft {
-	version = "1.11.2-13.20.0.2226"
-	mappings = "snapshot_20170205"
+	version = "1.12-14.21.0.2373"
+	mappings = "snapshot_20170623"
 
 	runDir = "eclipse"
 }
