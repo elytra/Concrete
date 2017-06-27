@@ -46,9 +46,9 @@ public final class Invokers {
 		}
 		methodHandlesAvailable = hasMethodHandles;
 	}
-	
-	public static <T> Invoker findMethod(Class<T> clazz, T instance, String[] methodNames, Class<?>... methodTypes) {
-		return from(ReflectionHelper.findMethod(clazz, instance, methodNames, methodTypes));
+
+	public static <T> Invoker findMethod(Class<T> clazz, String methodName, String methodObfName, Class<?>... parameterTypes){
+		return from(ReflectionHelper.findMethod(clazz, methodName, methodObfName, parameterTypes));
 	}
 	
 	public static Invoker from(Method m) {
