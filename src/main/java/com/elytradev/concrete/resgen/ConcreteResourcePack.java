@@ -34,6 +34,7 @@ import com.elytradev.concrete.reflect.accessor.Accessor;
 import com.elytradev.concrete.reflect.accessor.Accessors;
 import com.elytradev.concrete.reflect.invoker.Invoker;
 import com.elytradev.concrete.reflect.invoker.Invokers;
+import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
@@ -154,15 +155,18 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 	 *
 	 * @return the value of ModelLoader.customModels
 	 */
-	public static Map<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation> getCustomModels() {
+	public static BiMap<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation> getCustomModels() {
 		try {
 			Field field = ModelLoader.class.getDeclaredField("customModels");
-			return (Map<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation>) FieldUtils.readStaticField(field, true);
+			Map<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation> readField = (Map<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation>) FieldUtils.readStaticField(field, true);
+			BiMap<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation> customModels = HashBiMap.create(readField.size());
+			readField.forEach(customModels::forcePut);
+			return customModels;
 		} catch (Exception e) {
 			ConcreteLog.error("Caught exception getting customModels from the model loader, ", e);
 		}
 
-		return Collections.emptyMap();
+		return HashBiMap.create();
 	}
 
 	@Override
@@ -208,7 +212,7 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 		} else {
 			ResourceLocation location = nameToLocation(name);
 			try {
-				HashBiMap<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation> customModelsMap = HashBiMap.create(getCustomModels());
+				BiMap<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation> customModelsMap = getCustomModels();
 				String resourcePath = location.getResourcePath();
 				resourcePath = resourcePath.substring(resourcePath.lastIndexOf("/") + 1);
 				resourcePath = resourcePath.substring(0, resourcePath.lastIndexOf("."));
@@ -232,7 +236,7 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 	public Integer getMetaFromName(String name) {
 		ResourceLocation location = nameToLocation(name);
 		try {
-			HashBiMap<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation> customModelsMap = HashBiMap.create(getCustomModels());
+			BiMap<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation> customModelsMap = getCustomModels();
 			String resourcePath = location.getResourcePath();
 			resourcePath = resourcePath.substring(resourcePath.lastIndexOf("/") + 1);
 			resourcePath = resourcePath.substring(0, resourcePath.lastIndexOf("."));
