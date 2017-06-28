@@ -33,15 +33,12 @@ import com.elytradev.concrete.reflect.accessor.Accessor;
 import com.elytradev.concrete.reflect.accessor.Accessors;
 import com.elytradev.concrete.reflect.invoker.Invoker;
 import com.elytradev.concrete.reflect.invoker.Invokers;
+import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.resources.AbstractResourcePack;
-import net.minecraft.client.resources.FallbackResourceManager;
-import net.minecraft.client.resources.IResourcePack;
-import net.minecraft.client.resources.LegacyV2Adapter;
-import net.minecraft.client.resources.SimpleReloadableResourceManager;
+import net.minecraft.client.resources.*;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -149,15 +146,20 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 	 *
 	 * @return the value of ModelLoader.customModels
 	 */
-	public static Map<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation> getCustomModels() {
+	public static BiMap<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation> getCustomModels() {
 		try {
 			Field field = ModelLoader.class.getDeclaredField("customModels");
-			return (Map<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation>) FieldUtils.readStaticField(field, true);
+			Map<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation> readField = (Map<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation>) FieldUtils.readStaticField(field, true);
+			BiMap<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation> customModels = HashBiMap.create(readField.size());
+			for (Map.Entry<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation> entry : readField.entrySet()) {
+				customModels.forcePut(entry.getKey(), entry.getValue());
+			}
+			return customModels;
 		} catch (Exception e) {
 			ConcreteLog.error("Caught exception getting customModels from the model loader, ", e);
 		}
 
-		return Collections.emptyMap();
+		return HashBiMap.create();
 	}
 
 	@Override
@@ -203,7 +205,7 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 		} else {
 			ResourceLocation location = nameToLocation(name);
 			try {
-				HashBiMap<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation> customModelsMap = HashBiMap.create(getCustomModels());
+				BiMap<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation> customModelsMap = getCustomModels();
 				String resourcePath = location.getResourcePath();
 				resourcePath = resourcePath.substring(resourcePath.lastIndexOf("/") + 1);
 				resourcePath = resourcePath.substring(0, resourcePath.lastIndexOf("."));
@@ -227,7 +229,7 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 	public Integer getMetaFromName(String name) {
 		ResourceLocation location = nameToLocation(name);
 		try {
-			HashBiMap<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation> customModelsMap = HashBiMap.create(getCustomModels());
+			BiMap<Pair<RegistryDelegate<Item>, Integer>, ModelResourceLocation> customModelsMap = getCustomModels();
 			String resourcePath = location.getResourcePath();
 			resourcePath = resourcePath.substring(resourcePath.lastIndexOf("/") + 1);
 			resourcePath = resourcePath.substring(0, resourcePath.lastIndexOf("."));
