@@ -47,8 +47,8 @@ public class ConcreteGuiFactory implements IModGuiFactory {
 	private final String modID;
 	private final String title;
 
-	protected ConcreteGuiFactory(ConcreteConfig concreteConfig, String modID, String title) {
-		this(concreteConfig.getConfiguration(), modID, title);
+	protected ConcreteGuiFactory(ConcreteConfig concreteConfig, String title) {
+		this(concreteConfig.getConfiguration(), concreteConfig.getModID(), title);
 	}
 
 	protected ConcreteGuiFactory(Configuration config, String modID, String title) {
