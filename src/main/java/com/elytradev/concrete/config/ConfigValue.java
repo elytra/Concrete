@@ -70,7 +70,7 @@ public @interface ConfigValue {
 	boolean showInGui() default true;
 
 	/**
-	 * The language key, used in configuration GUIs. Leave empty if the field name should be used.
+	 * The language key, used in configuration GUIs. Leave empty if the default should be used: modID.configgui.key
 	 */
 	String langKey() default "";
 

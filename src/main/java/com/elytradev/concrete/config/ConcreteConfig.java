@@ -33,6 +33,7 @@ import com.elytradev.concrete.common.ShadingValidator;
 import com.google.common.collect.Maps;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
@@ -41,6 +42,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Map;
+
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * Configuration base class, uses annotated fields instead of direct configuration calls for configuration data.
@@ -54,11 +57,20 @@ public abstract class ConcreteConfig {
 	// The real configuration that all writing is done to.
 	private final Configuration configuration;
 
-	// A map of default values that is set on first load.
+	// A map of default values that are cached on first load.
 	private Map<Field, Object> fieldToDefaultValue = null;
 
-	// An optional mod ID that is used to handle OnConfigChangedEvent.
-	private String modID = null;
+	private final String modID;
+
+	/**
+	 * Create a new configuration with the given file, using the file name as the mod ID.
+	 *
+	 * @param configFile
+	 */
+	@Deprecated
+	protected ConcreteConfig(File configFile) {
+		this(configFile, FilenameUtils.removeExtension(configFile.getName()));
+	}
 
 	/**
 	 * Create a new configuration with the given file and register it to the Forge
@@ -68,59 +80,55 @@ public abstract class ConcreteConfig {
 	 * @param modID
 	 */
 	protected ConcreteConfig(File configFile, String modID) {
-		this(configFile);
-		setModID(modID);
-	}
-
-	/**
-	 * Create a new configuration with the given file.
-	 *
-	 * @param configFile
-	 */
-	protected ConcreteConfig(File configFile) {
 		this.configuration = new Configuration(configFile);
+		this.modID = modID;
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	/**
 	 * Saves config values, and writes to disk.
 	 */
 	public void loadConfig() {
-		try {
-			if (fieldToDefaultValue == null) {
-				fieldToDefaultValue = Maps.newHashMap();
-				for (Class<?> cursor = this.getClass(); cursor != null && cursor != Object.class; cursor = cursor.getSuperclass()) {
-					for (Field field : cursor.getDeclaredFields()) {
-						if (field.isAnnotationPresent(ConfigValue.class)) {
+		if (fieldToDefaultValue == null) {
+			fieldToDefaultValue = Maps.newHashMap();
+			for (Class<?> cursor = this.getClass(); cursor != null && cursor != Object.class; cursor = cursor.getSuperclass()) {
+				for (Field field : cursor.getDeclaredFields()) {
+					if (field.isAnnotationPresent(ConfigValue.class)) {
+						try {
 							field.setAccessible(true);
 							fieldToDefaultValue.put(field, field.get(this));
+						} catch (IllegalAccessException e) {
+							ConcreteLog.error("Failed to access field when loading a concrete configuration.", e);
 						}
 					}
 				}
 			}
+		}
 
-			for (Map.Entry<Field, Object> fieldEntry : fieldToDefaultValue.entrySet()) {
-				Field field = fieldEntry.getKey();
-				Object defaultValue = fieldEntry.getValue();
+		for (Map.Entry<Field, Object> fieldEntry : fieldToDefaultValue.entrySet()) {
+			Field field = fieldEntry.getKey();
+			Object defaultValue = fieldEntry.getValue();
 
-				ConfigValue cfgValue = field.getAnnotation(ConfigValue.class);
-				String valueKey = cfgValue.key();
-				String valueComment = cfgValue.comment();
-				String valueCategory = cfgValue.category();
-				String valueLangKey = cfgValue.langKey();
-				boolean showValueInGui = cfgValue.showInGui();
-				boolean valueRequiresMcRestart = cfgValue.requiresMcRestart();
-				boolean valueRequiresWorldRestart = cfgValue.requiresWorldRestart();
+			ConfigValue cfgValue = field.getAnnotation(ConfigValue.class);
+			String valueKey = cfgValue.key();
+			String valueComment = cfgValue.comment();
+			String valueCategory = cfgValue.category();
+			String valueLangKey = cfgValue.langKey();
+			boolean showValueInGui = cfgValue.showInGui();
+			boolean valueRequiresMcRestart = cfgValue.requiresMcRestart();
+			boolean valueRequiresWorldRestart = cfgValue.requiresWorldRestart();
 
-				if (valueKey.isEmpty()) {
-					valueKey = field.getName();
-				}
+			if (valueKey.isEmpty()) {
+				valueKey = field.getName();
+			}
 
-				if (valueLangKey.isEmpty()) {
-					valueLangKey = valueKey;
-				}
+			if (valueLangKey.isEmpty()) {
+				valueLangKey = modID + ".configgui." + valueKey;
+			}
 
-				Property property = null;
+			Property property = null;
 
+			try {
 				if (field.getType().isArray()) {
 					switch (cfgValue.type()) {
 						case INTEGER: {
@@ -168,21 +176,26 @@ public abstract class ConcreteConfig {
 						}
 					}
 				}
+			} catch (IllegalAccessException e) {
+				ConcreteLog.error("Failed to access field when loading a concrete configuration.", e);
+			}
 
-				if (property != null) {
-					property.setShowInGui(showValueInGui);
-					property.setLanguageKey(valueLangKey);
+			if (property != null) {
+				property.setShowInGui(showValueInGui);
+				property.setLanguageKey(valueLangKey);
+				property.setRequiresMcRestart(valueRequiresMcRestart);
 
-					if (valueRequiresMcRestart) {
-						property.setRequiresMcRestart(true);
-					} else if (valueRequiresWorldRestart) {
-						property.setRequiresWorldRestart(true);
-					}
+				if (valueRequiresWorldRestart) {
+					property.setRequiresWorldRestart(true);
 				}
 			}
-		} catch (IllegalAccessException e) {
-			ConcreteLog.error("Failed to access field when loading a concrete configuration.", e);
 		}
+
+		for (String categoryName : configuration.getCategoryNames()) {
+			ConfigCategory category = configuration.getCategory(categoryName);
+			category.setLanguageKey(modID + ".configgui.ctgy." + categoryName);
+		}
+
 		configuration.save();
 	}
 
@@ -194,30 +207,19 @@ public abstract class ConcreteConfig {
 	}
 
 	/**
-	 * Get the mod ID that is used to handle {@link OnConfigChangedEvent}.
+	 * Get this configuration's mod ID, used in config GUIs.
 	 */
 	public String getModID() {
 		return modID;
 	}
 
 	/**
-	 * Set the mod ID that is used to handle {@link OnConfigChangedEvent} and register
-	 * this configuration to the Forge event bus.
-	 * 
-	 * @param modID
+	 * Called on config changes, used to handle config GUI modifications.
 	 */
-	public void setModID(String modID) {
-		this.modID = modID;
-		if (modID != null) {
-			MinecraftForge.EVENT_BUS.register(this);
-		} else {
-			MinecraftForge.EVENT_BUS.unregister(this);
-		}
-	}
-
 	@SubscribeEvent
 	public void onConfigChanged(OnConfigChangedEvent event) {
-		if (modID != null && modID.equals(event.getModID())) {
+		// Check that the modID is ours before doing a reload.
+		if (modID.equals(event.getModID())) {
 			loadConfig();
 		}
 	}
