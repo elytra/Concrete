@@ -9,6 +9,7 @@
 /eclipse
 *.launch
 /private.properties
+/private.gradle
 /.idea
 *.iml
 *.ipr
