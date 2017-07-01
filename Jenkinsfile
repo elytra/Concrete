@@ -3,15 +3,16 @@ pipeline {
 	stages {
 		stage('Build') {
 			steps {
+				rm private.gradle
 				sh './gradlew setupCiWorkspace clean build'
 				archive 'build/libs/*jar'
 			}
 		}
 		stage('Deploy') {
 			steps {
-				withCredentials([string(credentialsId: 'privateGradle', variable: 'PRIVATEGRADLE')]) {
+				withCredentials([file(credentialsId: 'privateGradle', variable: 'PRIVATEGRADLE')]) {
 					sh '''
-						echo -n "$PRIVATEGRADLE" > private.gradle
+						cp "$PRIVATEGRADLE" private.gradle
 						./gradlew upload
 					'''
 				}
