@@ -3,7 +3,7 @@ pipeline {
 	stages {
 		stage('Build') {
 			steps {
-				rm 'private.gradle'
+				sh 'rm private.gradle'
 				sh './gradlew setupCiWorkspace clean build'
 				archive 'build/libs/*jar'
 			}
