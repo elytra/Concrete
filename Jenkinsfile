@@ -2,11 +2,15 @@ pipeline {
 	agent any
 	stages {
 		stage('Clone') {
-			checkout scm
+			steps {
+				checkout scm
+			}
 		}
 		stage('Build') {
-			sh './gradlew setupCiWorkspace clean build'
-			archive 'build/libs/*jar'
+			steps {
+				sh './gradlew setupCiWorkspace clean build'
+				archive 'build/libs/*jar'
+			}
 		}
 	}
 }
