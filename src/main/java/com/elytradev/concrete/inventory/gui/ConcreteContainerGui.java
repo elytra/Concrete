@@ -26,21 +26,21 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.gui.client;
+package com.elytradev.concrete.inventory.gui;
 
 import java.io.IOException;
 
-import com.elytradev.concrete.inventory.gui.ConcreteContainer;
+import com.elytradev.concrete.inventory.ConcreteContainer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
-public class ConcreteGui extends GuiContainer {
+public class ConcreteContainerGui extends GuiContainer {
 	public static final int PADDING = 8;
 	private final ConcreteContainer container;
 	
-	public ConcreteGui(ConcreteContainer container) {
+	public ConcreteContainerGui(ConcreteContainer container) {
 		super(container);
 		this.container = container;
 		this.xSize = 18 * 9;
@@ -59,7 +59,6 @@ public class ConcreteGui extends GuiContainer {
 	//@Override
 	//public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 	//}
-	
 	
 	/*
 	 * These methods are called frequently and empty, meaning they're probably *meant* for subclasses to override to
@@ -109,7 +108,6 @@ public class ConcreteGui extends GuiContainer {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
 	
-	
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
 		super.mouseReleased(mouseX, mouseY, state);
@@ -134,7 +132,6 @@ public class ConcreteGui extends GuiContainer {
 	public void setWorldAndResolution(Minecraft mc, int width, int height) {
 		super.setWorldAndResolution(mc, width, height);
 		//System.out.println("setWorldAndResolution:" + width + "x" + height);
-		
 		guiLeft = (width  / 2) - (xSize / 2);
 		guiTop =  (height / 2) - (ySize / 2);
 		
@@ -156,7 +153,7 @@ public class ConcreteGui extends GuiContainer {
 	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GuiDrawing.drawGuiPanel(guiLeft - PADDING, guiTop - PADDING, xSize + ((PADDING - 1) * 2), ySize + ((PADDING - 1) * 2));
+		GuiHelper.drawGuiPanel(guiLeft - PADDING, guiTop - PADDING, xSize + ((PADDING - 1) * 2), ySize + ((PADDING - 1) * 2));
 		
 		if (inventorySlots != null && this.container.getRootPanel() != null) {
 			this.container.getRootPanel().paintBackground(guiLeft, guiTop);

@@ -26,12 +26,35 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory;
+package com.elytradev.concrete.inventory.widget;
 
-import net.minecraftforge.fluids.IFluidTank;
+import com.elytradev.concrete.inventory.gui.GuiHelper;
+import net.minecraft.client.Minecraft;
 
-import javax.annotation.Nonnull;
+public class LabelWidget extends Widget {
+	public static final int DEFAULT_TEXT_COLOR = 0x404040;
+	public static final int DEFAULT_HEIGHT = 8;
+	
+	protected final String text;
+	protected final int color;
 
-public interface IObservableFluidTank extends IFluidTank {
-	public void listen(@Nonnull Runnable r);
+	public LabelWidget(String text, int color) {
+		this.text = text;
+		this.color = color;
+		this.setSize(Minecraft.getMinecraft().fontRenderer.getStringWidth(text), DEFAULT_HEIGHT);
+	}
+
+	public LabelWidget(String text) {
+		this(text, DEFAULT_TEXT_COLOR);
+	}
+
+	@Override
+	public void paintBackground(int x, int y) {
+		GuiHelper.drawString(text, x, y, color);
+	}
+
+	@Override
+	public boolean canResize() {
+		return false;
+	}
 }

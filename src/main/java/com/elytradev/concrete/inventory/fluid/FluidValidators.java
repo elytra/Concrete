@@ -26,30 +26,37 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.gui.widget;
+package com.elytradev.concrete.inventory.fluid;
 
-import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
+import java.util.function.Predicate;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fluids.FluidStack;
 
-public class WImage extends WWidget {
-	private final ResourceLocation texture;
-	
-	public WImage(ResourceLocation loc) {
-		this.texture = loc;
-	}
-	
-	
-	@Override
-	public boolean canResize() {
-		return true;
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void paintBackground(int x, int y) {
-		GuiDrawing.rect(texture, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
-	}
+public final class FluidValidators {
+	/**
+	 * Default Validator - accept every fluid.
+	 */
+	public static final Predicate<FluidStack> ANY_FLUID = (fs) -> true;
+
+	/**
+	 * Default Validator - accept no fluid.
+	 */
+	public static final Predicate<FluidStack> NO_FLUID = (fs) -> false;
+
+	/**
+	 * Example Validator - is the fluid as hot or hotter than lava?
+	 */
+	public static final Predicate<FluidStack> HOT_FLUIDS = (fs) -> fs.getFluid().getTemperature() >= 1300;
+
+	/**
+	 * Example Validator - is the fluid colder than water?
+	 */
+	public static final Predicate<FluidStack> COLD_FLUIDS = (fs) -> fs.getFluid().getTemperature() < 300;
+
+	/**
+	 * Example Validator - is the fluid a gas?
+	 */
+	public static final Predicate<FluidStack> GASES = (fs) -> fs.getFluid().isGaseous();
+
+	private FluidValidators() {}
 }

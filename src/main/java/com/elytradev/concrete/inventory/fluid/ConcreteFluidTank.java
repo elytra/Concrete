@@ -26,7 +26,7 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory;
+package com.elytradev.concrete.inventory.fluid;
 
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -37,16 +37,17 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.elytradev.concrete.inventory.ConcreteItemStorage;
+import com.elytradev.concrete.inventory.IObservable;
 import com.google.common.collect.Lists;
-
 
 /**
  * A base class for managing fluid storage.
  *
  * <h2>Validation</h2>
  *
- * Just like {@link ConcreteItemStorage}, ConcreteFluidTank <em>does not</em> perform its own validation. Rather, this
- * is offloaded to its own wrapper for such functionality, {@link ValidatedFluidTankWrapper}.
+ * Just like {@link ConcreteItemStorage}, ConcreteFluidTank <em>does not</em> perform
+ * its own validation. Rather, this is offloaded to its own wrapper for such functionality, {@link ValidatedFluidTankWrapper}.
  *
  * <h2>Serialization and Deserialization</h2>
  *
@@ -77,9 +78,9 @@ import com.google.common.collect.Lists;
  * valid side, and often represents the side a probe observer accesses, so plan your views accordingly.
  *
  */
-public class ConcreteFluidTank extends FluidTank implements IObservableFluidTank {
+public class ConcreteFluidTank extends FluidTank implements IObservable {
 	private final List<Runnable> listeners = Lists.newArrayList();
-	private Predicate<FluidStack> fillValidator = Validators.ANY_FLUID;
+	private Predicate<FluidStack> fillValidator = FluidValidators.ANY_FLUID;
 
 	public ConcreteFluidTank(int capacity) {
 		this(null, capacity);
@@ -97,7 +98,6 @@ public class ConcreteFluidTank extends FluidTank implements IObservableFluidTank
 		this.fillValidator = fillValidator;
 		return this;
 	}
-
 
 	public void markDirty() {
 		listeners.forEach(Runnable::run);
@@ -118,6 +118,4 @@ public class ConcreteFluidTank extends FluidTank implements IObservableFluidTank
 	public Predicate<FluidStack> getFillValidator() {
 		return this.fillValidator;
 	}
-
-
 }

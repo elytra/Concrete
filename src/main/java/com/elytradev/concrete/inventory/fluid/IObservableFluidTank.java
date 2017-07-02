@@ -26,47 +26,10 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory;
+package com.elytradev.concrete.inventory.fluid;
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.fluids.IFluidTank;
 
-import javax.annotation.Nonnull;
+import com.elytradev.concrete.inventory.IObservable;
 
-public class ValidatedItemHandlerView implements IItemHandler {
-	private final ConcreteItemStorage delegate;
-	
-	public ValidatedItemHandlerView(ConcreteItemStorage delegate) {
-		this.delegate = delegate;
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-		if (!delegate.getValidator(slot).test(stack)) return stack;
-		return delegate.insertItem(slot, stack, simulate);
-	}
-
-	@Override
-	public int getSlots() {
-		return delegate.getSlots();
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack getStackInSlot(int slot) {
-		return delegate.getStackInSlot(slot);
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		if (!delegate.getCanExtract(slot)) return ItemStack.EMPTY;
-		return delegate.extractItem(slot, amount, simulate);
-	}
-
-	@Override
-	public int getSlotLimit(int slot) {
-		return delegate.getSlotLimit(slot);
-	}
-}
+public interface IObservableFluidTank extends IFluidTank, IObservable {}

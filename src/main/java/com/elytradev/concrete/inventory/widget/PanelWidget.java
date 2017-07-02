@@ -26,11 +26,11 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.gui.widget;
+package com.elytradev.concrete.inventory.widget;
 
 import java.util.List;
 
-import com.elytradev.concrete.inventory.gui.ConcreteContainer;
+import com.elytradev.concrete.inventory.ConcreteContainer;
 import com.google.common.collect.Lists;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -40,21 +40,20 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Comparable to swing's JPanel, except that this is the base class for containers too - there's no way to make a
  * WContainer such that it isn't confused with Container, and we don't lose anything from the lack of abstraction.
  */
-public class WPanel extends WWidget {
-	protected final List<WWidget> children = Lists.newArrayList();
-	protected boolean valid;
+public class PanelWidget extends Widget {
+	protected final List<Widget> children = Lists.newArrayList();
 	
 	@Override
 	public void createPeers(ConcreteContainer c) {
-		for(WWidget child : children) {
+		for (Widget child : children) {
 			child.createPeers(c);
 		}
-		valid = true;
+		super.validate(c);
 	}
 	
-	public void remove(WWidget w) {
+	public void remove(Widget w) {
 		children.remove(w);
-		valid = false;
+		invalidate();
 	}
 	
 	@Override
@@ -66,8 +65,10 @@ public class WPanel extends WWidget {
 	 * Uses this Panel's layout rules to reposition and resize components to fit nicely in the panel.
 	 */
 	public void layout() {
-		for(WWidget child : children) {
-			if (child instanceof WPanel) ((WPanel) child).layout();
+		for (Widget child : children) {
+			if (child instanceof PanelWidget) {
+				((PanelWidget) child).layout();
+			}
 		}
 	}
 	
@@ -75,13 +76,13 @@ public class WPanel extends WWidget {
 	public void validate(ConcreteContainer c) {
 		layout();
 		createPeers(c);
-		valid = true;
+		super.validate(c);
 	}
 	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void paintBackground(int x, int y) {
-		for(WWidget child : children) {
+		for (Widget child : children) {
 			child.paintBackground(x + child.getX(), y + child.getY());
 		}
 	}

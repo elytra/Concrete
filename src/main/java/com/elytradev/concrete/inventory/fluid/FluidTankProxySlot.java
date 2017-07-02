@@ -26,7 +26,7 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory;
+package com.elytradev.concrete.inventory.fluid;
 
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -37,6 +37,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
 import javax.annotation.Nonnull;
+
+import com.elytradev.concrete.inventory.widget.FluidBarWidget;
+import com.elytradev.concrete.inventory.widget.Widget;
 
 /**
  * Manages syncing of {@code FluidStack} data between server/client, utilizing "fake" items encapsulating {@code FluidStack} data.
@@ -49,8 +52,8 @@ import javax.annotation.Nonnull;
  * serialize/deserialize information about the participating {@link ConcreteFluidTank} (namely, its {@code FluidStack}).</p>
  *
  * <p>This allows for super easy syncing of the FluidStack data between the server and the client, allowing
- * {@link com.elytradev.concrete.inventory.gui.widget.WWidget}s like
- * {@link com.elytradev.concrete.inventory.gui.widget.WFluidBar} to work and sync properly.</p>
+ * {@link Widget}s like
+ * {@link FluidBarWidget} to work and sync properly.</p>
  *
  */
 public class FluidTankProxySlot extends Slot {
@@ -64,30 +67,30 @@ public class FluidTankProxySlot extends Slot {
 	@Override
 	@Nonnull
 	public ItemStack getStack() {
-		NBTTagCompound fluidTank = new NBTTagCompound();
-		NBTTagCompound fluidStack = new NBTTagCompound();
+		ItemStack stack = new ItemStack(Items.STICK, 1, 0);
+		NBTTagCompound stackTag = new NBTTagCompound();
 
 		/* Having a little fun with it... */
-		NBTTagCompound display = new NBTTagCompound();
-		NBTTagList garbageLore = new NBTTagList();
-		garbageLore.appendTag(new NBTTagString("What? How can you see this?"));
-		garbageLore.appendTag(new NBTTagString("Tell @CalmBit immediately."));
-		display.setTag("Name", new NBTTagString("Fluid Stick"));
-		display.setTag("Lore", garbageLore);
+		NBTTagCompound displayTag = new NBTTagCompound();
+		NBTTagList loreTag = new NBTTagList();
+		loreTag.appendTag(new NBTTagString("What? How can you see this?"));
+		loreTag.appendTag(new NBTTagString("Tell @CalmBit immediately."));
+		displayTag.setString("Name", "Fluid Stick");
+		displayTag.setTag("Lore", loreTag);
 		/* End fun */
 
-		delegate.writeToNBT(fluidStack);
-		fluidTank.setTag("fluid_tank", fluidStack);
-		fluidTank.setTag("display", display);
-		ItemStack result = new ItemStack(Items.STICK, 1, 0);
-		result.setTagCompound(fluidTank);
-		return result;
+		stackTag.setTag("fluid_tank", delegate.writeToNBT(new NBTTagCompound()));
+		stackTag.setTag("display", displayTag);
+		stack.setTagCompound(stackTag);
+		return stack;
 	}
 
 	@Override
 	public void putStack(@Nonnull ItemStack stack) {
-		if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("fluid_tank"))
-			delegate.readFromNBT(stack.getTagCompound().getCompoundTag("fluid_tank"));
+		NBTTagCompound stackTag = stack.getTagCompound();
+		if (stackTag != null && stackTag.hasKey("fluid_tank")) {
+			delegate.readFromNBT(stackTag.getCompoundTag("fluid_tank"));
+		}
 	}
 
 	@Override
@@ -107,7 +110,7 @@ public class FluidTankProxySlot extends Slot {
 	}
 
 	@Override
-	public boolean isHere(IInventory inv, int slotIn) {
+	public boolean isHere(IInventory inv, int slot) {
 		return false;
 	}
 
@@ -115,7 +118,7 @@ public class FluidTankProxySlot extends Slot {
 	public boolean isSameInventory(Slot other) {
 		if (other instanceof FluidTankProxySlot) {
 			FluidTankProxySlot slot = (FluidTankProxySlot) other;
-			if( slot.delegate == this.delegate)
+			if (slot.delegate == this.delegate)
 				return true;
 		}
 		return false;

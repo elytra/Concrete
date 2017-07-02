@@ -26,47 +26,43 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory;
+package com.elytradev.concrete.inventory.widget;
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import com.elytradev.concrete.inventory.gui.GuiHelper;
+import net.minecraft.inventory.IInventory;
 
-import javax.annotation.Nonnull;
+public class FieldedLabelWidget extends LabelWidget {
+	public static final int NO_MAX_FIELD = -1;
 
-public class ValidatedItemHandlerView implements IItemHandler {
-	private final ConcreteItemStorage delegate;
-	
-	public ValidatedItemHandlerView(ConcreteItemStorage delegate) {
-		this.delegate = delegate;
+	protected final IInventory inventory;
+	protected final int field;
+	protected final int maxField;
+
+	public FieldedLabelWidget(IInventory inventory, int field, int maxField, String format, int color) {
+		super(format, color);
+		this.inventory = inventory;
+		this.field = field;
+		this.maxField = maxField;
 	}
 
-	@Nonnull
-	@Override
-	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-		if (!delegate.getValidator(slot).test(stack)) return stack;
-		return delegate.insertItem(slot, stack, simulate);
+	public FieldedLabelWidget(IInventory inventory, int field, int maxField, String format) {
+		this(inventory, field, maxField, format, DEFAULT_TEXT_COLOR);
 	}
 
-	@Override
-	public int getSlots() {
-		return delegate.getSlots();
+	public FieldedLabelWidget(IInventory inventory, int field, String format, int color) {
+		this(inventory, field, NO_MAX_FIELD, format, color);
 	}
 
-	@Nonnull
-	@Override
-	public ItemStack getStackInSlot(int slot) {
-		return delegate.getStackInSlot(slot);
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		if (!delegate.getCanExtract(slot)) return ItemStack.EMPTY;
-		return delegate.extractItem(slot, amount, simulate);
+	public FieldedLabelWidget(IInventory inventory, int field, String format) {
+		this(inventory, field, NO_MAX_FIELD, format);
 	}
 
 	@Override
-	public int getSlotLimit(int slot) {
-		return delegate.getSlotLimit(slot);
+	public void paintBackground(int x, int y) {
+		String formatted = text.replace("%f", Integer.toString(inventory.getField(field)));
+		if (maxField != NO_MAX_FIELD) {
+			formatted = formatted.replace("%m", Integer.toString(inventory.getField(maxField)));
+		}
+		GuiHelper.drawString(formatted, x, y, color);
 	}
 }

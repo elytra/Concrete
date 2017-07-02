@@ -37,8 +37,8 @@ import net.minecraft.item.ItemStack;
  */
 public class ValidatedSlot extends Slot {
 
-	public ValidatedSlot(IInventory inventoryIn, int index, int xPosition, int yPosition) {
-		super(inventoryIn, index, xPosition, yPosition);
+	public ValidatedSlot(IInventory inventory, int index, int xPosition, int yPosition) {
+		super(inventory, index, xPosition, yPosition);
 	}
 	
 	@Override

@@ -26,11 +26,10 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.gui;
+package com.elytradev.concrete.inventory;
 
 import com.elytradev.concrete.common.ShadingValidator;
-import com.elytradev.concrete.inventory.ValidatedSlot;
-import com.elytradev.concrete.inventory.gui.widget.WPanel;
+import com.elytradev.concrete.inventory.widget.PanelWidget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
@@ -38,6 +37,7 @@ import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -53,13 +53,13 @@ public class ConcreteContainer extends Container {
 	}
 	
 	private final IInventory playerInventory;
-	private final IInventory container;
-	private WPanel rootPanel;
+	private final IInventory inventory;
+	private PanelWidget rootPanel;
 	private int[] syncFields = new int[0];
 	
-	public ConcreteContainer(@Nonnull IInventory player, @Nullable IInventory container) {
+	public ConcreteContainer(@Nonnull IInventory player, @Nullable IInventory inventory) {
 		this.playerInventory = player;
-		this.container = container;
+		this.inventory = inventory;
 		
 	}
 	
@@ -77,8 +77,8 @@ public class ConcreteContainer extends Container {
 	}
 	
 	@Override
-	public boolean canInteractWith(EntityPlayer playerIn) {
-		if (container != null) return container.isUsableByPlayer(playerIn);
+	public boolean canInteractWith(EntityPlayer player) {
+		if (inventory != null) return inventory.isUsableByPlayer(player);
 		return true;
 	}
 
@@ -86,9 +86,8 @@ public class ConcreteContainer extends Container {
 		this.addSlotToContainer(slot);
 	}
 	
-	
 	public void initContainerSlot(int slot, int x, int y) {
-		this.addSlotToContainer(new ValidatedSlot(container, slot, x * 18, y * 18));
+		this.addSlotToContainer(new ValidatedSlot(inventory, slot, x * 18, y * 18));
 	}
 	
 	public void initPlayerInventory(int x, int y) {
@@ -98,7 +97,6 @@ public class ConcreteContainer extends Container {
 			}
 		}
 		
-		
 		for (int i = 0; i < 9; i++) {
 			addSlotToContainer(new Slot(playerInventory, i, x + (i * 18), y + (3 * 18) + 4));
 		}
@@ -107,23 +105,25 @@ public class ConcreteContainer extends Container {
 	@Override
 	public void addListener(IContainerListener listener) {
 		super.addListener(listener);
-		if (container != null) listener.sendAllWindowProperties(this, container);
+		if (inventory != null) {
+			listener.sendAllWindowProperties(this, inventory);
+		}
 	}
 	
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 		
-		if (container != null && container.getFieldCount() > 0) {
+		if (inventory != null && inventory.getFieldCount() > 0) {
 			//Any change in the number of fields reported by the server represents a total desync.
-			int numFields = container.getFieldCount();
+			int numFields = inventory.getFieldCount();
 			if (syncFields.length < numFields) {
 				syncFields = new int[numFields];
 			}
 			
 			for (IContainerListener listener : this.listeners) {
 				for (int field = 0; field < numFields; field++) {
-					int newValue = container.getField(field);
+					int newValue = inventory.getField(field);
 					if (syncFields[field] != newValue) {
 						listener.sendWindowProperty(this, field, newValue);
 						syncFields[field] = newValue;
@@ -136,11 +136,13 @@ public class ConcreteContainer extends Container {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int id, int data) {
-		if (container != null) container.setField(id, data);
+		if (inventory != null) {
+			inventory.setField(id, data);
+		}
 	}
 	
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+	public ItemStack transferStackInSlot(EntityPlayer player, int index) {
 		ItemStack srcStack = ItemStack.EMPTY;
 		Slot src = this.inventorySlots.get(index);
 		if (src != null && src.getHasStack()) {
@@ -148,7 +150,7 @@ public class ConcreteContainer extends Container {
 			
 			if (src.inventory == playerInventory) {
 				//Try to push the stack from the player-inventory to the container-inventory.
-				ItemStack remaining = transferToInventory(srcStack, container);
+				ItemStack remaining = transferToInventory(srcStack, inventory);
 				src.putStack(remaining);
 				return ItemStack.EMPTY;
 			} else {
@@ -166,8 +168,8 @@ public class ConcreteContainer extends Container {
 	}
 	
 	@Override
-	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
-		ItemStack result = super.slotClick(slotId, dragType, clickTypeIn, player);
+	public ItemStack slotClick(int slotId, int dragType, ClickType clickType, EntityPlayer player) {
+		ItemStack result = super.slotClick(slotId, dragType, clickType, player);
 		return result;
 	}
 	
@@ -175,7 +177,7 @@ public class ConcreteContainer extends Container {
 	 * Sets the root WPanel element
 	 * @param panel
 	 */
-	public void setRootPanel(WPanel panel) {
+	public void setRootPanel(PanelWidget panel) {
 		//Invalidate anything the panel added
 		this.inventorySlots.clear();
 		this.inventoryItemStacks.clear();
@@ -183,7 +185,7 @@ public class ConcreteContainer extends Container {
 		this.rootPanel = panel;
 	}
 	
-	public WPanel getRootPanel() {
+	public PanelWidget getRootPanel() {
 		return this.rootPanel;
 	}
 	
@@ -232,23 +234,22 @@ public class ConcreteContainer extends Container {
 	public boolean canStackTogether(ItemStack src, ItemStack dest) {
 		if (src.isEmpty() || dest.isEmpty()) return false; //Don't stack using itemstack counts if one or the other is empty.
 
+		NBTTagCompound srcTag = src.getTagCompound();
+		NBTTagCompound destTag = dest.getTagCompound();
 		boolean compoundComparison;
-		if(dest.hasTagCompound() && src.hasTagCompound()) {
-			compoundComparison = dest.getTagCompound().equals(src.getTagCompound());
+		if (destTag != null && srcTag != null) {
+			compoundComparison = destTag.equals(srcTag);
+		} else {
+			compoundComparison = destTag == null && srcTag == null;
 		}
-		else {
-			compoundComparison = !(dest.hasTagCompound() || src.hasTagCompound());
-		}
-		return
-				dest.isStackable() &&
-				dest.getItem() == src.getItem() &&
-				dest.getItemDamage() == src.getItemDamage() &&
-				compoundComparison &&
-				dest.areCapsCompatible(src);
+		return dest.isStackable() &&
+		       dest.getItem() == src.getItem() &&
+		       dest.getItemDamage() == src.getItemDamage() &&
+		       compoundComparison &&
+		       dest.areCapsCompatible(src);
 	}
 
 	public String getLocalizedName() {
-		
-		return container.getDisplayName().getUnformattedComponentText();
+		return inventory.getDisplayName().getUnformattedComponentText();
 	}
 }

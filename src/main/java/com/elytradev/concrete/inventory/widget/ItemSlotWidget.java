@@ -26,22 +26,17 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.gui.widget;
-
-import java.util.List;
+package com.elytradev.concrete.inventory.widget;
 
 import com.elytradev.concrete.inventory.ValidatedSlot;
-import com.elytradev.concrete.inventory.gui.ConcreteContainer;
-import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
-import com.google.common.collect.Lists;
+import com.elytradev.concrete.inventory.ConcreteContainer;
+import com.elytradev.concrete.inventory.gui.GuiHelper;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class WItemSlot extends WWidget {
-	private final List<Slot> peers = Lists.newArrayList();
+public class ItemSlotWidget extends Widget {
 	private IInventory inventory;
 	private int startIndex = 0;
 	private int slotsWide = 1;
@@ -49,7 +44,7 @@ public class WItemSlot extends WWidget {
 	private boolean big = false;
 	private boolean ltr = true;
 	
-	public WItemSlot(IInventory inventory, int startIndex, int slotsWide, int slotsHigh, boolean big, boolean ltr) {
+	public ItemSlotWidget(IInventory inventory, int startIndex, int slotsWide, int slotsHigh, boolean big, boolean ltr) {
 		this.inventory = inventory;
 		this.startIndex = startIndex;
 		this.slotsWide = slotsWide;
@@ -58,43 +53,39 @@ public class WItemSlot extends WWidget {
 		this.ltr = ltr;
 	}
 	
-	private WItemSlot() {}
+	private ItemSlotWidget() {}
 	
-	public static WItemSlot of(IInventory inventory, int index) {
-		WItemSlot w = new WItemSlot();
+	public static ItemSlotWidget of(IInventory inventory, int index) {
+		ItemSlotWidget w = new ItemSlotWidget();
 		w.inventory = inventory;
 		w.startIndex = index;
-		
 		return w;
 	}
 	
-	public static WItemSlot of(IInventory inventory, int startIndex, int slotsWide, int slotsHigh) {
-		WItemSlot w = new WItemSlot();
+	public static ItemSlotWidget of(IInventory inventory, int startIndex, int slotsWide, int slotsHigh) {
+		ItemSlotWidget w = new ItemSlotWidget();
 		w.inventory = inventory;
 		w.startIndex = startIndex;
 		w.slotsWide = slotsWide;
 		w.slotsHigh = slotsHigh;
-		
 		return w;
 	}
 	
-	public static WItemSlot outputOf(IInventory inventory, int index) {
-		WItemSlot w = new WItemSlot();
+	public static ItemSlotWidget outputOf(IInventory inventory, int index) {
+		ItemSlotWidget w = new ItemSlotWidget();
 		w.inventory = inventory;
 		w.startIndex = index;
 		w.big = true;
-		
 		return w;
 	}
 	
-	public static WItemSlot ofPlayerStorage(IInventory inventory) {
-		WItemSlot w = new WItemSlot();
+	public static ItemSlotWidget ofPlayerStorage(IInventory inventory) {
+		ItemSlotWidget w = new ItemSlotWidget();
 		w.inventory = inventory;
 		w.startIndex = 9;
 		w.slotsWide = 9;
 		w.slotsHigh = 3;
 		w.ltr = false;
-		
 		return w;
 	}
 	
@@ -110,14 +101,12 @@ public class WItemSlot extends WWidget {
 	
 	@Override
 	public void createPeers(ConcreteContainer c) {
-		peers.clear();
 		int index = startIndex;
 		
 		if (ltr) {
 			for (int x = 0; x < slotsWide; x++) {
 				for (int y = 0; y < slotsHigh; y++) {
 					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX() + (x * 18), this.getY() + (y * 18));
-					peers.add(slot);
 					c.addSlotPeer(slot);
 					index++;
 				}
@@ -126,7 +115,6 @@ public class WItemSlot extends WWidget {
 			for (int y = 0; y < slotsHigh; y++) {
 				for (int x = 0; x < slotsWide; x++) {
 					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX() + (x * 18), this.getY() + (y * 18));
-					peers.add(slot);
 					c.addSlotPeer(slot);
 					index++;
 				}
@@ -140,9 +128,9 @@ public class WItemSlot extends WWidget {
 		for (int xi = 0; xi < slotsWide; xi++) {
 			for (int yi = 0; yi < slotsHigh; yi++) {
 				if (big) {
-					GuiDrawing.drawBeveledPanel((xi * 18) + x - 4, (yi * 18) + y - 4, 24, 24);
+					GuiHelper.drawBeveledPanel((xi * 18) + x - 4, (yi * 18) + y - 4, 24, 24);
 				} else {
-					GuiDrawing.drawBeveledPanel((xi * 18) + x - 1, (yi * 18) + y - 1, 18, 18);
+					GuiHelper.drawBeveledPanel((xi * 18) + x - 1, (yi * 18) + y - 1, 18, 18);
 				}
 			}
 		}

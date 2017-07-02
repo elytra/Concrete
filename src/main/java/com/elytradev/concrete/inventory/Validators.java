@@ -33,44 +33,14 @@ import java.util.function.Predicate;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 public final class Validators {
 	public static final Predicate<ItemStack> ANYTHING = (it) -> true;
 	public static final Predicate<ItemStack> NOTHING = (it) -> false;
 	public static final Predicate<ItemStack> FURNACE_FUELS = TileEntityFurnace::isItemFuel; //This is actually the most correct/accurate way to read the furnace registry!
-	public static final Predicate<ItemStack> SMELTABLE = (it) -> {
-		return !FurnaceRecipes.instance().getSmeltingResult(it).isEmpty();
-	};
-	public static final Predicate<ItemStack> FLUID_CONTAINERS = (it) -> {
-		return it.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-	};
-
-	/**
-	 * Default Validator - accept every fluid.
-	 */
-	public static final Predicate<FluidStack> ANY_FLUID = (fs) -> true;
-
-	/**
-	 * Default Validator - accept no fluid.
-	 */
-	public static final Predicate<FluidStack> NO_FLUID = (fs) -> false;
-
-	/**
-	 * Example Validator - is the fluid as hot or hotter than lava?
-	 */
-	public static final Predicate<FluidStack> HOT_FLUIDS = (fs) -> fs.getFluid().getTemperature() >= 1300;
-
-	/**
-	 * Example Validator - is the fluid colder than water?
-	 */
-	public static final Predicate<FluidStack> COLD_FLUIDS = (fs) -> fs.getFluid().getTemperature() < 300;
-
-	/**
-	 * Example Validator - is the fluid a gas?
-	 */
-	public static final Predicate<FluidStack> GASES = (fs) -> fs.getFluid().isGaseous();
+	public static final Predicate<ItemStack> SMELTABLE = (it) -> !FurnaceRecipes.instance().getSmeltingResult(it).isEmpty();
+	public static final Predicate<ItemStack> FLUID_CONTAINERS = (it) -> it.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 
 	private Validators() {}
 }

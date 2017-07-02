@@ -28,6 +28,7 @@
 
 package com.elytradev.concrete.inventory;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -74,12 +75,10 @@ public class ValidatedInventoryView implements IInventory {
 		for (int i = 0; i < delegate.getSlots(); i++) {
 			if (!delegate.getStackInSlot(i).isEmpty()) return false;
 		}
-		
 		return true;
 	}
 	
 	public ValidatedInventoryView withField(int index, Supplier<Integer> delegate) {
-		
 		fieldDelegates.put(index, delegate);
 		return this;
 	}
@@ -125,12 +124,10 @@ public class ValidatedInventoryView implements IInventory {
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {
-	}
+	public void openInventory(EntityPlayer player) {}
 
 	@Override
-	public void closeInventory(EntityPlayer player) {
-	}
+	public void closeInventory(EntityPlayer player) {}
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
@@ -149,9 +146,7 @@ public class ValidatedInventoryView implements IInventory {
 	public void setField(int id, int value) {
 		//System.out.println("SetField id:" + id + " val:" + value);
 		if (fields.length <= id) {
-			int[] newFields = new int[id + 1];
-			if (fields.length > 0) System.arraycopy(fields, 0, newFields, 0, fields.length);
-			fields = newFields;
+			fields = Arrays.copyOf(fields, id + 1);
 		}
 		fields[id] = value;
 	}

@@ -26,9 +26,9 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.gui.widget;
+package com.elytradev.concrete.inventory.widget;
 
-import com.elytradev.concrete.inventory.gui.ConcreteContainer;
+import com.elytradev.concrete.inventory.ConcreteContainer;
 
 /**
  * Like a JPanel with a horizontal BoxLayout
@@ -42,30 +42,28 @@ import com.elytradev.concrete.inventory.gui.ConcreteContainer;
  * fill the unoccupied horizontal space, (and all resizable children will still be the exact height of this Panel).
  * </ul>
  */
-public class WPanelHorizontal extends WPanel {
+public class HorizontalPanelWidget extends PanelWidget {
 	
-	public void add(WWidget w) {
+	public void add(Widget w) {
 		children.add(w);
 	}
 	
 	@Override
 	public void createPeers(ConcreteContainer c) {
-		for(WWidget child : children) {
+		for (Widget child : children) {
 			child.createPeers(c);
 		}
 	}
 	
 	@Override
 	public void layout() {
-
 		int unresizable = 0;
 		int numResizable = 0;
-		for(WWidget w : children) {
+		for (Widget w : children) {
 			if (w.canResize()) {
 				numResizable++;
 			} else {
-				int wid = w.getWidth();
-				unresizable += wid;
+				unresizable += w.getWidth();
 			}
 		}
 		int resizeSpace = getWidth() - unresizable;
@@ -74,7 +72,7 @@ public class WPanelHorizontal extends WPanel {
 		
 		int centerline = this.getHeight() / 2;
 		int curLeft = 0;
-		for (WWidget w : children) {
+		for (Widget w : children) {
 			if (w.canResize()) {
 				w.setSize(resizeEach, this.getHeight());
 			}

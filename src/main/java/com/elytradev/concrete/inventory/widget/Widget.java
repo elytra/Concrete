@@ -26,16 +26,16 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.gui.widget;
+package com.elytradev.concrete.inventory.widget;
 
-import com.elytradev.concrete.inventory.gui.ConcreteContainer;
+import com.elytradev.concrete.inventory.ConcreteContainer;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class WWidget {
+public class Widget {
 	private boolean valid = false;
-	protected WPanel parent;
+	protected PanelWidget parent;
 	private int x = 0;
 	private int y = 0;
 	private int width = 18;
@@ -71,7 +71,7 @@ public class WWidget {
 		return false;
 	}
 	
-	public void setParent(WPanel parent) {
+	public void setParent(PanelWidget parent) {
 		this.parent = parent;
 	}
 	
@@ -83,20 +83,16 @@ public class WWidget {
 	 * @param x The X coordinate of the leftmost pixels of this widget in device (opengl) coordinates
 	 * @param y The Y coordinate of the topmost pixels of this widget in device (opengl) coordinates
 	 */
-	public void paint(int x, int y) {
-		
-	}
+	public void paint(int x, int y) {}
 	
 	/**
 	 * Creates "heavyweight" component peers
 	 * @param c the top-level Container that will hold the peers
 	 */
-	public void createPeers(ConcreteContainer c) {
-	}
+	public void createPeers(ConcreteContainer c) {}
 
 	@SideOnly(Side.CLIENT)
-	public void paintBackground(int x, int y) {
-	}
+	public void paintBackground(int x, int y) {}
 	
 	public boolean isValid() {
 		return valid;

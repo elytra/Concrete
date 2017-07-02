@@ -26,41 +26,29 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.gui.widget;
+package com.elytradev.concrete.inventory.widget;
 
-import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
-import net.minecraft.inventory.IInventory;
+import com.elytradev.concrete.inventory.gui.GuiHelper;
 
-public class WFieldedLabel extends WLabel {
-	protected final IInventory inventory;
-	protected final int field;
-	protected final int fieldMax;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-	public WFieldedLabel(IInventory inventory, int field, int fieldMax, String format, int color) {
-		super(format, color);
-		this.inventory = inventory;
-		this.field = field;
-		this.fieldMax = fieldMax;
+public class ImageWidget extends Widget {
+	private final ResourceLocation texture;
+	
+	public ImageWidget(ResourceLocation texture) {
+		this.texture = texture;
 	}
-
-	public WFieldedLabel(IInventory inventory, int field, int fieldMax, String format) {
-		this(inventory, field, fieldMax, format, DEFAULT_TEXT_COLOR);
+	
+	@Override
+	public boolean canResize() {
+		return true;
 	}
-
-	public WFieldedLabel(IInventory inventory, int field, String format, int color) {
-		this(inventory, field, -1, format, color);
-	}
-
-	public WFieldedLabel(IInventory inventory, int field, String format) {
-		this(inventory, field, -1, format);
-	}
-
+	
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void paintBackground(int x, int y) {
-		String formatted = text.replaceAll("%f", Integer.toString(inventory.getField(field)));
-		if(fieldMax != -1) {
-			formatted = formatted.replaceAll("%m", Integer.toString(inventory.getField(fieldMax)));
-		}
-		GuiDrawing.drawString(formatted, x, y, color);
+		GuiHelper.drawRectangle(texture, x, y, getWidth(), getHeight());
 	}
 }
