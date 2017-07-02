@@ -76,7 +76,7 @@ import com.google.common.collect.Lists;
  * valid side, and often represents the side a probe observer accesses, so plan your views accordingly.
  *
  */
-public class ConcreteFluidTank extends FluidTank implements IObservable {
+public class ConcreteFluidTank extends FluidTank implements IObservableFluidTank {
 	private final List<Runnable> listeners = Lists.newArrayList();
 	private Predicate<FluidStack> fillValidator = FluidValidators.ANY_FLUID;
 

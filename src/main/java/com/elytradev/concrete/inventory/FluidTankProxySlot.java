@@ -38,7 +38,6 @@ import net.minecraft.nbt.NBTTagString;
 
 import javax.annotation.Nonnull;
 
-
 /**
  * Manages syncing of {@code FluidStack} data between server/client, utilizing "fake" items encapsulating {@code FluidStack} data.
  *
