@@ -42,7 +42,7 @@ import com.elytradev.concrete.inventory.ConcreteContainer;
  * fill the unoccupied horizontal space, (and all resizable children will still be the exact height of this Panel).
  * </ul>
  */
-public class HorizontalPanelWidget extends PanelWidget {
+public class WHorizontalPanel extends WPanel {
 	
 	public void add(Widget w) {
 		children.add(w);

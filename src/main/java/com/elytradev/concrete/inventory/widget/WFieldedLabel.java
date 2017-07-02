@@ -28,62 +28,41 @@
 
 package com.elytradev.concrete.inventory.widget;
 
-import java.util.List;
+import com.elytradev.concrete.inventory.gui.GuiHelper;
+import net.minecraft.inventory.IInventory;
 
-import com.elytradev.concrete.inventory.ConcreteContainer;
-import com.google.common.collect.Lists;
+public class WFieldedLabel extends WLabel {
+	public static final int NO_MAX_FIELD = -1;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+	protected final IInventory inventory;
+	protected final int field;
+	protected final int maxField;
 
-/**
- * Comparable to swing's JPanel, except that this is the base class for containers too - there's no way to make a
- * WContainer such that it isn't confused with Container, and we don't lose anything from the lack of abstraction.
- */
-public class PanelWidget extends Widget {
-	protected final List<Widget> children = Lists.newArrayList();
-	
-	@Override
-	public void createPeers(ConcreteContainer c) {
-		for (Widget child : children) {
-			child.createPeers(c);
-		}
-		super.validate(c);
+	public WFieldedLabel(IInventory inventory, int field, int maxField, String format, int color) {
+		super(format, color);
+		this.inventory = inventory;
+		this.field = field;
+		this.maxField = maxField;
 	}
-	
-	public void remove(Widget w) {
-		children.remove(w);
-		invalidate();
+
+	public WFieldedLabel(IInventory inventory, int field, int maxField, String format) {
+		this(inventory, field, maxField, format, DEFAULT_TEXT_COLOR);
 	}
-	
-	@Override
-	public boolean canResize() {
-		return true;
+
+	public WFieldedLabel(IInventory inventory, int field, String format, int color) {
+		this(inventory, field, NO_MAX_FIELD, format, color);
 	}
-	
-	/**
-	 * Uses this Panel's layout rules to reposition and resize components to fit nicely in the panel.
-	 */
-	public void layout() {
-		for (Widget child : children) {
-			if (child instanceof PanelWidget) {
-				((PanelWidget) child).layout();
-			}
-		}
+
+	public WFieldedLabel(IInventory inventory, int field, String format) {
+		this(inventory, field, NO_MAX_FIELD, format);
 	}
-	
-	@Override
-	public void validate(ConcreteContainer c) {
-		layout();
-		createPeers(c);
-		super.validate(c);
-	}
-	
-	@SideOnly(Side.CLIENT)
+
 	@Override
 	public void paintBackground(int x, int y) {
-		for (Widget child : children) {
-			child.paintBackground(x + child.getX(), y + child.getY());
+		String formatted = text.replace("%f", Integer.toString(inventory.getField(field)));
+		if (maxField != NO_MAX_FIELD) {
+			formatted = formatted.replace("%m", Integer.toString(inventory.getField(maxField)));
 		}
+		GuiHelper.drawString(formatted, x, y, color);
 	}
 }

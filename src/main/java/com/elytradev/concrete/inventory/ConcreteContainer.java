@@ -29,7 +29,7 @@
 package com.elytradev.concrete.inventory;
 
 import com.elytradev.concrete.common.ShadingValidator;
-import com.elytradev.concrete.inventory.widget.PanelWidget;
+import com.elytradev.concrete.inventory.widget.WPanel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
@@ -54,7 +54,7 @@ public class ConcreteContainer extends Container {
 	
 	private final IInventory playerInventory;
 	private final IInventory inventory;
-	private PanelWidget rootPanel;
+	private WPanel rootPanel;
 	private int[] syncFields = new int[0];
 	
 	public ConcreteContainer(@Nonnull IInventory player, @Nullable IInventory inventory) {
@@ -177,7 +177,7 @@ public class ConcreteContainer extends Container {
 	 * Sets the root WPanel element
 	 * @param panel
 	 */
-	public void setRootPanel(PanelWidget panel) {
+	public void setRootPanel(WPanel panel) {
 		//Invalidate anything the panel added
 		this.inventorySlots.clear();
 		this.inventoryItemStacks.clear();
@@ -185,7 +185,7 @@ public class ConcreteContainer extends Container {
 		this.rootPanel = panel;
 	}
 	
-	public PanelWidget getRootPanel() {
+	public WPanel getRootPanel() {
 		return this.rootPanel;
 	}
 	

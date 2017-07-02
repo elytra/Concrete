@@ -37,7 +37,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class BarWidget extends Widget {
+public abstract class WBar extends Widget {
 	public static final BarDirection DEFAULT_DIRECTION = BarDirection.UP;
 	
 	protected final ResourceLocation bg;
@@ -45,15 +45,15 @@ public abstract class BarWidget extends Widget {
 	protected final ResourceLocation fg;
 	protected final BarDirection direction;
 	
-	public BarWidget(ResourceLocation bg, BarDirection direction) {
+	public WBar(ResourceLocation bg, BarDirection direction) {
 		this(bg, null, direction);
 	}
 	
-	public BarWidget(ResourceLocation bg, @Nullable ResourceLocation fg) {
+	public WBar(ResourceLocation bg, @Nullable ResourceLocation fg) {
 		this(bg, fg, DEFAULT_DIRECTION);
 	}
 	
-	public BarWidget(ResourceLocation bg, @Nullable ResourceLocation fg, BarDirection direction) {
+	public WBar(ResourceLocation bg, @Nullable ResourceLocation fg, BarDirection direction) {
 		this.bg = bg;
 		this.fg = fg;
 		this.direction = direction;

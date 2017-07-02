@@ -37,25 +37,25 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class FieldedBarWidget extends BarWidget {
+public class WFieldedBar extends WBar {
 	private final ResourceLocation bar;
 	private final int field;
 	private final int maxField;
 	private final IInventory inventory;
 	
-	public FieldedBarWidget(ResourceLocation bg, ResourceLocation bar, IInventory inv, int field, int maxField) {
+	public WFieldedBar(ResourceLocation bg, ResourceLocation bar, IInventory inv, int field, int maxField) {
 		this(bg, bar, inv, field, maxField, DEFAULT_DIRECTION);
 	}
 	
-	public FieldedBarWidget(ResourceLocation bg, ResourceLocation bar, IInventory inv, int field, int maxField, BarDirection dir) {
+	public WFieldedBar(ResourceLocation bg, ResourceLocation bar, IInventory inv, int field, int maxField, BarDirection dir) {
 		this(bg, bar, null, inv, field, maxField, dir);
 	}
 	
-	public FieldedBarWidget(ResourceLocation bg, ResourceLocation bar, @Nullable ResourceLocation fg, IInventory inv, int field, int maxField) {
+	public WFieldedBar(ResourceLocation bg, ResourceLocation bar, @Nullable ResourceLocation fg, IInventory inv, int field, int maxField) {
 		this(bg, bar, fg, inv, field, maxField, DEFAULT_DIRECTION);
 	}
 	
-	public FieldedBarWidget(ResourceLocation bg, ResourceLocation bar, @Nullable ResourceLocation fg, IInventory inv, int field, int maxField, BarDirection dir) {
+	public WFieldedBar(ResourceLocation bg, ResourceLocation bar, @Nullable ResourceLocation fg, IInventory inv, int field, int maxField, BarDirection dir) {
 		super(bg, fg, dir);
 		this.bar = bar;
 		this.inventory = inv;

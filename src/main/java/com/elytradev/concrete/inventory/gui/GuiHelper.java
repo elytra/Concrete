@@ -58,7 +58,7 @@ public final class GuiHelper {
 	public static void drawRectangle(ResourceLocation texture, int left, int top, int width, int height, float u1, float v1, float u2, float v2, int color) {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		
-		//float scale = 00390625f;
+		//float scale = 0.00390625f;
 		
 		if (width <= 0) width = 1;
 		if (height <= 0) height = 1;

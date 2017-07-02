@@ -39,22 +39,22 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class FluidBarWidget extends BarWidget {
+public class WFluidBar extends WBar {
 	private final ConcreteFluidTank concreteFluidTank;
 
-	public FluidBarWidget(ResourceLocation bg, ConcreteFluidTank tank) {
+	public WFluidBar(ResourceLocation bg, ConcreteFluidTank tank) {
 		this(bg, tank, DEFAULT_DIRECTION);
 	}
 
-	public FluidBarWidget(ResourceLocation bg, ConcreteFluidTank tank, BarDirection dir) {
+	public WFluidBar(ResourceLocation bg, ConcreteFluidTank tank, BarDirection dir) {
 		this(bg, null, tank, dir);
 	}
 
-	public FluidBarWidget(ResourceLocation bg, @Nullable ResourceLocation fg, ConcreteFluidTank tank) {
+	public WFluidBar(ResourceLocation bg, @Nullable ResourceLocation fg, ConcreteFluidTank tank) {
 		this(bg, fg, tank, DEFAULT_DIRECTION);
 	}
 
-	public FluidBarWidget(ResourceLocation bg, @Nullable ResourceLocation fg, ConcreteFluidTank tank, BarDirection dir) {
+	public WFluidBar(ResourceLocation bg, @Nullable ResourceLocation fg, ConcreteFluidTank tank, BarDirection dir) {
 		super(bg, fg, dir);
 		this.concreteFluidTank = tank;
 	}

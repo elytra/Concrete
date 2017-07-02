@@ -28,27 +28,17 @@
 
 package com.elytradev.concrete.inventory.widget;
 
-import com.elytradev.concrete.inventory.gui.GuiHelper;
-
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-public class ImageWidget extends Widget {
-	private final ResourceLocation texture;
-	
-	public ImageWidget(ResourceLocation texture) {
-		this.texture = texture;
+public class WGridPanel extends WPanel {
+	public void add(Widget w, int x, int y) {
+		add(w, x, y, 1, 1);
+		invalidate();
 	}
 	
-	@Override
-	public boolean canResize() {
-		return true;
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void paintBackground(int x, int y) {
-		GuiHelper.drawRectangle(texture, x, y, getWidth(), getHeight());
+	public void add(Widget w, int x, int y, int width, int height) {
+		children.add(w);
+		w.setLocation(x * 18, y * 18);
+		if (w.canResize()) {
+			w.setSize(width * 18, height * 18);
+		}
 	}
 }

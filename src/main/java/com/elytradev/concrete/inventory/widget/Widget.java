@@ -35,7 +35,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Widget {
 	private boolean valid = false;
-	protected PanelWidget parent;
+	protected WPanel parent;
 	private int x = 0;
 	private int y = 0;
 	private int width = 18;
@@ -71,7 +71,7 @@ public class Widget {
 		return false;
 	}
 	
-	public void setParent(PanelWidget parent) {
+	public void setParent(WPanel parent) {
 		this.parent = parent;
 	}
 	

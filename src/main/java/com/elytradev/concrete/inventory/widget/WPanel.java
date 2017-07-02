@@ -28,41 +28,62 @@
 
 package com.elytradev.concrete.inventory.widget;
 
-import com.elytradev.concrete.inventory.gui.GuiHelper;
-import net.minecraft.inventory.IInventory;
+import java.util.List;
 
-public class FieldedLabelWidget extends LabelWidget {
-	public static final int NO_MAX_FIELD = -1;
+import com.elytradev.concrete.inventory.ConcreteContainer;
+import com.google.common.collect.Lists;
 
-	protected final IInventory inventory;
-	protected final int field;
-	protected final int maxField;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-	public FieldedLabelWidget(IInventory inventory, int field, int maxField, String format, int color) {
-		super(format, color);
-		this.inventory = inventory;
-		this.field = field;
-		this.maxField = maxField;
+/**
+ * Comparable to swing's JPanel, except that this is the base class for containers too - there's no way to make a
+ * WContainer such that it isn't confused with Container, and we don't lose anything from the lack of abstraction.
+ */
+public class WPanel extends Widget {
+	protected final List<Widget> children = Lists.newArrayList();
+	
+	@Override
+	public void createPeers(ConcreteContainer c) {
+		for (Widget child : children) {
+			child.createPeers(c);
+		}
+		super.validate(c);
 	}
-
-	public FieldedLabelWidget(IInventory inventory, int field, int maxField, String format) {
-		this(inventory, field, maxField, format, DEFAULT_TEXT_COLOR);
+	
+	public void remove(Widget w) {
+		children.remove(w);
+		invalidate();
 	}
-
-	public FieldedLabelWidget(IInventory inventory, int field, String format, int color) {
-		this(inventory, field, NO_MAX_FIELD, format, color);
+	
+	@Override
+	public boolean canResize() {
+		return true;
 	}
-
-	public FieldedLabelWidget(IInventory inventory, int field, String format) {
-		this(inventory, field, NO_MAX_FIELD, format);
+	
+	/**
+	 * Uses this Panel's layout rules to reposition and resize components to fit nicely in the panel.
+	 */
+	public void layout() {
+		for (Widget child : children) {
+			if (child instanceof WPanel) {
+				((WPanel) child).layout();
+			}
+		}
 	}
-
+	
+	@Override
+	public void validate(ConcreteContainer c) {
+		layout();
+		createPeers(c);
+		super.validate(c);
+	}
+	
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void paintBackground(int x, int y) {
-		String formatted = text.replace("%f", Integer.toString(inventory.getField(field)));
-		if (maxField != NO_MAX_FIELD) {
-			formatted = formatted.replace("%m", Integer.toString(inventory.getField(maxField)));
+		for (Widget child : children) {
+			child.paintBackground(x + child.getX(), y + child.getY());
 		}
-		GuiHelper.drawString(formatted, x, y, color);
 	}
 }

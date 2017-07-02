@@ -36,7 +36,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemSlotWidget extends Widget {
+public class WSlot extends Widget {
 	private IInventory inventory;
 	private int startIndex = 0;
 	private int slotsWide = 1;
@@ -44,7 +44,7 @@ public class ItemSlotWidget extends Widget {
 	private boolean big = false;
 	private boolean ltr = true;
 	
-	public ItemSlotWidget(IInventory inventory, int startIndex, int slotsWide, int slotsHigh, boolean big, boolean ltr) {
+	public WSlot(IInventory inventory, int startIndex, int slotsWide, int slotsHigh, boolean big, boolean ltr) {
 		this.inventory = inventory;
 		this.startIndex = startIndex;
 		this.slotsWide = slotsWide;
@@ -53,17 +53,17 @@ public class ItemSlotWidget extends Widget {
 		this.ltr = ltr;
 	}
 	
-	private ItemSlotWidget() {}
+	private WSlot() {}
 	
-	public static ItemSlotWidget of(IInventory inventory, int index) {
-		ItemSlotWidget w = new ItemSlotWidget();
+	public static WSlot of(IInventory inventory, int index) {
+		WSlot w = new WSlot();
 		w.inventory = inventory;
 		w.startIndex = index;
 		return w;
 	}
 	
-	public static ItemSlotWidget of(IInventory inventory, int startIndex, int slotsWide, int slotsHigh) {
-		ItemSlotWidget w = new ItemSlotWidget();
+	public static WSlot of(IInventory inventory, int startIndex, int slotsWide, int slotsHigh) {
+		WSlot w = new WSlot();
 		w.inventory = inventory;
 		w.startIndex = startIndex;
 		w.slotsWide = slotsWide;
@@ -71,16 +71,16 @@ public class ItemSlotWidget extends Widget {
 		return w;
 	}
 	
-	public static ItemSlotWidget outputOf(IInventory inventory, int index) {
-		ItemSlotWidget w = new ItemSlotWidget();
+	public static WSlot outputOf(IInventory inventory, int index) {
+		WSlot w = new WSlot();
 		w.inventory = inventory;
 		w.startIndex = index;
 		w.big = true;
 		return w;
 	}
 	
-	public static ItemSlotWidget ofPlayerStorage(IInventory inventory) {
-		ItemSlotWidget w = new ItemSlotWidget();
+	public static WSlot ofPlayerStorage(IInventory inventory) {
+		WSlot w = new WSlot();
 		w.inventory = inventory;
 		w.startIndex = 9;
 		w.slotsWide = 9;

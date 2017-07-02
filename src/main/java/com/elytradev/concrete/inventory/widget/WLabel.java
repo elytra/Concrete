@@ -28,17 +28,33 @@
 
 package com.elytradev.concrete.inventory.widget;
 
-public class GridPanelWidget extends PanelWidget {
-	public void add(Widget w, int x, int y) {
-		add(w, x, y, 1, 1);
-		invalidate();
-	}
+import com.elytradev.concrete.inventory.gui.GuiHelper;
+import net.minecraft.client.Minecraft;
+
+public class WLabel extends Widget {
+	public static final int DEFAULT_TEXT_COLOR = 0x404040;
+	public static final int DEFAULT_HEIGHT = 8;
 	
-	public void add(Widget w, int x, int y, int width, int height) {
-		children.add(w);
-		w.setLocation(x * 18, y * 18);
-		if (w.canResize()) {
-			w.setSize(width * 18, height * 18);
-		}
+	protected final String text;
+	protected final int color;
+
+	public WLabel(String text, int color) {
+		this.text = text;
+		this.color = color;
+		this.setSize(Minecraft.getMinecraft().fontRenderer.getStringWidth(text), DEFAULT_HEIGHT);
+	}
+
+	public WLabel(String text) {
+		this(text, DEFAULT_TEXT_COLOR);
+	}
+
+	@Override
+	public void paintBackground(int x, int y) {
+		GuiHelper.drawString(text, x, y, color);
+	}
+
+	@Override
+	public boolean canResize() {
+		return false;
 	}
 }

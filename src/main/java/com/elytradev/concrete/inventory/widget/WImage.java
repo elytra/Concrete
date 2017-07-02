@@ -29,32 +29,26 @@
 package com.elytradev.concrete.inventory.widget;
 
 import com.elytradev.concrete.inventory.gui.GuiHelper;
-import net.minecraft.client.Minecraft;
 
-public class LabelWidget extends Widget {
-	public static final int DEFAULT_TEXT_COLOR = 0x404040;
-	public static final int DEFAULT_HEIGHT = 8;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+public class WImage extends Widget {
+	private final ResourceLocation texture;
 	
-	protected final String text;
-	protected final int color;
-
-	public LabelWidget(String text, int color) {
-		this.text = text;
-		this.color = color;
-		this.setSize(Minecraft.getMinecraft().fontRenderer.getStringWidth(text), DEFAULT_HEIGHT);
+	public WImage(ResourceLocation texture) {
+		this.texture = texture;
 	}
-
-	public LabelWidget(String text) {
-		this(text, DEFAULT_TEXT_COLOR);
-	}
-
-	@Override
-	public void paintBackground(int x, int y) {
-		GuiHelper.drawString(text, x, y, color);
-	}
-
+	
 	@Override
 	public boolean canResize() {
-		return false;
+		return true;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void paintBackground(int x, int y) {
+		GuiHelper.drawRectangle(texture, x, y, getWidth(), getHeight());
 	}
 }

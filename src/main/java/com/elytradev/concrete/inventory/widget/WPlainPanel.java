@@ -28,7 +28,7 @@
 
 package com.elytradev.concrete.inventory.widget;
 
-public class PlainPanelWidget extends PanelWidget {
+public class WPlainPanel extends WPanel {
 	public void add(Widget w, int x, int y) {
 		add(w, x, y, 18, 18);
 		invalidate();
