@@ -26,7 +26,7 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.fluid;
+package com.elytradev.concrete.inventory;
 
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -37,7 +37,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Predicate;
 
-import com.elytradev.concrete.inventory.IObservable;
 import com.google.common.collect.Lists;
 
 /**

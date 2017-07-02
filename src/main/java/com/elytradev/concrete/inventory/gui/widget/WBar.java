@@ -113,4 +113,11 @@ public abstract class WBar extends Widget {
 	
 	@SideOnly(Side.CLIENT)
 	protected abstract void paintBar(int x, int y, float percent, int barSize);
+	
+	public static enum BarDirection {
+		UP,
+		RIGHT,
+		DOWN,
+		LEFT;
+	}
 }

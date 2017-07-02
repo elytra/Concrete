@@ -26,7 +26,7 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.fluid;
+package com.elytradev.concrete.inventory;
 
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;

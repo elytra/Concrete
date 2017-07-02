@@ -26,37 +26,10 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.fluid;
+package com.elytradev.concrete.inventory;
 
-import java.util.function.Predicate;
+import net.minecraftforge.fluids.IFluidTank;
 
-import net.minecraftforge.fluids.FluidStack;
+import com.elytradev.concrete.inventory.IObservable;
 
-public final class FluidValidators {
-	/**
-	 * Default Validator - accept every fluid.
-	 */
-	public static final Predicate<FluidStack> ANY_FLUID = (fs) -> true;
-
-	/**
-	 * Default Validator - accept no fluid.
-	 */
-	public static final Predicate<FluidStack> NO_FLUID = (fs) -> false;
-
-	/**
-	 * Example Validator - is the fluid as hot or hotter than lava?
-	 */
-	public static final Predicate<FluidStack> HOT_FLUIDS = (fs) -> fs.getFluid().getTemperature() >= 1300;
-
-	/**
-	 * Example Validator - is the fluid colder than water?
-	 */
-	public static final Predicate<FluidStack> COLD_FLUIDS = (fs) -> fs.getFluid().getTemperature() < 300;
-
-	/**
-	 * Example Validator - is the fluid a gas?
-	 */
-	public static final Predicate<FluidStack> GASES = (fs) -> fs.getFluid().isGaseous();
-
-	private FluidValidators() {}
-}
+public interface IObservableFluidTank extends IFluidTank, IObservable {}

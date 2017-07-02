@@ -26,51 +26,37 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.fluid;
+package com.elytradev.concrete.inventory;
+
+import java.util.function.Predicate;
 
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidTank;
 
-import javax.annotation.Nullable;
+public final class FluidValidators {
+	/**
+	 * Default Validator - accept every fluid.
+	 */
+	public static final Predicate<FluidStack> ANY_FLUID = (fs) -> true;
 
-public class ValidatedFluidTankWrapper implements IFluidTank {
-	private final ConcreteFluidTank delegate;
+	/**
+	 * Default Validator - accept no fluid.
+	 */
+	public static final Predicate<FluidStack> NO_FLUID = (fs) -> false;
 
-	public ValidatedFluidTankWrapper(ConcreteFluidTank delegate) {
-		this.delegate = delegate;
-	}
+	/**
+	 * Example Validator - is the fluid as hot or hotter than lava?
+	 */
+	public static final Predicate<FluidStack> HOT_FLUIDS = (fs) -> fs.getFluid().getTemperature() >= 1300;
 
-	@Nullable
-	@Override
-	public FluidStack getFluid() {
-		return delegate.getFluid();
-	}
+	/**
+	 * Example Validator - is the fluid colder than water?
+	 */
+	public static final Predicate<FluidStack> COLD_FLUIDS = (fs) -> fs.getFluid().getTemperature() < 300;
 
-	@Override
-	public int getFluidAmount() {
-		return delegate.getFluidAmount();
-	}
+	/**
+	 * Example Validator - is the fluid a gas?
+	 */
+	public static final Predicate<FluidStack> GASES = (fs) -> fs.getFluid().isGaseous();
 
-	@Override
-	public int getCapacity() {
-		return delegate.getCapacity();
-	}
-
-	@Override
-	public FluidTankInfo getInfo() {
-		return delegate.getInfo();
-	}
-
-	@Override
-	public int fill(FluidStack resource, boolean doFill) {
-		if (!delegate.getFillValidator().test(resource)) return 0;
-		return delegate.fill(resource, doFill);
-	}
-
-	@Nullable
-	@Override
-	public FluidStack drain(int maxDrain, boolean doDrain) {
-		return delegate.drain(maxDrain, doDrain);
-	}
+	private FluidValidators() {}
 }
