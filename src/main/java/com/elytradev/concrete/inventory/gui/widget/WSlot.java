@@ -26,11 +26,11 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.widget;
+package com.elytradev.concrete.inventory.gui.widget;
 
-import com.elytradev.concrete.inventory.ValidatedSlot;
-import com.elytradev.concrete.inventory.ConcreteContainer;
-import com.elytradev.concrete.inventory.gui.GuiHelper;
+import com.elytradev.concrete.inventory.gui.ValidatedSlot;
+import com.elytradev.concrete.inventory.gui.ConcreteContainer;
+import com.elytradev.concrete.inventory.gui.client.GuiHelper;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraftforge.fml.relauncher.Side;

@@ -26,10 +26,10 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory;
+package com.elytradev.concrete.inventory.gui;
 
 import com.elytradev.concrete.common.ShadingValidator;
-import com.elytradev.concrete.inventory.widget.WPanel;
+import com.elytradev.concrete.inventory.gui.widget.WPanel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;

@@ -26,11 +26,29 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.widget;
+package com.elytradev.concrete.inventory.gui.widget;
 
-public enum BarDirection {
-	UP,
-	RIGHT,
-	DOWN,
-	LEFT;
+import com.elytradev.concrete.inventory.gui.client.GuiHelper;
+
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+public class WImage extends Widget {
+	private final ResourceLocation texture;
+	
+	public WImage(ResourceLocation texture) {
+		this.texture = texture;
+	}
+	
+	@Override
+	public boolean canResize() {
+		return true;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void paintBackground(int x, int y) {
+		GuiHelper.drawRectangle(texture, x, y, getWidth(), getHeight());
+	}
 }

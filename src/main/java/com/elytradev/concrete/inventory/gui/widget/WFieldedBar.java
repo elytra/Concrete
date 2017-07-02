@@ -26,11 +26,11 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.widget;
+package com.elytradev.concrete.inventory.gui.widget;
 
 import javax.annotation.Nullable;
 
-import com.elytradev.concrete.inventory.gui.GuiHelper;
+import com.elytradev.concrete.inventory.gui.client.GuiHelper;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;

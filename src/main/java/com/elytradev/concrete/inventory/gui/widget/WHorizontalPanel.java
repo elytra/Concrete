@@ -26,9 +26,9 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.widget;
+package com.elytradev.concrete.inventory.gui.widget;
 
-import com.elytradev.concrete.inventory.ConcreteContainer;
+import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 
 /**
  * Like a JPanel with a horizontal BoxLayout

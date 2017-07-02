@@ -26,27 +26,43 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory;
+package com.elytradev.concrete.inventory.gui.widget;
 
+import com.elytradev.concrete.inventory.gui.client.GuiHelper;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 
-/**
- * The heavyweight peer used by ConcreteContainer to respect the predicates for validated inventories.
- */
-public class ValidatedSlot extends Slot {
+public class WFieldedLabel extends WLabel {
+	public static final int NO_MAX_FIELD = -1;
 
-	public ValidatedSlot(IInventory inventory, int index, int xPosition, int yPosition) {
-		super(inventory, index, xPosition, yPosition);
+	protected final IInventory inventory;
+	protected final int field;
+	protected final int maxField;
+
+	public WFieldedLabel(IInventory inventory, int field, int maxField, String format, int color) {
+		super(format, color);
+		this.inventory = inventory;
+		this.field = field;
+		this.maxField = maxField;
 	}
-	
+
+	public WFieldedLabel(IInventory inventory, int field, int maxField, String format) {
+		this(inventory, field, maxField, format, DEFAULT_TEXT_COLOR);
+	}
+
+	public WFieldedLabel(IInventory inventory, int field, String format, int color) {
+		this(inventory, field, NO_MAX_FIELD, format, color);
+	}
+
+	public WFieldedLabel(IInventory inventory, int field, String format) {
+		this(inventory, field, NO_MAX_FIELD, format);
+	}
+
 	@Override
-	public boolean isItemValid(ItemStack stack) {
-		if (inventory instanceof ValidatedInventoryView) {
-			return ((ValidatedInventoryView) inventory).getValidator(getSlotIndex()).test(stack);
-		} else {
-			return super.isItemValid(stack);
+	public void paintBackground(int x, int y) {
+		String formatted = text.replace("%f", Integer.toString(inventory.getField(field)));
+		if (maxField != NO_MAX_FIELD) {
+			formatted = formatted.replace("%m", Integer.toString(inventory.getField(maxField)));
 		}
+		GuiHelper.drawString(formatted, x, y, color);
 	}
 }

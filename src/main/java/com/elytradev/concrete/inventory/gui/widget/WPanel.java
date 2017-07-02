@@ -26,11 +26,11 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.widget;
+package com.elytradev.concrete.inventory.gui.widget;
 
 import java.util.List;
 
-import com.elytradev.concrete.inventory.ConcreteContainer;
+import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 import com.google.common.collect.Lists;
 
 import net.minecraftforge.fml.relauncher.Side;

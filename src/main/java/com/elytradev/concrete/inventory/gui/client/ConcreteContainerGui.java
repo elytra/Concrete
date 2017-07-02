@@ -26,11 +26,11 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.gui;
+package com.elytradev.concrete.inventory.gui.client;
 
 import java.io.IOException;
 
-import com.elytradev.concrete.inventory.ConcreteContainer;
+import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;

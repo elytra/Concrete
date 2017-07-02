@@ -26,19 +26,19 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.widget;
+package com.elytradev.concrete.inventory.gui.widget;
 
-public class WPlainPanel extends WPanel {
+public class WGridPanel extends WPanel {
 	public void add(Widget w, int x, int y) {
-		add(w, x, y, 18, 18);
+		add(w, x, y, 1, 1);
 		invalidate();
 	}
-
+	
 	public void add(Widget w, int x, int y, int width, int height) {
 		children.add(w);
-		w.setLocation(x, y);
+		w.setLocation(x * 18, y * 18);
 		if (w.canResize()) {
-			w.setSize(width, height);
+			w.setSize(width * 18, height * 18);
 		}
 	}
 }

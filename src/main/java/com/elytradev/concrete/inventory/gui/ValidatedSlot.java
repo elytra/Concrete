@@ -26,19 +26,29 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.widget;
+package com.elytradev.concrete.inventory.gui;
 
-public class WGridPanel extends WPanel {
-	public void add(Widget w, int x, int y) {
-		add(w, x, y, 1, 1);
-		invalidate();
+import com.elytradev.concrete.inventory.ValidatedInventoryView;
+
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+
+/**
+ * The heavyweight peer used by ConcreteContainer to respect the predicates for validated inventories.
+ */
+public class ValidatedSlot extends Slot {
+
+	public ValidatedSlot(IInventory inventory, int index, int xPosition, int yPosition) {
+		super(inventory, index, xPosition, yPosition);
 	}
 	
-	public void add(Widget w, int x, int y, int width, int height) {
-		children.add(w);
-		w.setLocation(x * 18, y * 18);
-		if (w.canResize()) {
-			w.setSize(width * 18, height * 18);
+	@Override
+	public boolean isItemValid(ItemStack stack) {
+		if (inventory instanceof ValidatedInventoryView) {
+			return ((ValidatedInventoryView) inventory).getValidator(getSlotIndex()).test(stack);
+		} else {
+			return super.isItemValid(stack);
 		}
 	}
 }

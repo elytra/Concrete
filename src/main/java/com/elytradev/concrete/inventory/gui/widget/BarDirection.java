@@ -26,35 +26,11 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.widget;
+package com.elytradev.concrete.inventory.gui.widget;
 
-import com.elytradev.concrete.inventory.gui.GuiHelper;
-import net.minecraft.client.Minecraft;
-
-public class WLabel extends Widget {
-	public static final int DEFAULT_TEXT_COLOR = 0x404040;
-	public static final int DEFAULT_HEIGHT = 8;
-	
-	protected final String text;
-	protected final int color;
-
-	public WLabel(String text, int color) {
-		this.text = text;
-		this.color = color;
-		this.setSize(Minecraft.getMinecraft().fontRenderer.getStringWidth(text), DEFAULT_HEIGHT);
-	}
-
-	public WLabel(String text) {
-		this(text, DEFAULT_TEXT_COLOR);
-	}
-
-	@Override
-	public void paintBackground(int x, int y) {
-		GuiHelper.drawString(text, x, y, color);
-	}
-
-	@Override
-	public boolean canResize() {
-		return false;
-	}
+public enum BarDirection {
+	UP,
+	RIGHT,
+	DOWN,
+	LEFT;
 }

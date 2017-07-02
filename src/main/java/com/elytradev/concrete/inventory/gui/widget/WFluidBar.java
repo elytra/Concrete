@@ -26,14 +26,14 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.widget;
+package com.elytradev.concrete.inventory.gui.widget;
 
 import javax.annotation.Nullable;
 
 import com.elytradev.concrete.inventory.fluid.ConcreteFluidTank;
 import com.elytradev.concrete.inventory.fluid.FluidTankProxySlot;
-import com.elytradev.concrete.inventory.ConcreteContainer;
-import com.elytradev.concrete.inventory.gui.GuiHelper;
+import com.elytradev.concrete.inventory.gui.ConcreteContainer;
+import com.elytradev.concrete.inventory.gui.client.GuiHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;

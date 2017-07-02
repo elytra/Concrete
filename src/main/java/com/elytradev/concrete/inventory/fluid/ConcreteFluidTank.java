@@ -37,7 +37,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Predicate;
 
-import com.elytradev.concrete.inventory.ConcreteItemStorage;
 import com.elytradev.concrete.inventory.IObservable;
 import com.google.common.collect.Lists;
 
@@ -46,7 +45,7 @@ import com.google.common.collect.Lists;
  *
  * <h2>Validation</h2>
  *
- * Just like {@link ConcreteItemStorage}, ConcreteFluidTank <em>does not</em> perform
+ * Just like {@link com.elytradev.concrete.inventory.ConcreteItemStorage}, ConcreteFluidTank <em>does not</em> perform
  * its own validation. Rather, this is offloaded to its own wrapper for such functionality, {@link ValidatedFluidTankWrapper}.
  *
  * <h2>Serialization and Deserialization</h2>

@@ -38,8 +38,6 @@ import net.minecraft.nbt.NBTTagString;
 
 import javax.annotation.Nonnull;
 
-import com.elytradev.concrete.inventory.widget.WFluidBar;
-import com.elytradev.concrete.inventory.widget.Widget;
 
 /**
  * Manages syncing of {@code FluidStack} data between server/client, utilizing "fake" items encapsulating {@code FluidStack} data.
@@ -52,8 +50,8 @@ import com.elytradev.concrete.inventory.widget.Widget;
  * serialize/deserialize information about the participating {@link ConcreteFluidTank} (namely, its {@code FluidStack}).</p>
  *
  * <p>This allows for super easy syncing of the FluidStack data between the server and the client, allowing
- * {@link Widget}s like
- * {@link WFluidBar} to work and sync properly.</p>
+ * {@link com.elytradev.concrete.inventory.gui.widget.Widget}s like
+ * {@link com.elytradev.concrete.inventory.gui.widget.WFluidBar} to work and sync properly.</p>
  *
  */
 public class FluidTankProxySlot extends Slot {
