@@ -38,14 +38,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class WBar extends Widget {
-	public static final BarDirection DEFAULT_DIRECTION = BarDirection.UP;
+	public static final Direction DEFAULT_DIRECTION = Direction.UP;
 	
 	protected final ResourceLocation bg;
 	@Nullable
 	protected final ResourceLocation fg;
-	protected final BarDirection direction;
+	protected final Direction direction;
 	
-	public WBar(ResourceLocation bg, BarDirection direction) {
+	public WBar(ResourceLocation bg, Direction direction) {
 		this(bg, null, direction);
 	}
 	
@@ -53,7 +53,7 @@ public abstract class WBar extends Widget {
 		this(bg, fg, DEFAULT_DIRECTION);
 	}
 	
-	public WBar(ResourceLocation bg, @Nullable ResourceLocation fg, BarDirection direction) {
+	public WBar(ResourceLocation bg, @Nullable ResourceLocation fg, Direction direction) {
 		this.bg = bg;
 		this.fg = fg;
 		this.direction = direction;
@@ -114,7 +114,7 @@ public abstract class WBar extends Widget {
 	@SideOnly(Side.CLIENT)
 	protected abstract void paintBar(int x, int y, float percent, int barSize);
 	
-	public static enum BarDirection {
+	public static enum Direction {
 		UP,
 		RIGHT,
 		DOWN,

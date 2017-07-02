@@ -46,7 +46,7 @@ public class WFluidBar extends WBar {
 		this(bg, tank, DEFAULT_DIRECTION);
 	}
 
-	public WFluidBar(ResourceLocation bg, ConcreteFluidTank tank, BarDirection dir) {
+	public WFluidBar(ResourceLocation bg, ConcreteFluidTank tank, Direction dir) {
 		this(bg, null, tank, dir);
 	}
 
@@ -54,7 +54,7 @@ public class WFluidBar extends WBar {
 		this(bg, fg, tank, DEFAULT_DIRECTION);
 	}
 
-	public WFluidBar(ResourceLocation bg, @Nullable ResourceLocation fg, ConcreteFluidTank tank, BarDirection dir) {
+	public WFluidBar(ResourceLocation bg, @Nullable ResourceLocation fg, ConcreteFluidTank tank, Direction dir) {
 		super(bg, fg, dir);
 		this.concreteFluidTank = tank;
 	}

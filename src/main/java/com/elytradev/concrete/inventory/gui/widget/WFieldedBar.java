@@ -47,7 +47,7 @@ public class WFieldedBar extends WBar {
 		this(bg, bar, inv, field, maxField, DEFAULT_DIRECTION);
 	}
 	
-	public WFieldedBar(ResourceLocation bg, ResourceLocation bar, IInventory inv, int field, int maxField, BarDirection dir) {
+	public WFieldedBar(ResourceLocation bg, ResourceLocation bar, IInventory inv, int field, int maxField, Direction dir) {
 		this(bg, bar, null, inv, field, maxField, dir);
 	}
 	
@@ -55,7 +55,7 @@ public class WFieldedBar extends WBar {
 		this(bg, bar, fg, inv, field, maxField, DEFAULT_DIRECTION);
 	}
 	
-	public WFieldedBar(ResourceLocation bg, ResourceLocation bar, @Nullable ResourceLocation fg, IInventory inv, int field, int maxField, BarDirection dir) {
+	public WFieldedBar(ResourceLocation bg, ResourceLocation bar, @Nullable ResourceLocation fg, IInventory inv, int field, int maxField, Direction dir) {
 		super(bg, fg, dir);
 		this.bar = bar;
 		this.inventory = inv;
