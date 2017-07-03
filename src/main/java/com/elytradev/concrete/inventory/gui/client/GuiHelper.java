@@ -174,25 +174,25 @@ public final class GuiHelper {
 	 * Draws a beveled, round rectangle that is substantially similar to default Minecraft UI panels.
 	 */
 	public static void drawGuiPanel(int x, int y, int width, int height, int shadow, int panel, int hilight, int outline) {
-		drawRectangle(x + 3, y + 3, width - 6, height - 6, panel); //Main panel area
+		drawRectangle(x + 3,         y + 3,          width - 6, height - 6, panel); //Main panel area
 		
-		drawRectangle(x + 2, y + 1, width - 4, 2, hilight); //Top hilight
-		drawRectangle(x + 2, y + height - 3, width - 4, 2, shadow); //Bottom shadow
-		drawRectangle(x + 1, y + 2, 2, height - 4, hilight); //Left hilight
-		drawRectangle(x + width - 3, y + 2, 2, height - 4, shadow); //Right shadow
-		drawRectangle(x + width - 3, y + 2, 1, 1, panel); //Topright non-hilight/non-shadow transition pixel
-		drawRectangle(x + 2, y + height - 3, 1, 1, panel); //Bottomleft non-hilight/non-shadow transition pixel
-		drawRectangle(x + 3, y + 3, 1, 1, hilight); //Topleft round hilight pixel
-		drawRectangle(x + width - 4, y + height - 4, 1, 1, shadow); //Bottomright round shadow pixel
+		drawRectangle(x + 2,         y + 1,          width - 4, 2,          hilight); //Top hilight
+		drawRectangle(x + 2,         y + height - 3, width - 4, 2,          shadow); //Bottom shadow
+		drawRectangle(x + 1,         y + 2,          2,         height - 4, hilight); //Left hilight
+		drawRectangle(x + width - 3, y + 2,          2,         height - 4, shadow); //Right shadow
+		drawRectangle(x + width - 3, y + 2,          1,         1,          panel); //Topright non-hilight/non-shadow transition pixel
+		drawRectangle(x + 2,         y + height - 3, 1,         1,          panel); //Bottomleft non-hilight/non-shadow transition pixel
+		drawRectangle(x + 3,         y + 3,          1,         1,          hilight); //Topleft round hilight pixel
+		drawRectangle(x + width - 4, y + height - 4, 1,         1,          shadow); //Bottomright round shadow pixel
 		
-		drawRectangle(x + 2, y, width - 4, 1, outline); //Top outline
-		drawRectangle(x, y + 2, 1, height - 4, outline); //Left outline
-		drawRectangle(x + width - 1, y + 2, 1, height - 4, outline); //Right outline
-		drawRectangle(x + 2, y + height - 1, width - 4, 1, outline); //Bottom outline
-		drawRectangle(x + 1, y + 1, 1, 1, outline); //Topleft round pixel
-		drawRectangle(x + 1, y + height - 2, 1, 1, outline); //Bottomleft round pixel
-		drawRectangle(x + width - 2, y + 1, 1, 1, outline); //Topright round pixel
-		drawRectangle(x + width - 2, y + height - 2, 1, 1, outline); //Bottomright round pixel
+		drawRectangle(x + 2,         y,              width - 4, 1,          outline); //Top outline
+		drawRectangle(x,             y + 2,          1,         height - 4, outline); //Left outline
+		drawRectangle(x + width - 1, y + 2,          1,         height - 4, outline); //Right outline
+		drawRectangle(x + 2,         y + height - 1, width - 4, 1,          outline); //Bottom outline
+		drawRectangle(x + 1,         y + 1,          1,         1,          outline); //Topleft round pixel
+		drawRectangle(x + 1,         y + height - 2, 1,         1,          outline); //Bottomleft round pixel
+		drawRectangle(x + width - 2, y + 1,          1,         1,          outline); //Topright round pixel
+		drawRectangle(x + width - 2, y + height - 2, 1,         1,          outline); //Bottomright round pixel
 	}
 
 	/**
@@ -220,11 +220,11 @@ public final class GuiHelper {
 	 * @param bottomright	color of the bottom/right bevel
 	 */
 	public static void drawBeveledPanel(int x, int y, int width, int height, int topleft, int panel, int bottomright) {
-		drawRectangle(x, y, width, height, panel); //Center panel
-		drawRectangle(x, y, width - 1, 1, topleft); //Top shadow
-		drawRectangle(x, y + 1, 1, height - 2, topleft); //Left shadow
-		drawRectangle(x + width - 1, y + 1, 1, height - 1, bottomright); //Right hilight
-		drawRectangle(x + 1, y + height - 1, width - 1, 1, bottomright); //Bottom hilight
+		drawRectangle(x,             y,              width,     height,     panel); //Center panel
+		drawRectangle(x,             y,              width - 1, 1,          topleft); //Top shadow
+		drawRectangle(x,             y + 1,          1,         height - 2, topleft); //Left shadow
+		drawRectangle(x + width - 1, y + 1,          1,         height - 1, bottomright); //Right hilight
+		drawRectangle(x + 1,         y + height - 1, width - 1, 1,          bottomright); //Bottom hilight
 	}
 	
 	public static void drawString(String s, int x, int y, int color) {
