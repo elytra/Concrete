@@ -35,7 +35,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Widget {
 	private boolean valid = false;
-	protected WPanel parent;
 	private int x = 0;
 	private int y = 0;
 	private int width = 18;
@@ -46,9 +45,9 @@ public class Widget {
 		this.y = y;
 	}
 	
-	public void setSize(int x, int y) {
-		this.width = x;
-		this.height = y;
+	public void setSize(int width, int height) {
+		this.width = width;
+		this.height = height;
 	}
 	
 	public int getX() {
@@ -69,10 +68,6 @@ public class Widget {
 	
 	public boolean canResize() {
 		return false;
-	}
-	
-	public void setParent(WPanel parent) {
-		this.parent = parent;
 	}
 	
 	/**
