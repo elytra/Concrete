@@ -95,8 +95,9 @@ public abstract class WBar extends WWidget {
 		
 		paintBar(x, y, percent, barSize);
 		
-		if (fg != null)
+		if (fg != null) {
 			GuiDrawing.drawRectangle(fg, x, y, getWidth(), getHeight());
+		}
 		
 		//GuiDrawing.drawRectangle(bar, x, y + (getHeight() - barHeight), getWidth(), barHeight);
 		

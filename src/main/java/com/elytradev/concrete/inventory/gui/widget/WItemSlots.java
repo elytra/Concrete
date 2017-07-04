@@ -153,15 +153,6 @@ public class WItemSlots extends WWidget {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void paintBackground(int x, int y) {
-		int left = -1;
-		int top = -1;
-		
-		if (Minecraft.getMinecraft().currentScreen instanceof GuiContainer) {
-			GuiContainer containerGui = (GuiContainer) Minecraft.getMinecraft().currentScreen;
-			left = containerGui.getGuiLeft();
-			top = containerGui.getGuiTop();
-		}
-		
 		for (int xi = 0; xi < slotsWide; xi++) {
 			for (int yi = 0; yi < slotsHigh; yi++) {
 				if (big) {
@@ -170,20 +161,27 @@ public class WItemSlots extends WWidget {
 					GuiDrawing.drawBeveledPanel((xi * 18) + x - 1, (yi * 18) + y - 1, 18, 18);
 				}
 				
-				if (left != -1 && top != -1) {
-					int peerIndex;
-					
-					if (ltr) {
-						peerIndex = xi * slotsHigh + yi;
-					} else {
-						peerIndex = yi * slotsWide + xi;
-					}
-					
-					Slot slot = peers.get(peerIndex);
-					slot.xPos = x + (xi * 18) - left;
-					slot.yPos = y + (yi * 18) - top;
-				}
+				updateSlotPosition(x, y, xi, yi);
 			}
+		}
+	}
+	
+	private void updateSlotPosition(int widgetX, int widgetY, int slotX, int slotY) {
+		if (Minecraft.getMinecraft().currentScreen instanceof GuiContainer) {
+			GuiContainer containerGui = (GuiContainer) Minecraft.getMinecraft().currentScreen;
+			int left = containerGui.getGuiLeft();
+			int top = containerGui.getGuiTop();
+			int peerIndex;
+			
+			if (ltr) {
+				peerIndex = slotX * slotsHigh + slotY;
+			} else {
+				peerIndex = slotY * slotsWide + slotX;
+			}
+			
+			Slot slot = peers.get(peerIndex);
+			slot.xPos = widgetX + (slotX * 18) - left;
+			slot.yPos = widgetY + (slotY * 18) - top;
 		}
 	}
 }
