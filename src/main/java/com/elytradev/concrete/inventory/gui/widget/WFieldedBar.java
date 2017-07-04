@@ -30,7 +30,7 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import javax.annotation.Nullable;
 
-import com.elytradev.concrete.inventory.gui.client.GuiHelper;
+import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
@@ -87,22 +87,22 @@ public class WFieldedBar extends WBar {
 				int left = x;
 				int top = y + getHeight();
 				top -= barSize;
-				GuiHelper.drawRectangle(bar, left, top, getWidth(), barSize, 0, 1 - percent, 1, 1);
+				GuiDrawing.drawRectangle(bar, left, top, getWidth(), barSize, 0, 1 - percent, 1, 1);
 				break;
 			}
 			case RIGHT: {
-				GuiHelper.drawRectangle(bar, x, y, barSize, getHeight(), 0, 0, percent, 1);
+				GuiDrawing.drawRectangle(bar, x, y, barSize, getHeight(), 0, 0, percent, 1);
 				break;
 			}
 			case DOWN: {
-				GuiHelper.drawRectangle(bar, x, y, getWidth(), barSize, 0, 0, 1, percent);
+				GuiDrawing.drawRectangle(bar, x, y, getWidth(), barSize, 0, 0, 1, percent);
 				break;
 			}
 			case LEFT: {
 				int left = x + getWidth();
 				int top = y;
 				left -= barSize;
-				GuiHelper.drawRectangle(bar, left, top, barSize, getHeight(), 1 - percent, 0, 1, 1);
+				GuiDrawing.drawRectangle(bar, left, top, barSize, getHeight(), 1 - percent, 0, 1, 1);
 				break;
 			}
 		}

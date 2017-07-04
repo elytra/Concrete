@@ -28,7 +28,7 @@
 
 package com.elytradev.concrete.inventory.gui.widget;
 
-import com.elytradev.concrete.inventory.gui.client.GuiHelper;
+import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
 import net.minecraft.inventory.IInventory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -66,6 +66,6 @@ public class WFieldedLabel extends WLabel {
 		if (maxField != NO_MAX_FIELD) {
 			formatted = formatted.replace("%m", Integer.toString(inventory.getField(maxField)));
 		}
-		GuiHelper.drawString(formatted, x, y, color);
+		GuiDrawing.drawString(formatted, x, y, color);
 	}
 }

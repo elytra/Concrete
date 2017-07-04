@@ -149,7 +149,7 @@ public class ConcreteContainerGui extends GuiContainer {
 	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GuiHelper.drawGuiPanel(guiLeft - PADDING, guiTop - PADDING, xSize + ((PADDING - 1) * 2), ySize + ((PADDING - 1) * 2));
+		GuiDrawing.drawGuiPanel(guiLeft - PADDING, guiTop - PADDING, xSize + ((PADDING - 1) * 2), ySize + ((PADDING - 1) * 2));
 		
 		if (this.container.getRootPanel() != null) {
 			this.container.getRootPanel().paintBackground(guiLeft, guiTop);

@@ -40,8 +40,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
-public final class GuiHelper {
-	private GuiHelper() {}
+public final class GuiDrawing {
+	private GuiDrawing() {}
 	
 	public static void drawRectangle(ResourceLocation texture, int left, int top, int width, int height) {
 		drawRectangle(texture, left, top, width, height, 0xFFFFFFFF);
@@ -220,11 +220,11 @@ public final class GuiHelper {
 	 * @param bottomright	color of the bottom/right bevel
 	 */
 	public static void drawBeveledPanel(int x, int y, int width, int height, int topleft, int panel, int bottomright) {
-		drawRectangle(x,             y,              width,     height,     0x8b8b8b); //Center panel
-		drawRectangle(x,             y,              width - 1, 1,          0x373737); //Top shadow
-		drawRectangle(x,             y + 1,          1,         height - 2, 0x373737); //Left shadow
-		drawRectangle(x + width - 1, y + 1,          1,         height - 1, 0xFFFFFF); //Right hilight
-		drawRectangle(x + 1,         y + height - 1, width - 1, 1,          0xFFFFFF); //Bottom hilight
+		drawRectangle(x,             y,              width,     height,     panel); //Center panel
+		drawRectangle(x,             y,              width - 1, 1,          topleft); //Top shadow
+		drawRectangle(x,             y + 1,          1,         height - 2, topleft); //Left shadow
+		drawRectangle(x + width - 1, y + 1,          1,         height - 1, bottomright); //Right hilight
+		drawRectangle(x + 1,         y + height - 1, width - 1, 1,          bottomright); //Bottom hilight
 	}
 	
 	public static void drawString(String s, int x, int y, int color) {

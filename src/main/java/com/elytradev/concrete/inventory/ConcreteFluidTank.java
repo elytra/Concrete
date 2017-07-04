@@ -78,7 +78,7 @@ import com.google.common.collect.Lists;
  */
 public class ConcreteFluidTank extends FluidTank implements IObservableFluidTank {
 	private final List<Runnable> listeners = Lists.newArrayList();
-	private Predicate<FluidStack> fillValidator = FluidValidators.ANY_FLUID;
+	private Predicate<FluidStack> fillValidator = Validators.FLUID_ANY;
 
 	public ConcreteFluidTank(int capacity) {
 		this(null, capacity);

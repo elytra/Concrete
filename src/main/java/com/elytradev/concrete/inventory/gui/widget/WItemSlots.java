@@ -32,7 +32,7 @@ import java.util.List;
 
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.gui.ValidatedSlot;
-import com.elytradev.concrete.inventory.gui.client.GuiHelper;
+import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
@@ -42,7 +42,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class WItemSlots extends Widget {
+public class WItemSlots extends WWidget {
 	private final List<Slot> peers = Lists.newArrayList();
 	private IInventory inventory;
 	private int startIndex = 0;
@@ -165,9 +165,9 @@ public class WItemSlots extends Widget {
 		for (int xi = 0; xi < slotsWide; xi++) {
 			for (int yi = 0; yi < slotsHigh; yi++) {
 				if (big) {
-					GuiHelper.drawBeveledPanel((xi * 18) + x - 4, (yi * 18) + y - 4, 24, 24);
+					GuiDrawing.drawBeveledPanel((xi * 18) + x - 4, (yi * 18) + y - 4, 24, 24);
 				} else {
-					GuiHelper.drawBeveledPanel((xi * 18) + x - 1, (yi * 18) + y - 1, 18, 18);
+					GuiDrawing.drawBeveledPanel((xi * 18) + x - 1, (yi * 18) + y - 1, 18, 18);
 				}
 				
 				if (left != -1 && top != -1) {

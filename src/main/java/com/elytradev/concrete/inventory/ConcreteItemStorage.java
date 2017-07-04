@@ -163,7 +163,7 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 	 */
 	@Nonnull
 	public Predicate<ItemStack> getValidator(int slot) {
-		if (validators.size() <= slot) return Validators.ANYTHING;
+		if (validators.size() <= slot) return Validators.ITEM_ANY;
 		return validators.get(slot);
 	}
 	

@@ -28,13 +28,13 @@
 
 package com.elytradev.concrete.inventory.gui.widget;
 
-import com.elytradev.concrete.inventory.gui.client.GuiHelper;
+import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.IInventory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class WLabel extends Widget {
+public class WLabel extends WWidget {
 	public static final int DEFAULT_TEXT_COLOR = 0x404040;
 	public static final int DEFAULT_HEIGHT = 8;
 	
@@ -62,7 +62,7 @@ public class WLabel extends Widget {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void paintForeground(int x, int y) {
-		GuiHelper.drawString(text, x, y, color);
+		GuiDrawing.drawString(text, x, y, color);
 	}
 
 	@Override

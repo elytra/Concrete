@@ -62,7 +62,7 @@ public class WDirectionalPanel extends WPanel {
 		int directionSpace = 0;
 		int centeredSpace = 0;
 		for (int i = 0; i < getWidgetCount(); i++) {
-			Widget w = getWidget(i);
+			WWidget w = getWidget(i);
 			if (i > 0) {
 				directionSpace += spacing;
 			}
@@ -77,7 +77,7 @@ public class WDirectionalPanel extends WPanel {
 		int unresizable = 0;
 		int numResizable = 0;
 		for (int i = 0; i < getWidgetCount(); i++) {
-			Widget w = getWidget(i);
+			WWidget w = getWidget(i);
 			if (w.canResize()) {
 				numResizable++;
 			} else {
@@ -98,7 +98,7 @@ public class WDirectionalPanel extends WPanel {
 		int centerline = direction.getCenteredSpace(this) / 2;
 		int curOffset = 0;
 		for (int i = 0; i < getWidgetCount(); i++) {
-			Widget w = getWidget(i);
+			WWidget w = getWidget(i);
 			if (w.canResize()) {
 				direction.setSize(w, resizeEach, direction.getCenteredSpace(this));
 			}
@@ -127,22 +127,22 @@ public class WDirectionalPanel extends WPanel {
 		 */
 		HORIZONTAL {
 			@Override
-			public int getDirectionSpace(Widget w) {
+			public int getDirectionSpace(WWidget w) {
 				return w.getWidth();
 			}
 			
 			@Override
-			public int getCenteredSpace(Widget w) {
+			public int getCenteredSpace(WWidget w) {
 				return w.getHeight();
 			}
 			
 			@Override
-			public void setSize(Widget w, int directionSize, int centeredSize) {
+			public void setSize(WWidget w, int directionSize, int centeredSize) {
 				w.setSize(directionSize, centeredSize);
 			}
 			
 			@Override
-			public void setLocation(Widget w, int directionCoord, int centeredCoord) {
+			public void setLocation(WWidget w, int directionCoord, int centeredCoord) {
 				w.setLocation(directionCoord, centeredCoord);
 			}
 		},
@@ -163,32 +163,32 @@ public class WDirectionalPanel extends WPanel {
 		 */
 		VERTICAL {
 			@Override
-			public int getDirectionSpace(Widget w) {
+			public int getDirectionSpace(WWidget w) {
 				return w.getHeight();
 			}
 			
 			@Override
-			public int getCenteredSpace(Widget w) {
+			public int getCenteredSpace(WWidget w) {
 				return w.getWidth();
 			}
 			
 			@Override
-			public void setSize(Widget w, int directionSize, int centeredSize) {
+			public void setSize(WWidget w, int directionSize, int centeredSize) {
 				w.setSize(centeredSize, directionSize);
 			}
 			
 			@Override
-			public void setLocation(Widget w, int directionCoord, int centeredCoord) {
+			public void setLocation(WWidget w, int directionCoord, int centeredCoord) {
 				w.setLocation(centeredCoord, directionCoord);
 			}
 		};
 		
-		public abstract int getDirectionSpace(Widget w);
+		public abstract int getDirectionSpace(WWidget w);
 		
-		public abstract int getCenteredSpace(Widget w);
+		public abstract int getCenteredSpace(WWidget w);
 		
-		public abstract void setSize(Widget w, int directionSize, int centeredSize);
+		public abstract void setSize(WWidget w, int directionSize, int centeredSize);
 		
-		public abstract void setLocation(Widget w, int directionCoord, int centeredCoord);
+		public abstract void setLocation(WWidget w, int directionCoord, int centeredCoord);
 	}
 }

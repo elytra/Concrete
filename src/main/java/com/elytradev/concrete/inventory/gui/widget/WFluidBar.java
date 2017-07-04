@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
 import com.elytradev.concrete.inventory.ConcreteFluidTank;
 import com.elytradev.concrete.inventory.FluidTankProxySlot;
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
-import com.elytradev.concrete.inventory.gui.client.GuiHelper;
+import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
@@ -102,15 +102,15 @@ public class WFluidBar extends WBar {
 				int horizontalSegments = getWidth() / 16;
 				for (int dY = 0; dY < verticalSegments; dY++) {
 					for (int dX = 0; dX < horizontalSegments; dX++) {
-						GuiHelper.drawRectangle(fluid, left + (dX * 16), bottom - ((dY + 1) * 16), 16, 16, 0.0f, 0.0f, 16.0f, 16.0f);
+						GuiDrawing.drawRectangle(fluid, left + (dX * 16), bottom - ((dY + 1) * 16), 16, 16, 0.0f, 0.0f, 16.0f, 16.0f);
 					}
-					GuiHelper.drawRectangle(fluid, left + (horizontalSegments * 16), bottom - ((dY + 1) * 16), getWidth() % 16, 16, 0.0f, 0.0f, getWidth() % 16, 16.0f);
+					GuiDrawing.drawRectangle(fluid, left + (horizontalSegments * 16), bottom - ((dY + 1) * 16), getWidth() % 16, 16, 0.0f, 0.0f, getWidth() % 16, 16.0f);
 				}
 
 				for (int dX = 0; dX < horizontalSegments; dX++) {
-					GuiHelper.drawRectangle(fluid, left + (dX * 16), bottom - ((verticalSegments) * 16) - (barSize % 16), 16, (barSize % 16), 0.0f, 16 - (barSize % 16), 16.0f, 16.0f);
+					GuiDrawing.drawRectangle(fluid, left + (dX * 16), bottom - ((verticalSegments) * 16) - (barSize % 16), 16, (barSize % 16), 0.0f, 16 - (barSize % 16), 16.0f, 16.0f);
 				}
-				GuiHelper.drawRectangle(fluid, left + (horizontalSegments * 16), bottom - (verticalSegments * 16) - (barSize % 16), getWidth() % 16, (barSize % 16), 0.0f, 16 - (barSize % 16), getWidth() % 16, 16.0f);
+				GuiDrawing.drawRectangle(fluid, left + (horizontalSegments * 16), bottom - (verticalSegments * 16) - (barSize % 16), getWidth() % 16, (barSize % 16), 0.0f, 16 - (barSize % 16), getWidth() % 16, 16.0f);
 
 				break;
 			}
@@ -122,16 +122,16 @@ public class WFluidBar extends WBar {
 				int horizontalSegments = barSize / 16;
 				for (int dX = 0; dX < horizontalSegments; dX++) {
 					for (int dY = 0; dY < verticalSegments; dY++) {
-						GuiHelper.drawRectangle(fluid, left + (dX * 16), top + (dY * 16), 16, 16, 0.0f, 0.0f, 16.0f, 16.0f);
+						GuiDrawing.drawRectangle(fluid, left + (dX * 16), top + (dY * 16), 16, 16, 0.0f, 0.0f, 16.0f, 16.0f);
 					}
-					GuiHelper.drawRectangle(fluid, left + (dX * 16), top + (verticalSegments * 16), 16, getHeight() % 16, 0.0f, 0.0f, 16, getHeight() % 16);
+					GuiDrawing.drawRectangle(fluid, left + (dX * 16), top + (verticalSegments * 16), 16, getHeight() % 16, 0.0f, 0.0f, 16, getHeight() % 16);
 				}
 
 				if (barSize % 16 != 0) {
 					for (int dY = 0; dY < verticalSegments; dY++) {
-						GuiHelper.drawRectangle(fluid, left + (horizontalSegments * 16), top + (dY * 16), (barSize % 16), 16, 0.0f, 0.0f, (barSize % 16), 16);
+						GuiDrawing.drawRectangle(fluid, left + (horizontalSegments * 16), top + (dY * 16), (barSize % 16), 16, 0.0f, 0.0f, (barSize % 16), 16);
 					}
-					GuiHelper.drawRectangle(fluid, left + (horizontalSegments * 16), top + (verticalSegments * 16), (barSize % 16), getHeight() % 16, 0.0f, 0.0f, (barSize % 16), getHeight() % 16);
+					GuiDrawing.drawRectangle(fluid, left + (horizontalSegments * 16), top + (verticalSegments * 16), (barSize % 16), getHeight() % 16, 0.0f, 0.0f, (barSize % 16), getHeight() % 16);
 				}
 
 				break;
@@ -144,15 +144,15 @@ public class WFluidBar extends WBar {
 				int horizontalSegments = getWidth() / 16;
 				for (int dY = 0; dY < verticalSegments; dY++) {
 					for (int dX = 0; dX < horizontalSegments; dX++) {
-						GuiHelper.drawRectangle(fluid, left + (dX * 16), y + (dY * 16), 16, 16, 0.0f, 0.0f, 16.0f, 16.0f);
+						GuiDrawing.drawRectangle(fluid, left + (dX * 16), y + (dY * 16), 16, 16, 0.0f, 0.0f, 16.0f, 16.0f);
 					}
-					GuiHelper.drawRectangle(fluid, left + (horizontalSegments * 16), y + (dY * 16), getWidth() % 16, 16, 0.0f, 0.0f, getWidth() % 16, 16.0f);
+					GuiDrawing.drawRectangle(fluid, left + (horizontalSegments * 16), y + (dY * 16), getWidth() % 16, 16, 0.0f, 0.0f, getWidth() % 16, 16.0f);
 				}
 
 				for (int dX = 0; dX < horizontalSegments; dX++) {
-					GuiHelper.drawRectangle(fluid, left + (dX * 16), y + (verticalSegments * 16), 16, (barSize % 16), 0.0f, 0.0f, 16, (barSize % 16));
+					GuiDrawing.drawRectangle(fluid, left + (dX * 16), y + (verticalSegments * 16), 16, (barSize % 16), 0.0f, 0.0f, 16, (barSize % 16));
 				}
-				GuiHelper.drawRectangle(fluid, left + (horizontalSegments * 16), y + (verticalSegments * 16), getWidth() % 16, (barSize % 16), 0.0f, 0.0f, getWidth() % 16, (barSize % 16));
+				GuiDrawing.drawRectangle(fluid, left + (horizontalSegments * 16), y + (verticalSegments * 16), getWidth() % 16, (barSize % 16), 0.0f, 0.0f, getWidth() % 16, (barSize % 16));
 
 				break;
 			}
@@ -163,17 +163,16 @@ public class WFluidBar extends WBar {
 				int horizontalSegments = barSize / 16;
 				for (int dX = 0; dX < horizontalSegments; dX++) {
 					for (int dY = 0; dY < verticalSegments; dY++) {
-						//GuiHelper.drawRectangle(fluid, left + (dX * 16), top + (dY * 16), 16, 16, 0, 0, 1, 1);
-						GuiHelper.drawRectangle(fluid, left + (dX * 16), top + (dY * 16), 16, 16, 0.0f, 0.0f, 16.0f, 16.0f);
+						GuiDrawing.drawRectangle(fluid, left + (dX * 16), top + (dY * 16), 16, 16, 0.0f, 0.0f, 16.0f, 16.0f);
 					}
-					GuiHelper.drawRectangle(fluid, left + (dX * 16), top + (verticalSegments * 16), 16, getHeight() % 16, 0.0f, 0.0f, 16, getHeight() % 16);
+					GuiDrawing.drawRectangle(fluid, left + (dX * 16), top + (verticalSegments * 16), 16, getHeight() % 16, 0.0f, 0.0f, 16, getHeight() % 16);
 				}
 
 				if (barSize % 16 != 0) {
 					for (int dY = 0; dY < verticalSegments; dY++) {
-						GuiHelper.drawRectangle(fluid, left + (horizontalSegments * 16), top + (dY * 16), (barSize % 16), 16, 0.0f, 0.0f, (barSize % 16), 16);
+						GuiDrawing.drawRectangle(fluid, left + (horizontalSegments * 16), top + (dY * 16), (barSize % 16), 16, 0.0f, 0.0f, (barSize % 16), 16);
 					}
-					GuiHelper.drawRectangle(fluid, left + (horizontalSegments * 16), top + (verticalSegments * 16), (barSize % 16), getHeight() % 16, 0.0f, 0.0f, (barSize % 16), getHeight() % 16);
+					GuiDrawing.drawRectangle(fluid, left + (horizontalSegments * 16), top + (verticalSegments * 16), (barSize % 16), getHeight() % 16, 0.0f, 0.0f, (barSize % 16), getHeight() % 16);
 				}
 
 				break;

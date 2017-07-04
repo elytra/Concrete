@@ -30,14 +30,14 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import javax.annotation.Nullable;
 
-import com.elytradev.concrete.inventory.gui.client.GuiHelper;
+import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class WBar extends Widget {
+public abstract class WBar extends WWidget {
 	public static final Direction DEFAULT_DIRECTION = Direction.UP;
 	
 	protected final ResourceLocation bg;
@@ -67,7 +67,7 @@ public abstract class WBar extends Widget {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void paintBackground(int x, int y) {
-		GuiHelper.drawRectangle(bg, x, y, getWidth(), getHeight());
+		GuiDrawing.drawRectangle(bg, x, y, getWidth(), getHeight());
 		
 		if (!canPaintBar())
 			return;
@@ -96,12 +96,12 @@ public abstract class WBar extends Widget {
 		paintBar(x, y, percent, barSize);
 		
 		if (fg != null)
-			GuiHelper.drawRectangle(fg, x, y, getWidth(), getHeight());
+			GuiDrawing.drawRectangle(fg, x, y, getWidth(), getHeight());
 		
-		//GuiHelper.drawRectangle(bar, x, y + (getHeight() - barHeight), getWidth(), barHeight);
+		//GuiDrawing.drawRectangle(bar, x, y + (getHeight() - barHeight), getWidth(), barHeight);
 		
-		//GuiHelper.drawString("" + inventory.getField(field) + "/", x + 18, y + 9, 0xFF000000);
-		//GuiHelper.drawString("" + inventory.getField(max) + "", x + 32, y + 9, 0xFF000000);
+		//GuiDrawing.drawString("" + inventory.getField(field) + "/", x + 18, y + 9, 0xFF000000);
+		//GuiDrawing.drawString("" + inventory.getField(max) + "", x + 32, y + 9, 0xFF000000);
 	}
 	
 	@SideOnly(Side.CLIENT)

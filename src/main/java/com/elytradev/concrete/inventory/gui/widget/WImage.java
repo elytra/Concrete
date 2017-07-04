@@ -28,13 +28,13 @@
 
 package com.elytradev.concrete.inventory.gui.widget;
 
-import com.elytradev.concrete.inventory.gui.client.GuiHelper;
+import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class WImage extends Widget {
+public class WImage extends WWidget {
 	private final ResourceLocation texture;
 	
 	public WImage(ResourceLocation texture) {
@@ -49,6 +49,6 @@ public class WImage extends Widget {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void paintBackground(int x, int y) {
-		GuiHelper.drawRectangle(texture, x, y, getWidth(), getHeight());
+		GuiDrawing.drawRectangle(texture, x, y, getWidth(), getHeight());
 	}
 }

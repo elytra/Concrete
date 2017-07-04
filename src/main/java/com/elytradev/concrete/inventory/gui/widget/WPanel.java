@@ -41,10 +41,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Containers too - there's no way to make a WContainer such that it isn't
  * confused with Container, and we don't lose anything from the lack of abstraction.
  */
-public class WPanel extends Widget {
+public class WPanel extends WWidget {
 	public static final int DEFAULT_MINIMUM_SIZE = 18;
 	
-	private final List<Widget> children = Lists.newArrayList();
+	private final List<WWidget> children = Lists.newArrayList();
 	private int minWidth = DEFAULT_MINIMUM_SIZE;
 	private int minHeight = DEFAULT_MINIMUM_SIZE;
 	
@@ -64,7 +64,7 @@ public class WPanel extends Widget {
 	 * @param n the index of the widget to get
 	 * @return the n<sup>th</sup> widget in this panel
 	 */
-	public Widget getWidget(int n) {
+	public WWidget getWidget(int n) {
 		return children.get(n);
 	}
 	
@@ -80,7 +80,7 @@ public class WPanel extends Widget {
 	 * @see #invalidate
 	 * @see #validate
 	 */
-	public void add(Widget w) {
+	public void add(WWidget w) {
 		add(w, -1);
 	}
 	
@@ -99,7 +99,7 @@ public class WPanel extends Widget {
 	 * @see #invalidate
 	 * @see #validate
 	 */
-	public void add(Widget w, int index) {
+	public void add(WWidget w, int index) {
 		if (index != -1) {
 			children.add(index, w);
 		} else {
@@ -141,7 +141,7 @@ public class WPanel extends Widget {
 	 * @see #invalidate
 	 * @see #validate
 	 */
-	public void remove(Widget w) {
+	public void remove(WWidget w) {
 		children.remove(w);
 		invalidate();
 	}
@@ -158,7 +158,7 @@ public class WPanel extends Widget {
 		int width = 0;
 		int height = 0;
 		for (int i = 0; i < getWidgetCount(); i++) {
-			Widget w = getWidget(i);
+			WWidget w = getWidget(i);
 			width = Math.max(width, w.getX() + w.getWidth());
 			height = Math.max(height, w.getY() + w.getHeight());
 		}
@@ -230,7 +230,7 @@ public class WPanel extends Widget {
 	 * Validating a panel means laying out its children. Layout-related
 	 * changes, such as adding a widget to the panel, invalidate the panel
 	 * automatically. Note that the ancestors of the panel may be invalidated
-	 * also. (See {@link Widget#invalidate} for details.) Therefore, to restore
+	 * also. (See {@link WWidget#invalidate} for details.) Therefore, to restore
 	 * the validity of the hierarchy, the {@code validate()} method should be
 	 * invoked on the top-most invalid panel of the hierarchy.
 	 * <p>
@@ -246,7 +246,7 @@ public class WPanel extends Widget {
 	public void validate(ConcreteContainer host) {
 		layout();
 		for (int i = 0; i < getWidgetCount(); i++) {
-			Widget child = getWidget(i);
+			WWidget child = getWidget(i);
 			child.validate(host);
 		}
 		super.validate(host);
@@ -256,7 +256,7 @@ public class WPanel extends Widget {
 	@Override
 	public void paintBackground(int x, int y) {
 		for (int i = 0; i < getWidgetCount(); i++) {
-			Widget child = getWidget(i);
+			WWidget child = getWidget(i);
 			child.paintBackground(x + child.getX(), y + child.getY());
 		}
 	}
@@ -265,7 +265,7 @@ public class WPanel extends Widget {
 	@Override
 	public void paintForeground(int x, int y) {
 		for (int i = 0; i < getWidgetCount(); i++) {
-			Widget child = getWidget(i);
+			WWidget child = getWidget(i);
 			child.paintForeground(x + child.getX(), y + child.getY());
 		}
 	}

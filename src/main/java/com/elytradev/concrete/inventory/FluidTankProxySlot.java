@@ -49,7 +49,7 @@ import javax.annotation.Nonnull;
  * serialize/deserialize information about the participating {@link ConcreteFluidTank} (namely, its {@code FluidStack}).</p>
  *
  * <p>This allows for super easy syncing of the FluidStack data between the server and the client, allowing
- * {@link com.elytradev.concrete.inventory.gui.widget.Widget}s like
+ * {@link com.elytradev.concrete.inventory.gui.widget.WWidget}s like
  * {@link com.elytradev.concrete.inventory.gui.widget.WFluidBar} to work and sync properly.</p>
  *
  */

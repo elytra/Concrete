@@ -33,7 +33,7 @@ import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class Widget {
+public class WWidget {
 	private boolean valid = false;
 	private WPanel parent;
 	private int x = 0;
