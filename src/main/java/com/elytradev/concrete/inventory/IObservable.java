@@ -30,6 +30,7 @@ package com.elytradev.concrete.inventory;
 
 import javax.annotation.Nonnull;
 
+@FunctionalInterface
 public interface IObservable {
 	public void listen(@Nonnull Runnable r);
 }

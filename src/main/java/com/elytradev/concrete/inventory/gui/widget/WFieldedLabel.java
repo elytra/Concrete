@@ -30,13 +30,15 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import com.elytradev.concrete.inventory.gui.client.GuiHelper;
 import net.minecraft.inventory.IInventory;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WFieldedLabel extends WLabel {
 	public static final int NO_MAX_FIELD = -1;
 
-	protected final IInventory inventory;
-	protected final int field;
-	protected final int maxField;
+	private final IInventory inventory;
+	private final int field;
+	private final int maxField;
 
 	public WFieldedLabel(IInventory inventory, int field, int maxField, String format, int color) {
 		super(format, color);
@@ -57,8 +59,9 @@ public class WFieldedLabel extends WLabel {
 		this(inventory, field, NO_MAX_FIELD, format);
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
-	public void paintBackground(int x, int y) {
+	public void paintForeground(int x, int y) {
 		String formatted = text.replace("%f", Integer.toString(inventory.getField(field)));
 		if (maxField != NO_MAX_FIELD) {
 			formatted = formatted.replace("%m", Integer.toString(inventory.getField(maxField)));

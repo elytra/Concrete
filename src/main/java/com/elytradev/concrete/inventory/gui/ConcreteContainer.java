@@ -29,6 +29,7 @@
 package com.elytradev.concrete.inventory.gui;
 
 import com.elytradev.concrete.common.ShadingValidator;
+import com.elytradev.concrete.inventory.IContainerInventoryHolder;
 import com.elytradev.concrete.inventory.gui.widget.WPanel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -57,10 +58,13 @@ public class ConcreteContainer extends Container {
 	private WPanel rootPanel;
 	private int[] syncFields = new int[0];
 	
-	public ConcreteContainer(@Nonnull IInventory player, @Nullable IInventory inventory) {
-		this.playerInventory = player;
+	public ConcreteContainer(@Nonnull IInventory playerInventory, @Nullable IContainerInventoryHolder inventoryHolder) {
+		this(playerInventory, inventoryHolder != null ? inventoryHolder.getContainerInventory() : null);
+	}
+	
+	public ConcreteContainer(@Nonnull IInventory playerInventory, @Nullable IInventory inventory) {
+		this.playerInventory = playerInventory;
 		this.inventory = inventory;
-		
 	}
 	
 	/**
@@ -86,20 +90,10 @@ public class ConcreteContainer extends Container {
 		this.addSlotToContainer(slot);
 	}
 	
-	public void initContainerSlot(int slot, int x, int y) {
-		this.addSlotToContainer(new ValidatedSlot(inventory, slot, x * 18, y * 18));
-	}
-	
-	public void initPlayerInventory(int x, int y) {
-		for (int yi = 0; yi < 3; yi++) {
-			for (int xi = 0; xi < 9; xi++) {
-				addSlotToContainer(new Slot(playerInventory, xi + (yi * 9) + 9, x + (xi * 18), y + (yi * 18)));
-			}
-		}
-		
-		for (int i = 0; i < 9; i++) {
-			addSlotToContainer(new Slot(playerInventory, i, x + (i * 18), y + (3 * 18) + 4));
-		}
+	public void addSlotPeer(int index, Slot slot) {
+		slot.slotNumber = this.inventorySlots.size();
+		this.inventorySlots.add(index, slot);
+		this.inventoryItemStacks.add(index, ItemStack.EMPTY);
 	}
 	
 	@Override
@@ -178,11 +172,8 @@ public class ConcreteContainer extends Container {
 	 * @param panel
 	 */
 	public void setRootPanel(WPanel panel) {
-		//Invalidate anything the panel added
-		this.inventorySlots.clear();
-		this.inventoryItemStacks.clear();
-		
 		this.rootPanel = panel;
+		validate(); //Invalidates anything the previous panel added
 	}
 	
 	public WPanel getRootPanel() {
@@ -247,9 +238,5 @@ public class ConcreteContainer extends Container {
 		       dest.getItemDamage() == src.getItemDamage() &&
 		       compoundComparison &&
 		       dest.areCapsCompatible(src);
-	}
-
-	public String getLocalizedName() {
-		return inventory.getDisplayName().getUnformattedComponentText();
 	}
 }

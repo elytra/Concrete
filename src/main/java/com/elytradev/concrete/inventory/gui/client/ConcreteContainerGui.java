@@ -43,8 +43,8 @@ public class ConcreteContainerGui extends GuiContainer {
 	public ConcreteContainerGui(ConcreteContainer container) {
 		super(container);
 		this.container = container;
-		this.xSize = 18 * 9;
-		this.ySize = 18 * 9;
+		this.xSize = container.getRootPanel().getWidth();
+		this.ySize = container.getRootPanel().getHeight();
 	}
 	
 	/*
@@ -56,9 +56,12 @@ public class ConcreteContainerGui extends GuiContainer {
 	 * * coordinates start at 0,0 at the topleft of the screen.
 	 */
 	
-	//@Override
-	//public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-	//}
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		drawDefaultBackground(); //Call this so Forge can post a BackgroundDrawnEvent
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		renderHoveredToolTip(mouseX, mouseY);
+	}
 	
 	/*
 	 * These methods are called frequently and empty, meaning they're probably *meant* for subclasses to override to
@@ -67,15 +70,14 @@ public class ConcreteContainerGui extends GuiContainer {
 	
 	@Override
 	public void initGui() {
-		container.validate();
 		super.initGui();
 	}
 	
-	//Will probably re-activate for animation!
-	//@Override
-	//public void updateScreen() {
-	//	System.out.println("updateScreen");
-	//}
+	@Override
+	public void updateScreen() { //Will probably use this for animation!
+		//System.out.println("updateScreen");
+		super.updateScreen();
+	}
 	
 	@Override
 	public void onGuiClosed() {
@@ -96,10 +98,6 @@ public class ConcreteContainerGui extends GuiContainer {
 	
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
-		if (keyCode == this.mc.gameSettings.keyBindInventory.getKeyCode()) {
-			this.mc.player.closeScreen();
-			return;
-		}
 		super.keyTyped(typedChar, keyCode);
 	}
 	
@@ -134,16 +132,14 @@ public class ConcreteContainerGui extends GuiContainer {
 		//System.out.println("setWorldAndResolution:" + width + "x" + height);
 		guiLeft = (width  / 2) - (xSize / 2);
 		guiTop =  (height / 2) - (ySize / 2);
-		
 	}
 	
 	@Override
-	public void setGuiSize(int w, int h) {
-		super.setGuiSize(w, h);
-		//System.out.println("setGuiSize:" + w + "x" + h);
+	public void setGuiSize(int width, int height) {
+		super.setGuiSize(width, height);
+		//System.out.println("setGuiSize:" + width + "x" + height);
 		guiLeft = (width  / 2) - (xSize / 2);
 		guiTop =  (height / 2) - (ySize / 2);
-		
 	}
 	
 	/*
@@ -155,11 +151,15 @@ public class ConcreteContainerGui extends GuiContainer {
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GuiHelper.drawGuiPanel(guiLeft - PADDING, guiTop - PADDING, xSize + ((PADDING - 1) * 2), ySize + ((PADDING - 1) * 2));
 		
-		if (inventorySlots != null && this.container.getRootPanel() != null) {
+		if (this.container.getRootPanel() != null) {
 			this.container.getRootPanel().paintBackground(guiLeft, guiTop);
 		}
-		
-		//TODO: Change this to a label that lives in the rootPanel instead
-		fontRenderer.drawString(container.getLocalizedName(), guiLeft, guiTop, 0xFF404040);
+	}
+	
+	@Override
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+		if (this.container.getRootPanel() != null) {
+			this.container.getRootPanel().paintForeground(guiLeft, guiTop);
+		}
 	}
 }

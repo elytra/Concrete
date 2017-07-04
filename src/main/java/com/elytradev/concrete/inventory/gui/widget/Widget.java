@@ -35,19 +35,46 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Widget {
 	private boolean valid = false;
+	private WPanel parent;
 	private int x = 0;
 	private int y = 0;
 	private int width = 18;
 	private int height = 18;
 	
+	/**
+	 * Relocates this widget, relative to its parent.
+	 * <p>
+	 * This method changes layout-related information, and therefore,
+	 * invalidates the panel hierarchy.
+	 *
+	 * @param x the new X coordinate of this widget
+	 * @param y the new Y coordinate of this widget
+	 * @see #getX
+	 * @see #getY
+	 * @see #invalidate
+	 */
 	public void setLocation(int x, int y) {
 		this.x = x;
 		this.y = y;
+		invalidate();
 	}
 	
+	/**
+	 * Resizes this widget.
+	 * <p>
+	 * This method changes layout-related information, and therefore,
+	 * invalidates the panel hierarchy.
+	 *
+	 * @param width the new width of this widget
+	 * @param height the new height of this widget
+	 * @see #getWidth
+	 * @see #getHeight
+	 * @see #invalidate
+	 */
 	public void setSize(int width, int height) {
 		this.width = width;
 		this.height = height;
+		invalidate();
 	}
 	
 	public int getX() {
@@ -70,42 +97,98 @@ public class Widget {
 		return false;
 	}
 	
-	/**
-	 * Draw this Widget at the specified coordinates. The coordinates provided are the top-level device coordinates of
-	 * this widget's topleft corner, so don't translate by the widget X/Y! That's already been done. Your "valid"
-	 * drawing space is from (x, y) to (x + width - 1, y + height - 1) inclusive. However, no scissor or depth masking
-	 * is done, so please take care to respect your boundaries.
-	 * @param x The X coordinate of the leftmost pixels of this widget in device (opengl) coordinates
-	 * @param y The Y coordinate of the topmost pixels of this widget in device (opengl) coordinates
-	 */
-	public void paint(int x, int y) {}
+	public void setParent(WPanel parent) {
+		this.parent = parent;
+	}
+	
+	public WPanel getParent() {
+		return parent;
+	}
 	
 	/**
-	 * Creates "heavyweight" component peers
-	 * @param c the top-level Container that will hold the peers
+	 * Draws the background of this Widget at the specified coordinates.
+	 * <p>
+	 * The coordinates provided are the top-level device coordinates of this
+	 * widget's topleft corner, so don't translate by the widget X/Y! That's
+	 * already been done. Your "valid" drawing space is from (x, y) to
+	 * (x + width - 1, y + height - 1) inclusive. However, no scissor or depth
+	 * masking is done, so please take care to respect your boundaries.
+	 *
+	 * @param x The X coordinate of the leftmost pixels of this widget in
+	 *          device (opengl) coordinates
+	 * @param y The Y coordinate of the topmost pixels of this widget in
+	 *          device (opengl) coordinates
+	 * @see #paintForeground
 	 */
-	public void createPeers(ConcreteContainer c) {}
-
 	@SideOnly(Side.CLIENT)
 	public void paintBackground(int x, int y) {}
 	
+	/**
+	 * Draws the foreground of this Widget at the specified coordinates.
+	 * <p>
+	 * The coordinates provided are the top-level device coordinates of this
+	 * widget's topleft corner, so don't translate by the widget X/Y! That's
+	 * already been done. Your "valid" drawing space is from (x, y) to
+	 * (x + width - 1, y + height - 1) inclusive. However, no scissor or depth
+	 * masking is done, so please take care to respect your boundaries.
+	 *
+	 * @param x The X coordinate of the leftmost pixels of this widget in
+	 *          device (opengl) coordinates
+	 * @param y The Y coordinate of the topmost pixels of this widget in
+	 *          device (opengl) coordinates
+	 * @see #paintBackground
+	 */
+	@SideOnly(Side.CLIENT)
+	public void paintForeground(int x, int y) {}
+	
+	/**
+	 * Determines whether this widget is valid.
+	 * <p>
+	 * A widget is valid when it is correctly sized and positioned within its
+	 * parent panel and all its children are also valid.
+	 *
+	 * @return <code>true</code> if the widget is valid, <code>false</code> otherwise
+	 * @see #validate
+	 * @see #invalidate
+	 */
 	public boolean isValid() {
 		return valid;
 	}
 	
 	/**
-	 * Creates component peers, lays out children, and initializes animation data for this Widget and all its children.
-	 * The host container must clear any heavyweight peers from its records before this method is called.
+	 * Validates this widget.
+	 * <p>
+	 * The meaning of the term <i>validating</i> is defined by the ancestors of
+	 * this class.
+	 *
+	 * @param host the top-level container that will hold peers
+	 * @see #invalidate
+	 * @see WPanel#validate
+	 * @see WItemSlots#validate
+	 * @see WFluidBar#validate
 	 */
 	public void validate(ConcreteContainer host) {
 		valid = true;
 	}
 	
 	/**
-	 * Marks this Widget as having dirty state; component peers may need to be recreated, children adapted to a new size,
-	 * and animation data reset.
+	 * Invalidates this widget and its ancestors.
+	 * <p>
+	 * All the ancestors of the widget up to the top-most panel of the
+	 * hierarchy are marked invalid. Marking a panel <i>invalid</i> indicates
+	 * that the panel needs to be laid out.
+	 * <p>
+	 * This method is called automatically when any layout-related information
+	 * changes (e.g. setting the size of the widget, or adding the widget to a
+	 * panel). Widget peers may need to be recreated, children adapted to a new
+	 * size, animation data reset, etc.
+	 *
+	 * @see #validate
 	 */
 	public void invalidate() {
 		valid = false;
+		if (parent != null) {
+			parent.invalidate();
+		}
 	}
 }

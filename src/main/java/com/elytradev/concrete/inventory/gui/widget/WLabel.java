@@ -30,6 +30,9 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import com.elytradev.concrete.inventory.gui.client.GuiHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.inventory.IInventory;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WLabel extends Widget {
 	public static final int DEFAULT_TEXT_COLOR = 0x404040;
@@ -41,15 +44,24 @@ public class WLabel extends Widget {
 	public WLabel(String text, int color) {
 		this.text = text;
 		this.color = color;
-		this.setSize(Minecraft.getMinecraft().fontRenderer.getStringWidth(text), DEFAULT_HEIGHT);
+		this.setSize(Minecraft.getMinecraft().fontRenderer.getStringWidth(text), DEFAULT_HEIGHT);//TODO: Remove reference to client-only Minecraft class
 	}
 
 	public WLabel(String text) {
 		this(text, DEFAULT_TEXT_COLOR);
 	}
 
+	public static WLabel ofInventoryDisplayName(IInventory inventory, int color) {
+		return new WLabel(inventory.getDisplayName().getUnformattedComponentText(), color);
+	}
+
+	public static WLabel ofInventoryDisplayName(IInventory inventory) {
+		return ofInventoryDisplayName(inventory, DEFAULT_TEXT_COLOR);
+	}
+
+	@SideOnly(Side.CLIENT)
 	@Override
-	public void paintBackground(int x, int y) {
+	public void paintForeground(int x, int y) {
 		GuiHelper.drawString(text, x, y, color);
 	}
 

@@ -38,31 +38,41 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StringUtils;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
 public class ValidatedInventoryView implements IInventory {
 	private final ConcreteItemStorage delegate;
 	private int[] fields = new int[0];
 	private final Map<Integer, Supplier<Integer>> fieldDelegates = Maps.newHashMap();
+	private String unlocalizedName;
 	
 	public ValidatedInventoryView(ConcreteItemStorage delegate) {
 		this.delegate = delegate;
 	}
 	
+	public ValidatedInventoryView withUnlocalizedName(String unlocalizedName) {
+		this.unlocalizedName = unlocalizedName;
+		return this;
+	}
+	
 	@Override
 	public String getName() {
-		return delegate.getName();
+		if (hasCustomName()) return delegate.getName();
+		return unlocalizedName;
 	}
 
 	@Override
 	public boolean hasCustomName() {
-		return delegate.getName() != null;
+		return !StringUtils.isNullOrEmpty(delegate.getName());
 	}
 
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TextComponentTranslation(delegate.getName());
+		if (hasCustomName()) return new TextComponentString(getName());
+		return new TextComponentTranslation(getName());
 	}
 
 	@Override

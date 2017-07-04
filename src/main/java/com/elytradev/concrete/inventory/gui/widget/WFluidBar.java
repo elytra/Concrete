@@ -60,12 +60,16 @@ public class WFluidBar extends WBar {
 	}
 
 	/**
-	 * Creates a fake item slot to sync the fluid data between the client and the server.
-	 * @param c the top-level Container that will hold the peers
+	 * Creates a fake item slot to sync the fluid data between the client and
+	 * the server and marks this widget as valid.
+	 *
+	 * @param host the top-level container that will hold peers
+	 * @see #invalidate
 	 */
 	@Override
-	public void createPeers(ConcreteContainer c) {
-		c.addSlotPeer(new FluidTankProxySlot(concreteFluidTank));
+	public void validate(ConcreteContainer host) {
+		host.addSlotPeer(new FluidTankProxySlot(concreteFluidTank));
+		super.validate(host);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -134,7 +138,7 @@ public class WFluidBar extends WBar {
 			}
 			case DOWN: {
 				int left = x;
-				int top = y + getHeight();
+				int top = y + getHeight();//TODO: use/delete unused top variable
 				top -= barSize;
 				int verticalSegments = barSize / 16;
 				int horizontalSegments = getWidth() / 16;

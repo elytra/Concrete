@@ -31,14 +31,13 @@ package com.elytradev.concrete.inventory.gui.widget;
 public class WPlainPanel extends WPanel {
 	public void add(Widget w, int x, int y) {
 		add(w, x, y, 18, 18);
-		invalidate();
 	}
 
 	public void add(Widget w, int x, int y, int width, int height) {
-		children.add(w);
 		w.setLocation(x, y);
 		if (w.canResize()) {
 			w.setSize(width, height);
 		}
+		add(w);
 	}
 }
