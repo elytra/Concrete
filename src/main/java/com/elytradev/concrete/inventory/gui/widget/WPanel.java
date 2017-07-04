@@ -185,6 +185,7 @@ public class WPanel extends WWidget {
 	public void setMinimumSize(int minWidth, int minHeight) {
 		this.minWidth = minWidth;
 		this.minHeight = minHeight;
+		setSize(getWidth(), getHeight());
 	}
 	
 	public int getMinimumWidth() {
