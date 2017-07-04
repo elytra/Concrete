@@ -26,7 +26,7 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory;
+package com.elytradev.concrete.common;
 
 import javax.annotation.Nonnull;
 

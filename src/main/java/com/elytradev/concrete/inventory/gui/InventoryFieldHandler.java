@@ -26,29 +26,10 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.gui.widget;
+package com.elytradev.concrete.inventory.gui;
 
-import com.elytradev.concrete.common.GuiDrawing;
-
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-public class WImage extends WWidget {
-	private final ResourceLocation texture;
-	
-	public WImage(ResourceLocation texture) {
-		this.texture = texture;
-	}
-	
-	@Override
-	public boolean canResize() {
-		return true;
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void paintBackground(int x, int y) {
-		GuiDrawing.drawRectangle(texture, x, y, getWidth(), getHeight());
-	}
+public interface InventoryFieldHandler {
+	public int getFieldValue(int id);
+	public void setFieldValue(int id, int value);
+	public int getFields();
 }

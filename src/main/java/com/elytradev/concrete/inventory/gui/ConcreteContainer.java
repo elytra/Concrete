@@ -188,11 +188,12 @@ public class ConcreteContainer extends Container {
 			if (s.inventory == inventory && s.isItemValid(result)) {
 				if (s.getHasStack()) {
 					ItemStack dest = s.getStack();
+					int maxSize = Math.min(s.getItemStackLimit(dest), dest.getMaxStackSize());
 					
 					//If the two items can stack together and the existing stack can hold more items...
-					if (ItemHandlerHelper.canItemStacksStack(result, dest) && dest.getCount() < s.getItemStackLimit(dest)) {
+					if (ItemHandlerHelper.canItemStacksStack(result, dest) && dest.getCount() < maxSize) {
 						int sum = dest.getCount() + result.getCount();
-						int toDeposit = Math.min(s.getItemStackLimit(dest), sum);
+						int toDeposit = Math.min(maxSize, sum);
 						int remaining = sum - toDeposit;
 						dest.setCount(toDeposit);
 						result.setCount(remaining);

@@ -26,7 +26,7 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.gui.client;
+package com.elytradev.concrete.common;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

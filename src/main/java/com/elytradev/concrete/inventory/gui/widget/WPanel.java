@@ -48,6 +48,15 @@ public class WPanel extends WWidget {
 	private int minWidth = DEFAULT_MINIMUM_SIZE;
 	private int minHeight = DEFAULT_MINIMUM_SIZE;
 	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void initClient() {
+		for (int i = 0; i < getWidgetCount(); i++) {
+			WWidget child = getWidget(i);
+			child.initClient();
+		}
+	}
+	
 	/**
 	 * Gets the number of widgets in this panel.
 	 *

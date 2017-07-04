@@ -30,9 +30,9 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import java.util.List;
 
+import com.elytradev.concrete.common.GuiDrawing;
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.gui.ValidatedSlot;
-import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;

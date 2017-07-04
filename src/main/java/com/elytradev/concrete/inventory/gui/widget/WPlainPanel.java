@@ -30,14 +30,14 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 public class WPlainPanel extends WPanel {
 	public void add(WWidget w, int x, int y) {
-		add(w, x, y, 18, 18);
+		w.setLocation(x, y);
+		add(w);
 	}
 
 	public void add(WWidget w, int x, int y, int width, int height) {
-		w.setLocation(x, y);
 		if (w.canResize()) {
 			w.setSize(width, height);
 		}
-		add(w);
+		add(w, x, y);
 	}
 }

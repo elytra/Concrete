@@ -30,10 +30,10 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import javax.annotation.Nullable;
 
+import com.elytradev.concrete.common.GuiDrawing;
 import com.elytradev.concrete.inventory.ConcreteFluidTank;
 import com.elytradev.concrete.inventory.FluidTankProxySlot;
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
-import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
@@ -42,19 +42,27 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class WFluidBar extends WBar {
 	private final ConcreteFluidTank concreteFluidTank;
 
-	public WFluidBar(ResourceLocation bg, ConcreteFluidTank tank) {
+	public WFluidBar(ConcreteFluidTank tank) {
+		this(tank, DEFAULT_DIRECTION);
+	}
+
+	public WFluidBar(ConcreteFluidTank tank, Direction dir) {
+		this(null, tank, dir);
+	}
+
+	public WFluidBar(@Nullable ResourceLocation bg, ConcreteFluidTank tank) {
 		this(bg, tank, DEFAULT_DIRECTION);
 	}
 
-	public WFluidBar(ResourceLocation bg, ConcreteFluidTank tank, Direction dir) {
+	public WFluidBar(@Nullable ResourceLocation bg, ConcreteFluidTank tank, Direction dir) {
 		this(bg, null, tank, dir);
 	}
 
-	public WFluidBar(ResourceLocation bg, @Nullable ResourceLocation fg, ConcreteFluidTank tank) {
+	public WFluidBar(@Nullable ResourceLocation bg, @Nullable ResourceLocation fg, ConcreteFluidTank tank) {
 		this(bg, fg, tank, DEFAULT_DIRECTION);
 	}
 
-	public WFluidBar(ResourceLocation bg, @Nullable ResourceLocation fg, ConcreteFluidTank tank, Direction dir) {
+	public WFluidBar(@Nullable ResourceLocation bg, @Nullable ResourceLocation fg, ConcreteFluidTank tank, Direction dir) {
 		super(bg, fg, dir);
 		this.concreteFluidTank = tank;
 	}
@@ -115,8 +123,7 @@ public class WFluidBar extends WBar {
 				break;
 			}
 			case LEFT: {
-				int left = x + getWidth();
-				left -= barSize;
+				int left = x + getWidth() - barSize;
 				int top = y;
 				int verticalSegments = getHeight() / 16;
 				int horizontalSegments = barSize / 16;
@@ -138,8 +145,7 @@ public class WFluidBar extends WBar {
 			}
 			case DOWN: {
 				int left = x;
-				int top = y + getHeight();//TODO: use/delete unused top variable
-				top -= barSize;
+				int top = y + getHeight() - barSize;//TODO: use/delete unused top variable
 				int verticalSegments = barSize / 16;
 				int horizontalSegments = getWidth() / 16;
 				for (int dY = 0; dY < verticalSegments; dY++) {

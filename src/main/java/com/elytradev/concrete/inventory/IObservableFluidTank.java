@@ -28,6 +28,8 @@
 
 package com.elytradev.concrete.inventory;
 
+import com.elytradev.concrete.common.IObservable;
+
 import net.minecraftforge.fluids.IFluidTank;
 
 public interface IObservableFluidTank extends IFluidTank, IObservable {}

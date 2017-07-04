@@ -29,15 +29,26 @@
 package com.elytradev.concrete.inventory.gui.widget;
 
 public class WGridPanel extends WPanel {
-	public void add(WWidget w, int x, int y) {
-		add(w, x, y, 1, 1);
+	public static final int DEFAULT_GRID_SIZE = 18;
+	private final int gridSize;
+	
+	public WGridPanel() {
+		this(DEFAULT_GRID_SIZE);
 	}
 	
-	public void add(WWidget w, int x, int y, int width, int height) {
-		w.setLocation(x * 18, y * 18);
-		if (w.canResize()) {
-			w.setSize(width * 18, height * 18);
-		}
+	public WGridPanel(int gridSize) {
+		this.gridSize = gridSize;
+	}
+	
+	public void addCell(WWidget w, int x, int y) {
+		w.setLocation(x * gridSize, y * gridSize);
 		add(w);
+	}
+	
+	public void addCell(WWidget w, int x, int y, int width, int height) {
+		if (w.canResize()) {
+			w.setSize(width * gridSize, height * gridSize);
+		}
+		addCell(w, x, y);
 	}
 }

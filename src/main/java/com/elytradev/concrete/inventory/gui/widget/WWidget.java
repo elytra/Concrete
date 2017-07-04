@@ -41,6 +41,9 @@ public class WWidget {
 	private int width = 18;
 	private int height = 18;
 	
+	@SideOnly(Side.CLIENT)
+	public void initClient() {}
+	
 	/**
 	 * Relocates this widget, relative to its parent.
 	 * <p>

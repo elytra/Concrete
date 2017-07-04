@@ -28,12 +28,9 @@
 
 package com.elytradev.concrete.inventory;
 
-import java.util.Arrays;
-import java.util.Map;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
-import com.google.common.collect.Maps;
+import com.elytradev.concrete.inventory.gui.InventoryFieldHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -45,8 +42,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 
 public class ValidatedInventoryView implements IInventory {
 	private final ConcreteItemStorage delegate;
-	private int[] fields = new int[0];
-	private final Map<Integer, Supplier<Integer>> fieldDelegates = Maps.newHashMap();
+	private InventoryFieldHandler fieldHandler;
 	private String unlocalizedName;
 	
 	public ValidatedInventoryView(ConcreteItemStorage delegate) {
@@ -88,8 +84,8 @@ public class ValidatedInventoryView implements IInventory {
 		return true;
 	}
 	
-	public ValidatedInventoryView withField(int index, Supplier<Integer> delegate) {
-		fieldDelegates.put(index, delegate);
+	public ValidatedInventoryView withFieldHandler(InventoryFieldHandler fieldProvider) {
+		this.fieldHandler = fieldProvider;
 		return this;
 	}
 
@@ -146,25 +142,22 @@ public class ValidatedInventoryView implements IInventory {
 
 	@Override
 	public int getField(int id) {
-		Supplier<Integer> delegate = fieldDelegates.get(id);
-		if (delegate != null) return delegate.get();
-		if (fields.length > id) return fields[id];
+		if (fieldHandler != null) return fieldHandler.getFieldValue(id);
 		return 0;
 	}
 
 	@Override
 	public void setField(int id, int value) {
 		//System.out.println("SetField id:" + id + " val:" + value);
-		if (fields.length <= id) {
-			fields = Arrays.copyOf(fields, id + 1);
+		if (fieldHandler != null) {
+			fieldHandler.setFieldValue(id, value);
 		}
-		fields[id] = value;
 	}
 
 	@Override
 	public int getFieldCount() {
-		//TODO: This is prone to problems; assumes that fieldDelegates are contiguous
-		return Math.max(fields.length, fieldDelegates.size());
+		if (fieldHandler != null) return fieldHandler.getFields();
+		return 0;
 	}
 
 	@Override

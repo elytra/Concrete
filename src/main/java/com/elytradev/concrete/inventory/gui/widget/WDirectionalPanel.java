@@ -30,6 +30,9 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 /**
  * Like a JPanel with a BoxLayout
+ *
+ * @see Direction#HORIZONTAL
+ * @see Direction#VERTICAL
  */
 public class WDirectionalPanel extends WPanel {
 	public static final int DEFAULT_SPACING = 4;
@@ -115,14 +118,14 @@ public class WDirectionalPanel extends WPanel {
 		 * <ul>
 		 * <li>If all children are non-resizable, they will wind up equally
 		 * spaced horizontally, with their vertical position centered on the
-		 * panel's centerline.
+		 * panel's centerline.</li>
 		 * <li>If all children are resizable, they will wind up taking up the
 		 * exact height of the panel, and each widget will split the panel's
-		 * horizontal space equally.
+		 * horizontal space equally.</li>
 		 * <li>If some children are resizable and some children are not, each
 		 * resizable child will attempt to grow equally to fill the unoccupied
 		 * horizontal space (and all resizable children will still be the exact
-		 * height of the panel).
+		 * height of the panel).</li>
 		 * </ul>
 		 */
 		HORIZONTAL {
@@ -151,14 +154,14 @@ public class WDirectionalPanel extends WPanel {
 		 * <ul>
 		 * <li>If all children are non-resizable, they will wind up equally
 		 * spaced vertically, with their horizontal position centered on the
-		 * panel's centerline.
+		 * panel's centerline.</li>
 		 * <li>If all children are resizable, they will wind up taking up the
 		 * exact width of the panel, and each widget will split the panel's
-		 * vertical space equally.
+		 * vertical space equally.</li>
 		 * <li>If some children are resizable and some children are not, each
 		 * resizable child will attempt to grow equally to fill the unoccupied
 		 * vertical space (and all resizable children will still be the exact
-		 * width of the panel).
+		 * width of the panel).</li>
 		 * </ul>
 		 */
 		VERTICAL {

@@ -30,6 +30,7 @@ package com.elytradev.concrete.inventory.gui.client;
 
 import java.io.IOException;
 
+import com.elytradev.concrete.common.GuiDrawing;
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 
 import net.minecraft.client.Minecraft;
@@ -71,6 +72,11 @@ public class ConcreteContainerGui extends GuiContainer {
 	@Override
 	public void initGui() {
 		super.initGui();
+		
+		if (this.container.getRootPanel() != null) {
+			this.container.getRootPanel().initClient();
+			this.container.validate();
+		}
 	}
 	
 	@Override
@@ -159,7 +165,8 @@ public class ConcreteContainerGui extends GuiContainer {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		if (this.container.getRootPanel() != null) {
-			this.container.getRootPanel().paintForeground(guiLeft, guiTop);
+			this.container.getRootPanel().paintForeground(0, 0);
+			//(0, 0) because of GlStateManager.translate(guiLeft, guiTop, 0.0F) in GuiContainer.drawScreen
 		}
 	}
 }

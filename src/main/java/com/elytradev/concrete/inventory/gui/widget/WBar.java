@@ -30,7 +30,7 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import javax.annotation.Nullable;
 
-import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
+import com.elytradev.concrete.common.GuiDrawing;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -40,20 +40,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public abstract class WBar extends WWidget {
 	public static final Direction DEFAULT_DIRECTION = Direction.UP;
 	
+	@Nullable
 	protected final ResourceLocation bg;
 	@Nullable
 	protected final ResourceLocation fg;
 	protected final Direction direction;
 	
-	public WBar(ResourceLocation bg, Direction direction) {
-		this(bg, null, direction);
-	}
-	
-	public WBar(ResourceLocation bg, @Nullable ResourceLocation fg) {
-		this(bg, fg, DEFAULT_DIRECTION);
-	}
-	
-	public WBar(ResourceLocation bg, @Nullable ResourceLocation fg, Direction direction) {
+	public WBar(@Nullable ResourceLocation bg, @Nullable ResourceLocation fg, Direction direction) {
 		this.bg = bg;
 		this.fg = fg;
 		this.direction = direction;
@@ -67,42 +60,38 @@ public abstract class WBar extends WWidget {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void paintBackground(int x, int y) {
-		GuiDrawing.drawRectangle(bg, x, y, getWidth(), getHeight());
-		
-		if (!canPaintBar())
-			return;
-		
-		float percent = getCurrentValue() / getMaxValue();
-		percent = MathHelper.clamp(percent, 0f, 1f);
-		
-		int barMax;
-		switch (direction) {
-			case LEFT:
-			case RIGHT:
-				barMax = getWidth();
-				break;
-			case DOWN:
-			case UP:
-			default:
-				barMax = getHeight();
-				break;
+		if (bg != null) {
+			GuiDrawing.drawRectangle(bg, x, y, getWidth(), getHeight());
 		}
 		
-		percent = ((int) (percent * barMax)) / (float) barMax; //Quantize to bar size
-		
-		int barSize = (int) (barMax * percent);
-		if (barSize <= 0) return;
-		
-		paintBar(x, y, percent, barSize);
+		if (canPaintBar()) {
+			float percent = getCurrentValue() / getMaxValue();
+			percent = MathHelper.clamp(percent, 0f, 1f);
+			
+			int barMax;
+			switch (direction) {
+				case LEFT:
+				case RIGHT:
+					barMax = getWidth();
+					break;
+				case DOWN:
+				case UP:
+				default:
+					barMax = getHeight();
+					break;
+			}
+			
+			percent = ((int) (percent * barMax)) / (float) barMax; //Quantize to bar size
+			
+			int barSize = (int) (barMax * percent);
+			if (barSize > 0) {
+				paintBar(x, y, percent, barSize);
+			}
+		}
 		
 		if (fg != null) {
 			GuiDrawing.drawRectangle(fg, x, y, getWidth(), getHeight());
 		}
-		
-		//GuiDrawing.drawRectangle(bar, x, y + (getHeight() - barHeight), getWidth(), barHeight);
-		
-		//GuiDrawing.drawString("" + inventory.getField(field) + "/", x + 18, y + 9, 0xFF000000);
-		//GuiDrawing.drawString("" + inventory.getField(max) + "", x + 32, y + 9, 0xFF000000);
 	}
 	
 	@SideOnly(Side.CLIENT)

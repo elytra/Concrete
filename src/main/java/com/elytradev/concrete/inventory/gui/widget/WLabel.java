@@ -28,7 +28,7 @@
 
 package com.elytradev.concrete.inventory.gui.widget;
 
-import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
+import com.elytradev.concrete.common.GuiDrawing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.IInventory;
 import net.minecraftforge.fml.relauncher.Side;
@@ -36,6 +36,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WLabel extends WWidget {
 	public static final int DEFAULT_TEXT_COLOR = 0x404040;
+	public static final int DEFAULT_WIDTH = -1; //XXX: Actual width is set in initClient
 	public static final int DEFAULT_HEIGHT = 8;
 	
 	protected final String text;
@@ -44,7 +45,7 @@ public class WLabel extends WWidget {
 	public WLabel(String text, int color) {
 		this.text = text;
 		this.color = color;
-		this.setSize(Minecraft.getMinecraft().fontRenderer.getStringWidth(text), DEFAULT_HEIGHT);//TODO: Remove reference to client-only Minecraft class
+		this.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 
 	public WLabel(String text) {
@@ -57,6 +58,14 @@ public class WLabel extends WWidget {
 
 	public static WLabel ofInventoryDisplayName(IInventory inventory) {
 		return ofInventoryDisplayName(inventory, DEFAULT_TEXT_COLOR);
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void initClient() {
+		if (getWidth() == DEFAULT_WIDTH) {
+			setSize(Minecraft.getMinecraft().fontRenderer.getStringWidth(text), getHeight());
+		}
 	}
 
 	@SideOnly(Side.CLIENT)

@@ -30,7 +30,7 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import javax.annotation.Nullable;
 
-import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
+import com.elytradev.concrete.common.GuiDrawing;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
@@ -43,19 +43,27 @@ public class WFieldedBar extends WBar {
 	private final int maxField;
 	private final IInventory inventory;
 	
-	public WFieldedBar(ResourceLocation bg, ResourceLocation bar, IInventory inv, int field, int maxField) {
+	public WFieldedBar(ResourceLocation bar, IInventory inv, int field, int maxField) {
+		this(bar, inv, field, maxField, DEFAULT_DIRECTION);
+	}
+	
+	public WFieldedBar(ResourceLocation bar, IInventory inv, int field, int maxField, Direction dir) {
+		this(null, bar, inv, field, maxField, dir);
+	}
+	
+	public WFieldedBar(@Nullable ResourceLocation bg, ResourceLocation bar, IInventory inv, int field, int maxField) {
 		this(bg, bar, inv, field, maxField, DEFAULT_DIRECTION);
 	}
 	
-	public WFieldedBar(ResourceLocation bg, ResourceLocation bar, IInventory inv, int field, int maxField, Direction dir) {
+	public WFieldedBar(@Nullable ResourceLocation bg, ResourceLocation bar, IInventory inv, int field, int maxField, Direction dir) {
 		this(bg, bar, null, inv, field, maxField, dir);
 	}
 	
-	public WFieldedBar(ResourceLocation bg, ResourceLocation bar, @Nullable ResourceLocation fg, IInventory inv, int field, int maxField) {
+	public WFieldedBar(@Nullable ResourceLocation bg, ResourceLocation bar, @Nullable ResourceLocation fg, IInventory inv, int field, int maxField) {
 		this(bg, bar, fg, inv, field, maxField, DEFAULT_DIRECTION);
 	}
 	
-	public WFieldedBar(ResourceLocation bg, ResourceLocation bar, @Nullable ResourceLocation fg, IInventory inv, int field, int maxField, Direction dir) {
+	public WFieldedBar(@Nullable ResourceLocation bg, ResourceLocation bar, @Nullable ResourceLocation fg, IInventory inv, int field, int maxField, Direction dir) {
 		super(bg, fg, dir);
 		this.bar = bar;
 		this.inventory = inv;
@@ -85,8 +93,7 @@ public class WFieldedBar extends WBar {
 		switch (direction) { //anonymous blocks in this switch statement are to sandbox variables
 			case UP: {
 				int left = x;
-				int top = y + getHeight();
-				top -= barSize;
+				int top = y + getHeight() - barSize;
 				GuiDrawing.drawRectangle(bar, left, top, getWidth(), barSize, 0, 1 - percent, 1, 1);
 				break;
 			}
@@ -99,9 +106,8 @@ public class WFieldedBar extends WBar {
 				break;
 			}
 			case LEFT: {
-				int left = x + getWidth();
+				int left = x + getWidth() - barSize;
 				int top = y;
-				left -= barSize;
 				GuiDrawing.drawRectangle(bar, left, top, barSize, getHeight(), 1 - percent, 0, 1, 1);
 				break;
 			}
