@@ -35,7 +35,7 @@ public class WPlainPanel extends WPanel {
 	}
 
 	public void add(WWidget w, int x, int y, int width, int height) {
-		if (w.canResize()) {
+		if (w.isResizable()) {
 			w.setSize(width, height);
 		}
 		add(w, x, y);

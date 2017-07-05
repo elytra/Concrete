@@ -40,6 +40,7 @@ public class WWidget {
 	private int y = 0;
 	private int width = 18;
 	private int height = 18;
+	private boolean resizable = false;
 	
 	@SideOnly(Side.CLIENT)
 	public void initClient() {}
@@ -96,8 +97,24 @@ public class WWidget {
 		return height;
 	}
 	
-	public boolean canResize() {
-		return false;
+	/**
+	 * Sets whether this widget is resizable by the user.
+	 * <p>
+	 * This method changes layout-related information, and therefore,
+	 * invalidates the panel hierarchy.
+	 *
+	 * @param resizable <code>true</code> if this widget is resizable;
+	 *                  <code>false</code> otherwise.
+	 * @see #isResizable
+	 * @see #invalidate
+	 */
+	public void setResizable(boolean resizable) {
+		this.resizable = resizable;
+		invalidate();
+	}
+	
+	public boolean isResizable() {
+		return resizable;
 	}
 	
 	public void setParent(WPanel parent) {
@@ -175,11 +192,8 @@ public class WWidget {
 	}
 	
 	/**
-	 * Invalidates this widget and its ancestors.
-	 * <p>
-	 * All the ancestors of the widget up to the top-most panel of the
-	 * hierarchy are marked invalid. Marking a panel <i>invalid</i> indicates
-	 * that the panel needs to be laid out.
+	 * Invalidates this widget and its ancestors. Marking a widget
+	 * <i>invalid</i> indicates that the widget needs to be laid out.
 	 * <p>
 	 * This method is called automatically when any layout-related information
 	 * changes (e.g. setting the size of the widget, or adding the widget to a

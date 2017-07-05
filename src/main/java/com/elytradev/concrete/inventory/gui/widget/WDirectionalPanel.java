@@ -81,7 +81,7 @@ public class WDirectionalPanel extends WPanel {
 		int numResizable = 0;
 		for (int i = 0; i < getWidgetCount(); i++) {
 			WWidget w = getWidget(i);
-			if (w.canResize()) {
+			if (w.isResizable()) {
 				numResizable++;
 			} else {
 				unresizable += direction.getDirectionSpace(w);
@@ -102,7 +102,7 @@ public class WDirectionalPanel extends WPanel {
 		int curOffset = 0;
 		for (int i = 0; i < getWidgetCount(); i++) {
 			WWidget w = getWidget(i);
-			if (w.canResize()) {
+			if (w.isResizable()) {
 				direction.setSize(w, resizeEach, direction.getCenteredSpace(this));
 			}
 			direction.setLocation(w, curOffset, centerline - (direction.getCenteredSpace(w) / 2));

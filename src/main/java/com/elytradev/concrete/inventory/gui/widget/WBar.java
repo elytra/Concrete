@@ -50,11 +50,7 @@ public abstract class WBar extends WWidget {
 		this.bg = bg;
 		this.fg = fg;
 		this.direction = direction;
-	}
-	
-	@Override
-	public boolean canResize() {
-		return true;
+		setResizable(true);
 	}
 	
 	@SideOnly(Side.CLIENT)

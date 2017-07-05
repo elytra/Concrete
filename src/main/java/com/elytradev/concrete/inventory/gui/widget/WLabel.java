@@ -73,9 +73,4 @@ public class WLabel extends WWidget {
 	public void paintForeground(int x, int y) {
 		GuiDrawing.drawString(text, x, y, color);
 	}
-
-	@Override
-	public boolean canResize() {
-		return false;
-	}
 }

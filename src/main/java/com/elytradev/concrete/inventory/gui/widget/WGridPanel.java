@@ -46,7 +46,7 @@ public class WGridPanel extends WPanel {
 	}
 	
 	public void addCell(WWidget w, int x, int y, int width, int height) {
-		if (w.canResize()) {
+		if (w.isResizable()) {
 			w.setSize(width * gridSize, height * gridSize);
 		}
 		addCell(w, x, y);

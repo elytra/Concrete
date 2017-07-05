@@ -30,6 +30,7 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import java.util.List;
 
+import com.elytradev.concrete.common.GuiDrawing;
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 import com.google.common.collect.Lists;
 
@@ -47,6 +48,10 @@ public class WPanel extends WWidget {
 	private final List<WWidget> children = Lists.newArrayList();
 	private int minWidth = DEFAULT_MINIMUM_SIZE;
 	private int minHeight = DEFAULT_MINIMUM_SIZE;
+	
+	public WPanel() {
+		setResizable(true);
+	}
 	
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -220,11 +225,6 @@ public class WPanel extends WWidget {
 		width = Math.max(width, getMinimumWidth());
 		height = Math.max(height, getMinimumHeight());
 		super.setSize(width, height);
-	}
-	
-	@Override
-	public boolean canResize() {
-		return true;
 	}
 	
 	/**
