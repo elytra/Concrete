@@ -30,7 +30,6 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import java.util.List;
 
-import com.elytradev.concrete.common.GuiDrawing;
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 import com.google.common.collect.Lists;
 

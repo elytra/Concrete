@@ -26,7 +26,7 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.common;
+package com.elytradev.concrete.common.client;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

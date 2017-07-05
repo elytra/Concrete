@@ -31,17 +31,17 @@ package com.elytradev.concrete.inventory.gui.widget;
 /**
  * Like a JPanel with a BoxLayout
  *
- * @see Direction#HORIZONTAL
- * @see Direction#VERTICAL
+ * @see Axis#X
+ * @see Axis#Y
  */
-public class WDirectionalPanel extends WPanel {
+public class WAxisAlignedPanel extends WPanel {
 	public static final int DEFAULT_SPACING = 4;
 	
-	private final Direction direction;
+	private final Axis axis;
 	private int spacing = DEFAULT_SPACING;
 	
-	public WDirectionalPanel(Direction direction) {
-		this.direction = direction;
+	public WAxisAlignedPanel(Axis axis) {
+		this.axis = axis;
 	}
 	
 	/**
@@ -62,17 +62,17 @@ public class WDirectionalPanel extends WPanel {
 	
 	@Override
 	public void pack() {
-		int directionSpace = 0;
-		int centeredSpace = 0;
+		int sizeAlongAxis = 0;
+		int sizePerpendicularToAxis = 0;
 		for (int i = 0; i < getWidgetCount(); i++) {
 			WWidget w = getWidget(i);
 			if (i > 0) {
-				directionSpace += spacing;
+				sizeAlongAxis += spacing;
 			}
-			directionSpace += direction.getDirectionSpace(w);
-			centeredSpace = Math.max(direction.getCenteredSpace(w), centeredSpace);
+			sizeAlongAxis += axis.getSizeAlongAxis(w);
+			sizePerpendicularToAxis = Math.max(axis.getSizePerpendicularToAxis(w), sizePerpendicularToAxis);
 		}
-		direction.setSize(this, directionSpace, centeredSpace);
+		axis.setSize(this, sizeAlongAxis, sizePerpendicularToAxis);
 	}
 	
 	@Override
@@ -84,10 +84,10 @@ public class WDirectionalPanel extends WPanel {
 			if (w.isResizable()) {
 				numResizable++;
 			} else {
-				unresizable += direction.getDirectionSpace(w);
+				unresizable += axis.getSizeAlongAxis(w);
 			}
 		}
-		int resizeSpace = direction.getDirectionSpace(this) - unresizable;
+		int resizeSpace = axis.getSizeAlongAxis(this) - unresizable;
 		int resizeEach;
 		if (numResizable > 0) {
 			resizeEach = resizeSpace / numResizable;
@@ -98,23 +98,24 @@ public class WDirectionalPanel extends WPanel {
 			resizeEach = 0; //None of them are resizable, so set this to an arbitrary value
 		}
 		
-		int centerline = direction.getCenteredSpace(this) / 2;
+		int centerline = axis.getSizePerpendicularToAxis(this) / 2;
 		int curOffset = 0;
 		for (int i = 0; i < getWidgetCount(); i++) {
 			WWidget w = getWidget(i);
 			if (w.isResizable()) {
-				direction.setSize(w, resizeEach, direction.getCenteredSpace(this));
+				axis.setSize(w, resizeEach, axis.getSizePerpendicularToAxis(this));
 			}
-			direction.setLocation(w, curOffset, centerline - (direction.getCenteredSpace(w) / 2));
-			curOffset += direction.getDirectionSpace(w) + spacing;
+			axis.setLocation(w, curOffset, centerline - (axis.getSizePerpendicularToAxis(w) / 2));
+			curOffset += axis.getSizeAlongAxis(w) + spacing;
 		}
 		
 		//Layout children after parents
 		super.layout();
 	}
 	
-	public static enum Direction {
+	public static enum Axis {
 		/**
+		 * Specifies that components should be laid out left to right.
 		 * <ul>
 		 * <li>If all children are non-resizable, they will wind up equally
 		 * spaced horizontally, with their vertical position centered on the
@@ -128,29 +129,30 @@ public class WDirectionalPanel extends WPanel {
 		 * height of the panel).</li>
 		 * </ul>
 		 */
-		HORIZONTAL {
+		X {
 			@Override
-			public int getDirectionSpace(WWidget w) {
+			public int getSizeAlongAxis(WWidget w) {
 				return w.getWidth();
 			}
 			
 			@Override
-			public int getCenteredSpace(WWidget w) {
+			public int getSizePerpendicularToAxis(WWidget w) {
 				return w.getHeight();
 			}
 			
 			@Override
-			public void setSize(WWidget w, int directionSize, int centeredSize) {
-				w.setSize(directionSize, centeredSize);
+			public void setSize(WWidget w, int alongAxis, int perpendicularToAxis) {
+				w.setSize(alongAxis, perpendicularToAxis);
 			}
 			
 			@Override
-			public void setLocation(WWidget w, int directionCoord, int centeredCoord) {
-				w.setLocation(directionCoord, centeredCoord);
+			public void setLocation(WWidget w, int alongAxis, int perpendicularToAxis) {
+				w.setLocation(alongAxis, perpendicularToAxis);
 			}
 		},
 		
 		/**
+		 * Specifies that components should be laid out top to bottom.
 		 * <ul>
 		 * <li>If all children are non-resizable, they will wind up equally
 		 * spaced vertically, with their horizontal position centered on the
@@ -164,34 +166,34 @@ public class WDirectionalPanel extends WPanel {
 		 * width of the panel).</li>
 		 * </ul>
 		 */
-		VERTICAL {
+		Y {
 			@Override
-			public int getDirectionSpace(WWidget w) {
+			public int getSizeAlongAxis(WWidget w) {
 				return w.getHeight();
 			}
 			
 			@Override
-			public int getCenteredSpace(WWidget w) {
+			public int getSizePerpendicularToAxis(WWidget w) {
 				return w.getWidth();
 			}
 			
 			@Override
-			public void setSize(WWidget w, int directionSize, int centeredSize) {
-				w.setSize(centeredSize, directionSize);
+			public void setSize(WWidget w, int alongAxis, int perpendicularToAxis) {
+				w.setSize(perpendicularToAxis, alongAxis);
 			}
 			
 			@Override
-			public void setLocation(WWidget w, int directionCoord, int centeredCoord) {
-				w.setLocation(centeredCoord, directionCoord);
+			public void setLocation(WWidget w, int alongAxis, int perpendicularToAxis) {
+				w.setLocation(perpendicularToAxis, alongAxis);
 			}
 		};
 		
-		public abstract int getDirectionSpace(WWidget w);
+		public abstract int getSizeAlongAxis(WWidget w);
 		
-		public abstract int getCenteredSpace(WWidget w);
+		public abstract int getSizePerpendicularToAxis(WWidget w);
 		
-		public abstract void setSize(WWidget w, int directionSize, int centeredSize);
+		public abstract void setSize(WWidget w, int alongAxis, int perpendicularToAxis);
 		
-		public abstract void setLocation(WWidget w, int directionCoord, int centeredCoord);
+		public abstract void setLocation(WWidget w, int alongAxis, int perpendicularToAxis);
 	}
 }

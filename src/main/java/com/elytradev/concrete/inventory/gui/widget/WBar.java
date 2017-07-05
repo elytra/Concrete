@@ -30,7 +30,7 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import javax.annotation.Nullable;
 
-import com.elytradev.concrete.common.GuiDrawing;
+import com.elytradev.concrete.common.client.GuiDrawing;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;

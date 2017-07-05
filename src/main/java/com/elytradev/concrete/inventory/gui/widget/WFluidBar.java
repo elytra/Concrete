@@ -30,7 +30,7 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import javax.annotation.Nullable;
 
-import com.elytradev.concrete.common.GuiDrawing;
+import com.elytradev.concrete.common.client.GuiDrawing;
 import com.elytradev.concrete.inventory.ConcreteFluidTank;
 import com.elytradev.concrete.inventory.FluidTankProxySlot;
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;

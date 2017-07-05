@@ -91,7 +91,7 @@ public class ConcreteContainer extends Container {
 	}
 	
 	public void addSlotPeer(int index, Slot slot) {
-		slot.slotNumber = this.inventorySlots.size();
+		slot.slotNumber = index;
 		this.inventorySlots.add(index, slot);
 		this.inventoryItemStacks.add(index, ItemStack.EMPTY);
 	}

@@ -30,7 +30,7 @@ package com.elytradev.concrete.inventory.gui.client;
 
 import java.io.IOException;
 
-import com.elytradev.concrete.common.GuiDrawing;
+import com.elytradev.concrete.common.client.GuiDrawing;
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 
 import net.minecraft.client.Minecraft;

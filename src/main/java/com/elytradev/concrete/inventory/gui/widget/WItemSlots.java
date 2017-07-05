@@ -30,7 +30,7 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import java.util.List;
 
-import com.elytradev.concrete.common.GuiDrawing;
+import com.elytradev.concrete.common.client.GuiDrawing;
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.gui.ValidatedSlot;
 import com.google.common.collect.Lists;
@@ -44,63 +44,93 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WItemSlots extends WWidget {
 	private final List<Slot> peers = Lists.newArrayList();
-	private IInventory inventory;
+	private final IInventory inventory;
 	private int startIndex = 0;
 	private int slotsWide = 1;
 	private int slotsHigh = 1;
 	private boolean big = false;
 	private boolean ltr = false;
 	
-	public WItemSlots(IInventory inventory, int startIndex, int slotsWide, int slotsHigh, boolean big, boolean ltr) {
+	public WItemSlots(IInventory inventory) {
 		this.inventory = inventory;
-		this.startIndex = startIndex;
-		this.slotsWide = slotsWide;
-		this.slotsHigh = slotsHigh;
-		this.big = big;
-		this.ltr = ltr;
 	}
 	
-	private WItemSlots() {}
+	public void setStartIndex(int startIndex) {
+		this.startIndex = startIndex;
+		invalidate();
+	}
+	
+	public void setSlotsArea(int slotsWide, int slotsHigh) {
+		this.slotsWide = slotsWide;
+		this.slotsHigh = slotsHigh;
+		invalidate();
+	}
+	
+	public void setBig(boolean big) {
+		this.big = big;
+		invalidate();
+	}
+	
+	public void setLtr(boolean ltr) {
+		this.ltr = ltr;
+		invalidate();
+	}
+	
+	public IInventory getInventory() {
+		return inventory;
+	}
+	
+	public int getStartIndex() {
+		return startIndex;
+	}
+	
+	public int getSlotsWide() {
+		return slotsWide;
+	}
+	
+	public int getSlotsHigh() {
+		return slotsHigh;
+	}
+	
+	public boolean isBig() {
+		return big;
+	}
+	
+	public boolean isLtr() {
+		return ltr;
+	}
 	
 	public static WItemSlots of(IInventory inventory, int index) {
-		WItemSlots w = new WItemSlots();
-		w.inventory = inventory;
-		w.startIndex = index;
+		WItemSlots w = new WItemSlots(inventory);
+		w.setStartIndex(index);
 		return w;
 	}
 	
 	public static WItemSlots of(IInventory inventory, int startIndex, int slotsWide, int slotsHigh) {
-		WItemSlots w = new WItemSlots();
-		w.inventory = inventory;
-		w.startIndex = startIndex;
-		w.slotsWide = slotsWide;
-		w.slotsHigh = slotsHigh;
+		WItemSlots w = new WItemSlots(inventory);
+		w.setStartIndex(startIndex);
+		w.setSlotsArea(slotsWide, slotsHigh);
 		return w;
 	}
 	
 	public static WItemSlots outputOf(IInventory inventory, int index) {
-		WItemSlots w = new WItemSlots();
-		w.inventory = inventory;
-		w.startIndex = index;
-		w.big = true;
+		WItemSlots w = new WItemSlots(inventory);
+		w.setStartIndex(index);
+		w.setBig(true);
 		return w;
 	}
 	
 	public static WItemSlots ofPlayerStorage(IInventory inventory) {
-		WItemSlots w = new WItemSlots();
-		w.inventory = inventory;
-		w.startIndex = 9;
-		w.slotsWide = 9;
-		w.slotsHigh = 3;
+		WItemSlots w = new WItemSlots(inventory);
+		w.setStartIndex(9);
+		w.setSlotsArea(9, 3);
 		return w;
 	}
 	
 	public static WItemSlots ofPlayerHotbar(IInventory inventory) {
-		WItemSlots w = new WItemSlots() {};
-		w.inventory = inventory;
-		w.startIndex = 0;
-		w.slotsWide = 9;
-		w.slotsHigh = 1;
+		WItemSlots w = new WItemSlots(inventory);
+		w.setStartIndex(0);
+		w.setSlotsArea(9, 1);
 		return w;
 	}
 	
@@ -130,24 +160,26 @@ public class WItemSlots extends WWidget {
 		if (ltr) {
 			for (int x = 0; x < slotsWide; x++) {
 				for (int y = 0; y < slotsHigh; y++) {
-					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX() + (x * 18), this.getY() + (y * 18));
-					peers.add(slot);
-					host.addSlotPeer(slot);
+					addSlotPeer(host, index, x, y);
 					index++;
 				}
 			}
 		} else {
 			for (int y = 0; y < slotsHigh; y++) {
 				for (int x = 0; x < slotsWide; x++) {
-					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX() + (x * 18), this.getY() + (y * 18));
-					peers.add(slot);
-					host.addSlotPeer(slot);
+					addSlotPeer(host, index, x, y);
 					index++;
 				}
 			}
 		}
 		
 		super.validate(host);
+	}
+	
+	private void addSlotPeer(ConcreteContainer host, int index, int x, int y) {
+		ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX() + (x * 18), this.getY() + (y * 18));
+		peers.add(slot);
+		host.addSlotPeer(slot);
 	}
 	
 	@SideOnly(Side.CLIENT)
