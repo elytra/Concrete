@@ -1,0 +1,11 @@
+* @unascribed
+
+/src/main/java/com/elytradev/concrete/inventory @falkreon
+/src/main/java/com/elytradev/concrete/inventory/*Fluid* @falkreon @CalmBit
+
+/src/main/java/com/elytradev/concrete/block @jamierocks
+/src/main/java/com/elytradev/concrete/config @darkevilmac
+/src/main/java/com/elytradev/concrete/network @unascribed
+/src/main/java/com/elytradev/concrete/reflect @unascribed
+/src/main/java/com/elytradev/concrete/resgen @darkevilmac
+
