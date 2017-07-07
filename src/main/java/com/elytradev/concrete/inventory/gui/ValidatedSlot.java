@@ -26,47 +26,29 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory;
+package com.elytradev.concrete.inventory.gui;
 
+import com.elytradev.concrete.inventory.ValidatedInventoryView;
+
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
-import javax.annotation.Nonnull;
+/**
+ * The heavyweight peer used by ConcreteContainer to respect the predicates for validated inventories.
+ */
+public class ValidatedSlot extends Slot {
 
-public class ValidatedItemHandlerView implements IItemHandler {
-	private final ConcreteItemStorage delegate;
+	public ValidatedSlot(IInventory inventory, int index, int xPosition, int yPosition) {
+		super(inventory, index, xPosition, yPosition);
+	}
 	
-	public ValidatedItemHandlerView(ConcreteItemStorage delegate) {
-		this.delegate = delegate;
-	}
-
-	@Nonnull
 	@Override
-	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-		if (!delegate.getValidator(slot).test(stack)) return stack;
-		return delegate.insertItem(slot, stack, simulate);
-	}
-
-	@Override
-	public int getSlots() {
-		return delegate.getSlots();
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack getStackInSlot(int slot) {
-		return delegate.getStackInSlot(slot);
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		if (!delegate.getCanExtract(slot)) return ItemStack.EMPTY;
-		return delegate.extractItem(slot, amount, simulate);
-	}
-
-	@Override
-	public int getSlotLimit(int slot) {
-		return delegate.getSlotLimit(slot);
+	public boolean isItemValid(ItemStack stack) {
+		if (inventory instanceof ValidatedInventoryView) {
+			return ((ValidatedInventoryView) inventory).getValidator(getSlotIndex()).test(stack);
+		} else {
+			return super.isItemValid(stack);
+		}
 	}
 }

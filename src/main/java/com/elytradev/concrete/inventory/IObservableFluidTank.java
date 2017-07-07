@@ -28,10 +28,8 @@
 
 package com.elytradev.concrete.inventory;
 
+import com.elytradev.concrete.common.IObservable;
+
 import net.minecraftforge.fluids.IFluidTank;
 
-import javax.annotation.Nonnull;
-
-public interface IObservableFluidTank extends IFluidTank {
-	public void listen(@Nonnull Runnable r);
-}
+public interface IObservableFluidTank extends IFluidTank, IObservable {}

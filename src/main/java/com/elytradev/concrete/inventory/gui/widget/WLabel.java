@@ -28,32 +28,49 @@
 
 package com.elytradev.concrete.inventory.gui.widget;
 
-import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
+import com.elytradev.concrete.common.client.GuiDrawing;
 import net.minecraft.client.Minecraft;
+import net.minecraft.inventory.IInventory;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WLabel extends WWidget {
+	public static final int DEFAULT_TEXT_COLOR = 0x404040;
+	public static final int DEFAULT_WIDTH = -1; //XXX: Actual width is set in initClient
+	public static final int DEFAULT_HEIGHT = 8;
+	
 	protected final String text;
 	protected final int color;
-
-	public static final int DEFAULT_TEXT_COLOR = 0x404040;
 
 	public WLabel(String text, int color) {
 		this.text = text;
 		this.color = color;
-		this.setSize(Minecraft.getMinecraft().fontRenderer.getStringWidth(text), 8);
+		this.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 
 	public WLabel(String text) {
 		this(text, DEFAULT_TEXT_COLOR);
 	}
 
-	@Override
-	public void paintBackground(int x, int y) {
-		GuiDrawing.drawString(text, x, y, color);
+	public static WLabel ofInventoryDisplayName(IInventory inventory, int color) {
+		return new WLabel(inventory.getDisplayName().getUnformattedComponentText(), color);
 	}
 
+	public static WLabel ofInventoryDisplayName(IInventory inventory) {
+		return ofInventoryDisplayName(inventory, DEFAULT_TEXT_COLOR);
+	}
+
+	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean canResize() {
-		return false;
+	public void initClient() {
+		if (getWidth() == DEFAULT_WIDTH) {
+			setSize(Minecraft.getMinecraft().fontRenderer.getStringWidth(text), getHeight());
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void paintForeground(int x, int y) {
+		GuiDrawing.drawString(text, x, y, color);
 	}
 }

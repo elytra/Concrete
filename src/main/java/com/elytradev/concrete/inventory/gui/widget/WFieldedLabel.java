@@ -28,38 +28,43 @@
 
 package com.elytradev.concrete.inventory.gui.widget;
 
-import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
+import com.elytradev.concrete.common.client.GuiDrawing;
 import net.minecraft.inventory.IInventory;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WFieldedLabel extends WLabel {
-	protected final IInventory inventory;
-	protected final int field;
-	protected final int fieldMax;
+	public static final int NO_MAX_FIELD = -1;
 
-	public WFieldedLabel(IInventory inventory, int field, int fieldMax, String format, int color) {
+	private final IInventory inventory;
+	private final int field;
+	private final int maxField;
+
+	public WFieldedLabel(IInventory inventory, int field, int maxField, String format, int color) {
 		super(format, color);
 		this.inventory = inventory;
 		this.field = field;
-		this.fieldMax = fieldMax;
+		this.maxField = maxField;
 	}
 
-	public WFieldedLabel(IInventory inventory, int field, int fieldMax, String format) {
-		this(inventory, field, fieldMax, format, DEFAULT_TEXT_COLOR);
+	public WFieldedLabel(IInventory inventory, int field, int maxField, String format) {
+		this(inventory, field, maxField, format, DEFAULT_TEXT_COLOR);
 	}
 
 	public WFieldedLabel(IInventory inventory, int field, String format, int color) {
-		this(inventory, field, -1, format, color);
+		this(inventory, field, NO_MAX_FIELD, format, color);
 	}
 
 	public WFieldedLabel(IInventory inventory, int field, String format) {
-		this(inventory, field, -1, format);
+		this(inventory, field, NO_MAX_FIELD, format);
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
-	public void paintBackground(int x, int y) {
-		String formatted = text.replaceAll("%f", Integer.toString(inventory.getField(field)));
-		if(fieldMax != -1) {
-			formatted = formatted.replaceAll("%m", Integer.toString(inventory.getField(fieldMax)));
+	public void paintForeground(int x, int y) {
+		String formatted = text.replace("%f", Integer.toString(inventory.getField(field)));
+		if (maxField != NO_MAX_FIELD) {
+			formatted = formatted.replace("%m", Integer.toString(inventory.getField(maxField)));
 		}
 		GuiDrawing.drawString(formatted, x, y, color);
 	}

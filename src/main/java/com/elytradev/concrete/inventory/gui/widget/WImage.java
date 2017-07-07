@@ -28,28 +28,47 @@
 
 package com.elytradev.concrete.inventory.gui.widget;
 
-import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
+import com.elytradev.concrete.common.client.GuiDrawing;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WImage extends WWidget {
-	private final ResourceLocation texture;
+	public static final int DEFAULT_COLOR = 0xFFFFFFFF;
 	
-	public WImage(ResourceLocation loc) {
-		this.texture = loc;
+	private final ResourceLocation texture;
+	private final float u1;
+	private final float v1;
+	private final float u2;
+	private final float v2;
+	private final int color;
+	
+	public WImage(ResourceLocation texture) {
+		this(texture, DEFAULT_COLOR);
 	}
 	
+	public WImage(ResourceLocation texture, int color) {
+		this(texture, 0, 0, 1, 1, color);
+	}
 	
-	@Override
-	public boolean canResize() {
-		return true;
+	public WImage(ResourceLocation texture, float u1, float v1, float u2, float v2) {
+		this(texture, u1, v1, u2, v2, DEFAULT_COLOR);
+	}
+	
+	public WImage(ResourceLocation texture, float u1, float v1, float u2, float v2, int color) {
+		this.texture = texture;
+		this.u1 = u1;
+		this.v1 = v1;
+		this.u2 = u2;
+		this.v2 = v2;
+		this.color = color;
+		setResizable(true);
 	}
 	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void paintBackground(int x, int y) {
-		GuiDrawing.rect(texture, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
+		GuiDrawing.drawRectangle(texture, x, y, getWidth(), getHeight(), u1, v1, u2, v2, color);
 	}
 }

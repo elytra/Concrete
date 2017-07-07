@@ -30,21 +30,22 @@ package com.elytradev.concrete.inventory.gui.client;
 
 import java.io.IOException;
 
+import com.elytradev.concrete.common.client.GuiDrawing;
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
-public class ConcreteGui extends GuiContainer {
+public class ConcreteContainerGui extends GuiContainer {
 	public static final int PADDING = 8;
 	private final ConcreteContainer container;
 	
-	public ConcreteGui(ConcreteContainer container) {
+	public ConcreteContainerGui(ConcreteContainer container) {
 		super(container);
 		this.container = container;
-		this.xSize = 18 * 9;
-		this.ySize = 18 * 9;
+		this.xSize = container.getRootPanel().getWidth();
+		this.ySize = container.getRootPanel().getHeight();
 	}
 	
 	/*
@@ -56,10 +57,12 @@ public class ConcreteGui extends GuiContainer {
 	 * * coordinates start at 0,0 at the topleft of the screen.
 	 */
 	
-	//@Override
-	//public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-	//}
-	
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		drawDefaultBackground(); //Call this so Forge can post a BackgroundDrawnEvent
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		renderHoveredToolTip(mouseX, mouseY);
+	}
 	
 	/*
 	 * These methods are called frequently and empty, meaning they're probably *meant* for subclasses to override to
@@ -68,15 +71,19 @@ public class ConcreteGui extends GuiContainer {
 	
 	@Override
 	public void initGui() {
-		container.validate();
 		super.initGui();
+		
+		if (this.container.getRootPanel() != null) {
+			this.container.getRootPanel().initClient();
+			this.container.validate();
+		}
 	}
 	
-	//Will probably re-activate for animation!
-	//@Override
-	//public void updateScreen() {
-	//	System.out.println("updateScreen");
-	//}
+	@Override
+	public void updateScreen() { //Will probably use this for animation!
+		//System.out.println("updateScreen");
+		super.updateScreen();
+	}
 	
 	@Override
 	public void onGuiClosed() {
@@ -97,10 +104,6 @@ public class ConcreteGui extends GuiContainer {
 	
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
-		if (keyCode == this.mc.gameSettings.keyBindInventory.getKeyCode()) {
-			this.mc.player.closeScreen();
-			return;
-		}
 		super.keyTyped(typedChar, keyCode);
 	}
 	
@@ -108,7 +111,6 @@ public class ConcreteGui extends GuiContainer {
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
-	
 	
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
@@ -134,19 +136,16 @@ public class ConcreteGui extends GuiContainer {
 	public void setWorldAndResolution(Minecraft mc, int width, int height) {
 		super.setWorldAndResolution(mc, width, height);
 		//System.out.println("setWorldAndResolution:" + width + "x" + height);
-		
 		guiLeft = (width  / 2) - (xSize / 2);
 		guiTop =  (height / 2) - (ySize / 2);
-		
 	}
 	
 	@Override
-	public void setGuiSize(int w, int h) {
-		super.setGuiSize(w, h);
-		//System.out.println("setGuiSize:" + w + "x" + h);
+	public void setGuiSize(int width, int height) {
+		super.setGuiSize(width, height);
+		//System.out.println("setGuiSize:" + width + "x" + height);
 		guiLeft = (width  / 2) - (xSize / 2);
 		guiTop =  (height / 2) - (ySize / 2);
-		
 	}
 	
 	/*
@@ -158,11 +157,16 @@ public class ConcreteGui extends GuiContainer {
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GuiDrawing.drawGuiPanel(guiLeft - PADDING, guiTop - PADDING, xSize + ((PADDING - 1) * 2), ySize + ((PADDING - 1) * 2));
 		
-		if (inventorySlots != null && this.container.getRootPanel() != null) {
+		if (this.container.getRootPanel() != null) {
 			this.container.getRootPanel().paintBackground(guiLeft, guiTop);
 		}
-		
-		//TODO: Change this to a label that lives in the rootPanel instead
-		fontRenderer.drawString(container.getLocalizedName(), guiLeft, guiTop, 0xFF404040);
+	}
+	
+	@Override
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+		if (this.container.getRootPanel() != null) {
+			this.container.getRootPanel().paintForeground(0, 0);
+			//(0, 0) because of GlStateManager.translate(guiLeft, guiTop, 0.0F) in GuiContainer.drawScreen
+		}
 	}
 }

@@ -28,87 +28,77 @@
 
 package com.elytradev.concrete.inventory.gui.widget;
 
-import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
+import javax.annotation.Nullable;
 
-import net.minecraft.inventory.IInventory;
+import com.elytradev.concrete.common.client.GuiDrawing;
+
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class WBar extends WWidget {
-	private final ResourceLocation bg;
-	private final ResourceLocation bar;
-	private final int field;
-	private final int max;
-	private final IInventory inventory;
-	private final Direction direction;
+public abstract class WBar extends WWidget {
+	public static final Direction DEFAULT_DIRECTION = Direction.UP;
 	
-	public WBar(ResourceLocation bg, ResourceLocation bar, IInventory inventory, int field, int maxfield) {
-		this(bg, bar, inventory, field, maxfield, Direction.UP);
-	}
+	@Nullable
+	protected final ResourceLocation bg;
+	@Nullable
+	protected final ResourceLocation fg;
+	protected final Direction direction;
 	
-	
-	public WBar(ResourceLocation bg, ResourceLocation bar, IInventory inventory, int field, int maxfield, Direction dir) {
+	public WBar(@Nullable ResourceLocation bg, @Nullable ResourceLocation fg, Direction direction) {
 		this.bg = bg;
-		this.bar = bar;
-		this.inventory = inventory;
-		this.field = field;
-		this.max = maxfield;
-		this.direction = dir;
-	}
-	
-	@Override
-	public boolean canResize() {
-		return true;
+		this.fg = fg;
+		this.direction = direction;
+		setResizable(true);
 	}
 	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void paintBackground(int x, int y) {
-		GuiDrawing.rect(bg, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
-		
-		float percent = inventory.getField(field) / (float) inventory.getField(max);
-		if (percent < 0) percent = 0f;
-		if (percent > 1) percent = 1f;
-		
-		int barMax = getWidth();
-		if (direction == Direction.DOWN || direction == Direction.UP) barMax = getHeight();
-		percent = ((int) (percent * barMax)) / (float) barMax; //Quantize to bar size
-		
-		int barSize = (int) (barMax * percent);
-		if (barSize <= 0) return;
-		
-		switch(direction) { //anonymous blocks in this switch statement are to sandbox variables
-		case UP: {
-			int left = x;
-			int top = y + getHeight();
-			top -= barSize;
-			GuiDrawing.rect(bar, left, top, getWidth(), barSize, 0, 1 - percent, 1, 1, 0xFFFFFFFF);
-			break;
-		}
-		case RIGHT: {
-			GuiDrawing.rect(bar, x, y, barSize, getHeight(), 0, 0, percent, 1, 0xFFFFFFFF);
-			break;
-		}
-		case DOWN: {
-			GuiDrawing.rect(bar, x, y, getWidth(), barSize, 0, 0, 1, percent, 0xFFFFFFFF);
-			break;
-		}
-		case LEFT: {
-			int left = x + getWidth();
-			int top = y;
-			left -= barSize;
-			GuiDrawing.rect(bar, left, top, barSize, getHeight(), 1 - percent, 0, 1, 1, 0xFFFFFFFF);
-			break;
-		}
+		if (bg != null) {
+			GuiDrawing.drawRectangle(bg, x, y, getWidth(), getHeight());
 		}
 		
+		if (canPaintBar()) {
+			float percent = getCurrentValue() / getMaxValue();
+			percent = MathHelper.clamp(percent, 0f, 1f);
+			
+			int barMax;
+			switch (direction) {
+				case LEFT:
+				case RIGHT:
+					barMax = getWidth();
+					break;
+				case DOWN:
+				case UP:
+				default:
+					barMax = getHeight();
+					break;
+			}
+			
+			percent = ((int) (percent * barMax)) / (float) barMax; //Quantize to bar size
+			
+			int barSize = (int) (barMax * percent);
+			if (barSize > 0) {
+				paintBar(x, y, percent, barSize);
+			}
+		}
 		
-		//GuiDrawing.rect(bar, x, y + (getHeight() - barHeight), getWidth(), barHeight, 0xFFFFFFFF);
-		
-		//GuiDrawing.drawString("" + inventory.getField(field) + "/", x + 18, y + 9, 0xFF000000);
-		//GuiDrawing.drawString("" + inventory.getField(max) + "", x + 32, y + 9, 0xFF000000);
+		if (fg != null) {
+			GuiDrawing.drawRectangle(fg, x, y, getWidth(), getHeight());
+		}
 	}
+	
+	@SideOnly(Side.CLIENT)
+	protected abstract boolean canPaintBar();
+	
+	protected abstract float getCurrentValue();
+	
+	protected abstract float getMaxValue();
+	
+	@SideOnly(Side.CLIENT)
+	protected abstract void paintBar(int x, int y, float percent, int barSize);
 	
 	public static enum Direction {
 		UP,

@@ -28,10 +28,8 @@
 
 package com.elytradev.concrete.inventory;
 
-import javax.annotation.Nonnull;
+import com.elytradev.concrete.common.IObservable;
 
 import net.minecraftforge.items.IItemHandler;
 
-public interface IObservableItemHandler extends IItemHandler {
-	public void listen(@Nonnull Runnable r);
-}
+public interface IObservableItemHandler extends IItemHandler, IObservable {}

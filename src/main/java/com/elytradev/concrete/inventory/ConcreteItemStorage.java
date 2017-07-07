@@ -109,7 +109,9 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 	}
 	
 	public final ConcreteItemStorage setCanExtract(int index, boolean canExtract) {
-		if (index < extractMask.length) extractMask[index] = canExtract;
+		if (index < extractMask.length) {
+			extractMask[index] = canExtract;
+		}
 		return this;
 	}
 
@@ -126,14 +128,18 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
 		ItemStack stack = super.extractItem(slot, amount, simulate);
-		if (!simulate) markDirty();
+		if (!simulate) {
+			markDirty();
+		}
 		return stack;
 	}
 
 	@Override
 	public ItemStack insertItem(int slot, ItemStack itemStack, boolean simulate) {
 		ItemStack result = super.insertItem(slot, itemStack, simulate);
-		if (!simulate) markDirty();
+		if (!simulate) {
+			markDirty();
+		}
 		return result;
 	}
 
@@ -157,7 +163,7 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 	 */
 	@Nonnull
 	public Predicate<ItemStack> getValidator(int slot) {
-		if (validators.size() <= slot) return Validators.ANYTHING;
+		if (validators.size() <= slot) return Validators.ITEM_ANY;
 		return validators.get(slot);
 	}
 	

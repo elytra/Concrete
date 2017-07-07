@@ -29,7 +29,7 @@
 package com.elytradev.concrete.inventory.gui;
 
 import com.elytradev.concrete.common.ShadingValidator;
-import com.elytradev.concrete.inventory.ValidatedSlot;
+import com.elytradev.concrete.inventory.IContainerInventoryHolder;
 import com.elytradev.concrete.inventory.gui.widget.WPanel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -40,6 +40,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,14 +54,17 @@ public class ConcreteContainer extends Container {
 	}
 	
 	private final IInventory playerInventory;
-	private final IInventory container;
+	private final IInventory containerInventory;
 	private WPanel rootPanel;
 	private int[] syncFields = new int[0];
 	
-	public ConcreteContainer(@Nonnull IInventory player, @Nullable IInventory container) {
-		this.playerInventory = player;
-		this.container = container;
-		
+	public ConcreteContainer(@Nonnull IInventory playerInventory, @Nullable IContainerInventoryHolder containerInventoryHolder) {
+		this(playerInventory, containerInventoryHolder != null ? containerInventoryHolder.getContainerInventory() : null);
+	}
+	
+	public ConcreteContainer(@Nonnull IInventory playerInventory, @Nullable IInventory containerInventory) {
+		this.playerInventory = playerInventory;
+		this.containerInventory = containerInventory;
 	}
 	
 	/**
@@ -77,8 +81,8 @@ public class ConcreteContainer extends Container {
 	}
 	
 	@Override
-	public boolean canInteractWith(EntityPlayer playerIn) {
-		if (container != null) return container.isUsableByPlayer(playerIn);
+	public boolean canInteractWith(EntityPlayer player) {
+		if (containerInventory != null) return containerInventory.isUsableByPlayer(player);
 		return true;
 	}
 
@@ -86,44 +90,34 @@ public class ConcreteContainer extends Container {
 		this.addSlotToContainer(slot);
 	}
 	
-	
-	public void initContainerSlot(int slot, int x, int y) {
-		this.addSlotToContainer(new ValidatedSlot(container, slot, x * 18, y * 18));
-	}
-	
-	public void initPlayerInventory(int x, int y) {
-		for (int yi = 0; yi < 3; yi++) {
-			for (int xi = 0; xi < 9; xi++) {
-				addSlotToContainer(new Slot(playerInventory, xi + (yi * 9) + 9, x + (xi * 18), y + (yi * 18)));
-			}
-		}
-		
-		
-		for (int i = 0; i < 9; i++) {
-			addSlotToContainer(new Slot(playerInventory, i, x + (i * 18), y + (3 * 18) + 4));
-		}
+	public void addSlotPeer(int index, Slot slot) {
+		slot.slotNumber = index;
+		this.inventorySlots.add(index, slot);
+		this.inventoryItemStacks.add(index, ItemStack.EMPTY);
 	}
 	
 	@Override
 	public void addListener(IContainerListener listener) {
 		super.addListener(listener);
-		if (container != null) listener.sendAllWindowProperties(this, container);
+		if (containerInventory != null) {
+			listener.sendAllWindowProperties(this, containerInventory);
+		}
 	}
 	
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 		
-		if (container != null && container.getFieldCount() > 0) {
+		if (containerInventory != null && containerInventory.getFieldCount() > 0) {
 			//Any change in the number of fields reported by the server represents a total desync.
-			int numFields = container.getFieldCount();
+			int numFields = containerInventory.getFieldCount();
 			if (syncFields.length < numFields) {
 				syncFields = new int[numFields];
 			}
 			
 			for (IContainerListener listener : this.listeners) {
 				for (int field = 0; field < numFields; field++) {
-					int newValue = container.getField(field);
+					int newValue = containerInventory.getField(field);
 					if (syncFields[field] != newValue) {
 						listener.sendWindowProperty(this, field, newValue);
 						syncFields[field] = newValue;
@@ -136,11 +130,13 @@ public class ConcreteContainer extends Container {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int id, int data) {
-		if (container != null) container.setField(id, data);
+		if (containerInventory != null) {
+			containerInventory.setField(id, data);
+		}
 	}
 	
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+	public ItemStack transferStackInSlot(EntityPlayer player, int index) {
 		ItemStack srcStack = ItemStack.EMPTY;
 		Slot src = this.inventorySlots.get(index);
 		if (src != null && src.getHasStack()) {
@@ -148,7 +144,7 @@ public class ConcreteContainer extends Container {
 			
 			if (src.inventory == playerInventory) {
 				//Try to push the stack from the player-inventory to the container-inventory.
-				ItemStack remaining = transferToInventory(srcStack, container);
+				ItemStack remaining = transferToInventory(srcStack, containerInventory);
 				src.putStack(remaining);
 				return ItemStack.EMPTY;
 			} else {
@@ -166,8 +162,8 @@ public class ConcreteContainer extends Container {
 	}
 	
 	@Override
-	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
-		ItemStack result = super.slotClick(slotId, dragType, clickTypeIn, player);
+	public ItemStack slotClick(int slotId, int dragType, ClickType clickType, EntityPlayer player) {
+		ItemStack result = super.slotClick(slotId, dragType, clickType, player);
 		return result;
 	}
 	
@@ -176,11 +172,8 @@ public class ConcreteContainer extends Container {
 	 * @param panel
 	 */
 	public void setRootPanel(WPanel panel) {
-		//Invalidate anything the panel added
-		this.inventorySlots.clear();
-		this.inventoryItemStacks.clear();
-		
 		this.rootPanel = panel;
+		validate(); //Invalidates anything the previous panel added
 	}
 	
 	public WPanel getRootPanel() {
@@ -195,11 +188,12 @@ public class ConcreteContainer extends Container {
 			if (s.inventory == inventory && s.isItemValid(result)) {
 				if (s.getHasStack()) {
 					ItemStack dest = s.getStack();
+					int maxSize = Math.min(s.getItemStackLimit(dest), dest.getMaxStackSize());
 					
 					//If the two items can stack together and the existing stack can hold more items...
-					if (canStackTogether(result, dest) && dest.getCount() < s.getItemStackLimit(dest)) {
+					if (ItemHandlerHelper.canItemStacksStack(result, dest) && dest.getCount() < maxSize) {
 						int sum = dest.getCount() + result.getCount();
-						int toDeposit = Math.min(s.getItemStackLimit(dest), sum);
+						int toDeposit = Math.min(maxSize, sum);
 						int remaining = sum - toDeposit;
 						dest.setCount(toDeposit);
 						result.setCount(remaining);
@@ -227,28 +221,5 @@ public class ConcreteContainer extends Container {
 		}
 		
 		return result;
-	}
-	
-	public boolean canStackTogether(ItemStack src, ItemStack dest) {
-		if (src.isEmpty() || dest.isEmpty()) return false; //Don't stack using itemstack counts if one or the other is empty.
-
-		boolean compoundComparison;
-		if(dest.hasTagCompound() && src.hasTagCompound()) {
-			compoundComparison = dest.getTagCompound().equals(src.getTagCompound());
-		}
-		else {
-			compoundComparison = !(dest.hasTagCompound() || src.hasTagCompound());
-		}
-		return
-				dest.isStackable() &&
-				dest.getItem() == src.getItem() &&
-				dest.getItemDamage() == src.getItemDamage() &&
-				compoundComparison &&
-				dest.areCapsCompatible(src);
-	}
-
-	public String getLocalizedName() {
-		
-		return container.getDisplayName().getUnformattedComponentText();
 	}
 }

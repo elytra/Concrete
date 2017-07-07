@@ -39,14 +39,13 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.Lists;
 
-
 /**
  * A base class for managing fluid storage.
  *
  * <h2>Validation</h2>
  *
- * Just like {@link ConcreteItemStorage}, ConcreteFluidTank <em>does not</em> perform its own validation. Rather, this
- * is offloaded to its own wrapper for such functionality, {@link ValidatedFluidTankWrapper}.
+ * Just like {@link com.elytradev.concrete.inventory.ConcreteItemStorage}, ConcreteFluidTank <em>does not</em> perform
+ * its own validation. Rather, this is offloaded to its own wrapper for such functionality, {@link ValidatedFluidTankWrapper}.
  *
  * <h2>Serialization and Deserialization</h2>
  *
@@ -79,7 +78,7 @@ import com.google.common.collect.Lists;
  */
 public class ConcreteFluidTank extends FluidTank implements IObservableFluidTank {
 	private final List<Runnable> listeners = Lists.newArrayList();
-	private Predicate<FluidStack> fillValidator = Validators.ANY_FLUID;
+	private Predicate<FluidStack> fillValidator = Validators.FLUID_ANY;
 
 	public ConcreteFluidTank(int capacity) {
 		this(null, capacity);
@@ -97,7 +96,6 @@ public class ConcreteFluidTank extends FluidTank implements IObservableFluidTank
 		this.fillValidator = fillValidator;
 		return this;
 	}
-
 
 	public void markDirty() {
 		listeners.forEach(Runnable::run);
@@ -118,6 +116,4 @@ public class ConcreteFluidTank extends FluidTank implements IObservableFluidTank
 	public Predicate<FluidStack> getFillValidator() {
 		return this.fillValidator;
 	}
-
-
 }

@@ -64,8 +64,8 @@ public class ValidatedFluidTankWrapper implements IFluidTank {
 
 	@Override
 	public int fill(FluidStack resource, boolean doFill) {
-		if(!delegate.getFillValidator().test(resource)) return 0;
-		else return delegate.fill(resource, doFill);
+		if (!delegate.getFillValidator().test(resource)) return 0;
+		return delegate.fill(resource, doFill);
 	}
 
 	@Nullable

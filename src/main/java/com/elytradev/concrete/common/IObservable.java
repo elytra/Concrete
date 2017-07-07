@@ -26,27 +26,11 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory;
+package com.elytradev.concrete.common;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
+import javax.annotation.Nonnull;
 
-/**
- * The heavyweight peer used by ConcreteContainer to respect the predicates for validated inventories.
- */
-public class ValidatedSlot extends Slot {
-
-	public ValidatedSlot(IInventory inventoryIn, int index, int xPosition, int yPosition) {
-		super(inventoryIn, index, xPosition, yPosition);
-	}
-	
-	@Override
-	public boolean isItemValid(ItemStack stack) {
-		if (inventory instanceof ValidatedInventoryView) {
-			return ((ValidatedInventoryView) inventory).getValidator(getSlotIndex()).test(stack);
-		} else {
-			return super.isItemValid(stack);
-		}
-	}
+@FunctionalInterface
+public interface IObservable {
+	public void listen(@Nonnull Runnable r);
 }
