@@ -39,8 +39,8 @@ dependencies {
 }
 
 minecraft {
-	version = "1.12-14.21.0.2373"
-	mappings = "snapshot_20170623"
+	version = "1.12.1-14.22.0.2474"
+	mappings = "snapshot_20170908"
 
 	runDir = "eclipse"
 }
