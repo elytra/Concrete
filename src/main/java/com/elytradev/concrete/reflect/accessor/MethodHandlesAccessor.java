@@ -64,7 +64,11 @@ class MethodHandlesAccessor<T> implements Accessor<T> {
 	@Override
 	public T get(Object owner) {
 		try {
-			return (T) getter.invoke(owner);
+			if (owner == null) {
+				return (T) getter.invoke();
+			} else {
+				return (T) getter.invoke(owner);
+			}
 		} catch (Throwable e) {
 			throw Throwables.propagate(e);
 		}
@@ -73,7 +77,11 @@ class MethodHandlesAccessor<T> implements Accessor<T> {
 	@Override
 	public void set(Object owner, T value) {
 		try {
-			setter.invoke(owner, value);
+			if (owner == null) {
+				setter.invoke(value);
+			} else {
+				setter.invoke(owner, value);
+			}
 		} catch (Throwable e) {
 			throw Throwables.propagate(e);
 		}

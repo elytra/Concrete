@@ -49,9 +49,14 @@ public class MethodHandlesInvoker implements Invoker {
 
 	@Override
 	public Object invoke(Object owner, Object... args) {
-		Object[] joined = new Object[args.length + 1];
-		joined[0] = owner;
-		System.arraycopy(args, 0, joined, 1, args.length);
+		Object[] joined;
+		if (owner != null) {
+			joined = new Object[args.length + 1];
+			joined[0] = owner;
+			System.arraycopy(args, 0, joined, 1, args.length);
+		} else {
+			joined = args;
+		}
 		try {
 			return handle.invokeWithArguments(joined);
 		} catch (Throwable e) {
