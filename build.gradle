@@ -117,6 +117,13 @@ task resgenJar(type: Jar) {
 	}
 }
 
+task utilpacketsJar(type: Jar) {
+	classifier = 'utilpackets'
+	from(sourceSets.main.output) {
+		include 'com/elytradev/concrete/utilpackets/**'
+	}
+}
+
 reobf {
 	commonJar { mappingType = 'SEARGE' }
 	blockJar { mappingType = 'SEARGE' }
@@ -125,10 +132,11 @@ reobf {
 	inventoryJar { mappingType = 'SEARGE' }
 	configJar { mappingType = 'SEARGE' }
 	resgenJar { mappingType = 'SEARGE' }
+	utilpacketsJar { mappingType = 'SEARGE'}
 }
 
 artifacts {
-	archives commonJar, blockJar, networkJar, reflectJar, inventoryJar, configJar, resgenJar
+	archives commonJar, blockJar, networkJar, reflectJar, inventoryJar, configJar, resgenJar, utilpacketsJar
 }
 
 if (file('private.gradle').exists()) {
