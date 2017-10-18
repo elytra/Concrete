@@ -45,6 +45,12 @@ take advantage of MethodHandles when they are available.
 Adds a dead-simple annotation-based configuration system, similar to the Network
 module.
 
+### UtilPackets
+**Depends on Network**
+
+Contains a set of pre-baked Message implementations, for painless use
+with a NetworkContext from the Network package.
+
 ## Depending on Concrete
 
 Concrete *must* be shaded into the jar and will throw an exception at runtime if
