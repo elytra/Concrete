@@ -1,6 +1,6 @@
 package com.elytradev.concrete.utilpackets;
 
-import com.elytradev.concrete.common.ExtensiveToast;
+import com.elytradev.concrete.common.ConcreteToast;
 import com.elytradev.concrete.network.Message;
 import com.elytradev.concrete.network.NetworkContext;
 import com.elytradev.concrete.network.annotation.field.MarshalledAs;
@@ -88,6 +88,6 @@ public class DisplayToastMessage extends Message {
 	@Override
 	@SideOnly(Side.CLIENT)
 	protected void handle(EntityPlayer player) {
-		Minecraft.getMinecraft().getToastGui().add(new ExtensiveToast(title, subtitle, timing, texture, titleColor, subtitleColor, textureX, textureY));
+		Minecraft.getMinecraft().getToastGui().add(new ConcreteToast(title, subtitle, timing, texture, titleColor, subtitleColor, textureX, textureY));
 	}
 }

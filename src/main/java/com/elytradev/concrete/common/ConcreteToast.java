@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @SideOnly(Side.CLIENT)
-public class ExtensiveToast implements IToast {
+public class ConcreteToast implements IToast {
 
 	private ResourceLocation texture;
 	private String title;
@@ -27,26 +27,26 @@ public class ExtensiveToast implements IToast {
     private static final int DEFAULT_X = 0;
     private static final int DEFAULT_Y = 96;
 
-	public ExtensiveToast(@Nonnull String title) {
+	public ConcreteToast(@Nonnull String title) {
 		this(title, null, DEFAULT_TIMING, TEXTURE_TOASTS.toString(), DEFAULT_TITLE_COLOR, DEFAULT_SUBTITLE_COLOR, DEFAULT_X, DEFAULT_Y);
 	}
 
-	public ExtensiveToast(@Nonnull String title, @Nullable String subtitle) {
+	public ConcreteToast(@Nonnull String title, @Nullable String subtitle) {
 		this(title, subtitle, DEFAULT_TIMING, TEXTURE_TOASTS.toString(), DEFAULT_TITLE_COLOR, DEFAULT_SUBTITLE_COLOR, DEFAULT_X, DEFAULT_Y);
 	}
 
-	public ExtensiveToast(@Nonnull String title, @Nullable String subtitle, long timing) {
+	public ConcreteToast(@Nonnull String title, @Nullable String subtitle, long timing) {
 		this(title, subtitle, timing, TEXTURE_TOASTS.toString(), DEFAULT_TITLE_COLOR, DEFAULT_SUBTITLE_COLOR, DEFAULT_X, DEFAULT_Y);
 	}
 
-	public ExtensiveToast(@Nonnull String title,
-						  @Nullable String subtitle,
-						  long timing,
-						  @Nonnull String texture,
-						  int titleColor,
-						  int subtitleColor,
-						  int textureX,
-						  int textureY) {
+	public ConcreteToast(@Nonnull String title,
+						 @Nullable String subtitle,
+						 long timing,
+						 @Nonnull String texture,
+						 int titleColor,
+						 int subtitleColor,
+						 int textureX,
+						 int textureY) {
 		this.title = title;
 		this.subtitle = subtitle;
 		this.timing = timing;
@@ -66,11 +66,11 @@ public class ExtensiveToast implements IToast {
 
 		if (this.subtitle == null)
 		{
-			toastGui.getMinecraft().fontRenderer.drawString(this.title, 18, 12, titleColor);
+			toastGui.getMinecraft().fontRenderer.drawString(this.title, 30, 12, titleColor);
 		}
 		else {
-			toastGui.getMinecraft().fontRenderer.drawString(this.title, 18, 7, titleColor);
-			toastGui.getMinecraft().fontRenderer.drawString(this.subtitle, 18, 18, subtitleColor);
+			toastGui.getMinecraft().fontRenderer.drawString(this.title, 30, 7, titleColor);
+			toastGui.getMinecraft().fontRenderer.drawString(this.subtitle, 30, 18, subtitleColor);
 		}
 
 		return delta < timing ? Visibility.SHOW : Visibility.HIDE;
