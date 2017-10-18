@@ -21,32 +21,14 @@ public class ConcreteToast implements IToast {
 	private int subtitleColor;
 	private int textureX, textureY;
 
-    private static final long DEFAULT_TIMING = 5000;
-    private static final int DEFAULT_TITLE_COLOR = -256;
-    private static final int DEFAULT_SUBTITLE_COLOR = -1;
-    private static final int DEFAULT_X = 0;
-    private static final int DEFAULT_Y = 96;
-
-	public ConcreteToast(@Nonnull String title) {
-		this(title, null, DEFAULT_TIMING, TEXTURE_TOASTS.toString(), DEFAULT_TITLE_COLOR, DEFAULT_SUBTITLE_COLOR, DEFAULT_X, DEFAULT_Y);
-	}
-
-	public ConcreteToast(@Nonnull String title, @Nullable String subtitle) {
-		this(title, subtitle, DEFAULT_TIMING, TEXTURE_TOASTS.toString(), DEFAULT_TITLE_COLOR, DEFAULT_SUBTITLE_COLOR, DEFAULT_X, DEFAULT_Y);
-	}
-
-	public ConcreteToast(@Nonnull String title, @Nullable String subtitle, long timing) {
-		this(title, subtitle, timing, TEXTURE_TOASTS.toString(), DEFAULT_TITLE_COLOR, DEFAULT_SUBTITLE_COLOR, DEFAULT_X, DEFAULT_Y);
-	}
-
-	public ConcreteToast(@Nonnull String title,
-						 @Nullable String subtitle,
-						 long timing,
-						 @Nonnull String texture,
-						 int titleColor,
-						 int subtitleColor,
-						 int textureX,
-						 int textureY) {
+	private ConcreteToast(@Nonnull String title,
+			@Nullable String subtitle,
+			long timing,
+			@Nonnull String texture,
+			int titleColor,
+			int subtitleColor,
+			int textureX,
+			int textureY) {
 		this.title = title;
 		this.subtitle = subtitle;
 		this.timing = timing;
@@ -57,6 +39,10 @@ public class ConcreteToast implements IToast {
 		this.textureY = textureY;
 	}
 
+	public static ConcreteToastBuilder getBuilder(String title) {
+		return new ConcreteToastBuilder(title);
+	}
+
 	@Nonnull
 	@Override
 	public Visibility draw(@Nonnull GuiToast toastGui, long delta) {
@@ -64,8 +50,7 @@ public class ConcreteToast implements IToast {
 		GlStateManager.color(1.0F, 1.0F, 1.0F);
 		toastGui.drawTexturedModalRect(0, 0, textureX, textureY, 160, 32);
 
-		if (this.subtitle == null)
-		{
+		if (this.subtitle == null) {
 			toastGui.getMinecraft().fontRenderer.drawString(this.title, 30, 12, titleColor);
 		}
 		else {
@@ -74,6 +59,75 @@ public class ConcreteToast implements IToast {
 		}
 
 		return delta < timing ? Visibility.SHOW : Visibility.HIDE;
+	}
+
+
+	public static class ConcreteToastBuilder {
+
+		private String title;
+		private String subtitle;
+		private long timing = 5000;
+		private String texture = "textures/gui/toasts.png";
+		private int titleColor = -256;
+		private int subtitleColor = -1;
+		private int textureX = 0;
+		private int textureY = 96;
+
+		private ConcreteToastBuilder(String title) {
+			this.title = title;
+		}
+
+		public ConcreteToastBuilder setTitle(String title) {
+			this.title = title;
+			return this;
+		}
+
+		public ConcreteToastBuilder setSubtitle(String subtitle) {
+			this.subtitle = subtitle;
+			return this;
+		}
+
+		public ConcreteToastBuilder setTiming(long timing) {
+			this.timing = timing;
+			return this;
+		}
+
+		public ConcreteToastBuilder setTexture(String texture) {
+			this.texture = texture;
+			return this;
+		}
+
+		public ConcreteToastBuilder setTitleColor(int titleColor) {
+			this.titleColor = titleColor;
+			return this;
+		}
+
+		public ConcreteToastBuilder setSubtitleColor(int subtitleColor) {
+			this.subtitleColor = subtitleColor;
+			return this;
+		}
+
+		public ConcreteToastBuilder setTextureX(int textureX) {
+			this.textureX = textureX;
+			return this;
+		}
+
+		public ConcreteToastBuilder setTextureY(int textureY) {
+			this.textureY = textureY;
+			return this;
+		}
+
+
+		public ConcreteToast create() {
+			return new ConcreteToast(title,
+					subtitle,
+					timing,
+					texture,
+					titleColor,
+					subtitleColor,
+					textureX,
+					textureY);
+		}
 	}
 
 }

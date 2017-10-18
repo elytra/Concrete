@@ -13,81 +13,139 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static net.minecraft.client.gui.toasts.IToast.TEXTURE_TOASTS;
-
 @ReceivedOn(Side.CLIENT)
 public class DisplayToastMessage extends Message {
 
-	@MarshalledAs("string")
 	public String title;
 
-	@MarshalledAs("string")
 	public String subtitle;
 
 	@MarshalledAs("i64")
 	public long timing;
 
-	@MarshalledAs("string")
 	public String texture;
 
 	@MarshalledAs("i32")
 	public int titleColor;
 
-    @MarshalledAs("i32")
+	@MarshalledAs("i32")
 	public int subtitleColor;
 
-    @MarshalledAs("i32")
+	@MarshalledAs("i32")
 	public int textureX;
 
-    @MarshalledAs("i32")
+	@MarshalledAs("i32")
 	public int textureY;
-
-	private static final long DEFAULT_TIMING = 5000;
-	private static final int DEFAULT_TITLE_COLOR = -256;
-	private static final int DEFAULT_SUBTITLE_COLOR = -1;
-	private static final int DEFAULT_X = 0;
-	private static final int DEFAULT_Y = 96;
 
 	public DisplayToastMessage(NetworkContext ctx) {
 		super(ctx);
 	}
 
-	public DisplayToastMessage(NetworkContext ctx, @Nonnull String title) {
-		this(ctx, title, null, DEFAULT_TIMING, TEXTURE_TOASTS.toString(), DEFAULT_TITLE_COLOR, DEFAULT_SUBTITLE_COLOR, DEFAULT_X, DEFAULT_Y);
+	private DisplayToastMessage(NetworkContext ctx,
+			@Nonnull String title,
+			@Nullable String subtitle,
+			long timing,
+			@Nonnull String texture,
+			int titleColor,
+			int subtitleColor,
+			int textureX,
+			int textureY) {
+		super(ctx);
+		this.title = title;
+		this.subtitle = subtitle;
+		this.timing = timing;
+		this.texture = texture;
+		this.titleColor  = titleColor;
+		this.subtitleColor = subtitleColor;
+		this.textureX = textureX;
+		this.textureY = textureY;
 	}
 
-	public DisplayToastMessage(NetworkContext ctx, @Nonnull String title, @Nullable String subtitle) {
-		this(ctx, title, subtitle, DEFAULT_TIMING, TEXTURE_TOASTS.toString(), DEFAULT_TITLE_COLOR, DEFAULT_SUBTITLE_COLOR, DEFAULT_X, DEFAULT_Y);
-	}
-
-	public DisplayToastMessage(NetworkContext ctx, @Nonnull String title, @Nullable String subtitle, long timing) {
-		this(ctx, title, subtitle, timing, TEXTURE_TOASTS.toString(), DEFAULT_TITLE_COLOR, DEFAULT_SUBTITLE_COLOR, DEFAULT_X, DEFAULT_Y);
-	}
-
-
-	public DisplayToastMessage(NetworkContext ctx,
-                               @Nonnull String title,
-                               @Nullable String subtitle,
-                               long timing,
-                               @Nonnull String texture,
-                               int titleColor,
-                               int subtitleColor,
-                               int textureX,
-                               int textureY) {
-	    super(ctx);
-	    this.title = title;
-	    this.subtitle = subtitle;
-	    this.timing = timing;
-	    this.texture = texture;
-        this.titleColor  = titleColor;
-        this.subtitleColor = subtitleColor;
-        this.textureX = textureX;
-        this.textureY = textureY;
+	public static DisplayToastMessageBuilder getBuilder(String title) {
+		return new DisplayToastMessageBuilder(title);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	protected void handle(EntityPlayer player) {
-		Minecraft.getMinecraft().getToastGui().add(new ConcreteToast(title, subtitle, timing, texture, titleColor, subtitleColor, textureX, textureY));
+		ConcreteToast toast = ConcreteToast.getBuilder(title)
+			.setSubtitle(subtitle)
+			.setTiming(timing)
+			.setTexture(texture)
+			.setTitleColor(titleColor)
+			.setSubtitleColor(subtitleColor)
+			.setTextureX(textureX)
+			.setTextureY(textureY)
+			.create();
+		Minecraft.getMinecraft().getToastGui().add(toast);
+	}
+
+	public static class DisplayToastMessageBuilder {
+
+		private String title;
+		private String subtitle;
+		private long timing = 5000;
+		private String texture = "textures/gui/toasts.png";
+		private int titleColor = -256;
+		private int subtitleColor = -1;
+		private int textureX = 0;
+		private int textureY = 96;
+
+		private DisplayToastMessageBuilder(String title) {
+			this.title = title;
+		}
+
+		public DisplayToastMessageBuilder setTitle(String title) {
+			this.title = title;
+			return this;
+		}
+
+		public DisplayToastMessageBuilder setSubtitle(String subtitle) {
+			this.subtitle = subtitle;
+			return this;
+		}
+
+		public DisplayToastMessageBuilder setTiming(long timing) {
+			this.timing = timing;
+			return this;
+		}
+
+		public DisplayToastMessageBuilder setTexture(String texture) {
+			this.texture = texture;
+			return this;
+		}
+
+		public DisplayToastMessageBuilder setTitleColor(int titleColor) {
+			this.titleColor = titleColor;
+			return this;
+		}
+
+		public DisplayToastMessageBuilder setSubtitleColor(int subtitleColor) {
+			this.subtitleColor = subtitleColor;
+			return this;
+		}
+
+		public DisplayToastMessageBuilder setTextureX(int textureX) {
+			this.textureX = textureX;
+			return this;
+		}
+
+		public DisplayToastMessageBuilder setTextureY(int textureY) {
+			this.textureY = textureY;
+			return this;
+		}
+
+
+		public DisplayToastMessage create(NetworkContext ctx) {
+			return new DisplayToastMessage(ctx,
+				title,
+				subtitle,
+				timing,
+				texture,
+				titleColor,
+				subtitleColor,
+				textureX,
+				textureY);
+		}
 	}
 }
