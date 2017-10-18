@@ -42,11 +42,11 @@ public class DisplayToastMessage extends Message {
     @MarshalledAs("i32")
 	public int textureY;
 
-	public static final long DEFAULT_TIMING = 5000;
+	private static final long DEFAULT_TIMING = 5000;
 	private static final int DEFAULT_TITLE_COLOR = -256;
 	private static final int DEFAULT_SUBTITLE_COLOR = -1;
-	public static final int DEFAULT_X = 0;
-	public static final int DEFAULT_Y = 96;
+	private static final int DEFAULT_X = 0;
+	private static final int DEFAULT_Y = 96;
 
 	public DisplayToastMessage(NetworkContext ctx) {
 		super(ctx);
