@@ -1,3 +1,31 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2016-2017:
+ * 	William Thompson (unascribed),
+ * 	Isaac Ellingson (Falkreon),
+ * 	Jamie Mansfield (jamierocks),
+ * 	and contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.elytradev.concrete.utilpackets;
 
 import com.elytradev.concrete.common.ConcreteToast;
@@ -17,23 +45,18 @@ import javax.annotation.Nullable;
 public class DisplayToastMessage extends Message {
 
 	public String title;
-
 	public String subtitle;
-
 	@MarshalledAs("i64")
 	public long timing;
 
-	public String texture;
-
 	@MarshalledAs("i32")
 	public int titleColor;
-
 	@MarshalledAs("i32")
 	public int subtitleColor;
 
+	public String texture;
 	@MarshalledAs("i32")
 	public int textureX;
-
 	@MarshalledAs("i32")
 	public int textureY;
 
@@ -41,15 +64,9 @@ public class DisplayToastMessage extends Message {
 		super(ctx);
 	}
 
-	private DisplayToastMessage(NetworkContext ctx,
-			@Nonnull String title,
-			@Nullable String subtitle,
-			long timing,
-			@Nonnull String texture,
-			int titleColor,
-			int subtitleColor,
-			int textureX,
-			int textureY) {
+	private DisplayToastMessage(NetworkContext ctx, @Nonnull String title,
+				@Nullable String subtitle, long timing, @Nonnull String texture,
+				int titleColor, int subtitleColor, int textureX, int textureY) {
 		super(ctx);
 		this.title = title;
 		this.subtitle = subtitle;
@@ -61,27 +78,26 @@ public class DisplayToastMessage extends Message {
 		this.textureY = textureY;
 	}
 
-	public static DisplayToastMessageBuilder getBuilder(String title) {
-		return new DisplayToastMessageBuilder(title);
+	public static Builder builder(String title) {
+		return new Builder(title);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	protected void handle(EntityPlayer player) {
-		ConcreteToast toast = ConcreteToast.getBuilder(title)
-			.setSubtitle(subtitle)
-			.setTiming(timing)
-			.setTexture(texture)
-			.setTitleColor(titleColor)
-			.setSubtitleColor(subtitleColor)
-			.setTextureX(textureX)
-			.setTextureY(textureY)
-			.create();
+		ConcreteToast toast = ConcreteToast.builder(title)
+				.setSubtitle(subtitle)
+				.setTiming(timing)
+				.setTexture(texture)
+				.setTitleColor(titleColor)
+				.setSubtitleColor(subtitleColor)
+				.setTextureX(textureX)
+				.setTextureY(textureY)
+				.create();
 		Minecraft.getMinecraft().getToastGui().add(toast);
 	}
 
-	public static class DisplayToastMessageBuilder {
-
+	public static class Builder {
 		private String title;
 		private String subtitle;
 		private long timing = 5000;
@@ -91,61 +107,54 @@ public class DisplayToastMessage extends Message {
 		private int textureX = 0;
 		private int textureY = 96;
 
-		private DisplayToastMessageBuilder(String title) {
+		private Builder(String title) {
 			this.title = title;
 		}
 
-		public DisplayToastMessageBuilder setTitle(String title) {
+		public Builder setTitle(String title) {
 			this.title = title;
 			return this;
 		}
 
-		public DisplayToastMessageBuilder setSubtitle(String subtitle) {
+		public Builder setSubtitle(String subtitle) {
 			this.subtitle = subtitle;
 			return this;
 		}
 
-		public DisplayToastMessageBuilder setTiming(long timing) {
+		public Builder setTiming(long timing) {
 			this.timing = timing;
 			return this;
 		}
 
-		public DisplayToastMessageBuilder setTexture(String texture) {
+		public Builder setTexture(String texture) {
 			this.texture = texture;
 			return this;
 		}
 
-		public DisplayToastMessageBuilder setTitleColor(int titleColor) {
+		public Builder setTitleColor(int titleColor) {
 			this.titleColor = titleColor;
 			return this;
 		}
 
-		public DisplayToastMessageBuilder setSubtitleColor(int subtitleColor) {
+		public Builder setSubtitleColor(int subtitleColor) {
 			this.subtitleColor = subtitleColor;
 			return this;
 		}
 
-		public DisplayToastMessageBuilder setTextureX(int textureX) {
+		public Builder setTextureX(int textureX) {
 			this.textureX = textureX;
 			return this;
 		}
 
-		public DisplayToastMessageBuilder setTextureY(int textureY) {
+		public Builder setTextureY(int textureY) {
 			this.textureY = textureY;
 			return this;
 		}
 
 
 		public DisplayToastMessage create(NetworkContext ctx) {
-			return new DisplayToastMessage(ctx,
-				title,
-				subtitle,
-				timing,
-				texture,
-				titleColor,
-				subtitleColor,
-				textureX,
-				textureY);
+			return new DisplayToastMessage(ctx, title, subtitle, timing,
+					texture, titleColor, subtitleColor, textureX, textureY);
 		}
 	}
 }
