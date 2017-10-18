@@ -120,13 +120,13 @@ public class ConcreteToast implements IToast {
 
 		public ConcreteToast create() {
 			return new ConcreteToast(title,
-					subtitle,
-					timing,
-					texture,
-					titleColor,
-					subtitleColor,
-					textureX,
-					textureY);
+				subtitle,
+				timing,
+				texture,
+				titleColor,
+				subtitleColor,
+				textureX,
+				textureY);
 		}
 	}
 
