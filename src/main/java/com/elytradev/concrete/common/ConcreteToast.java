@@ -26,53 +26,37 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.utilpackets;
+package com.elytradev.concrete.common;
 
-import com.elytradev.concrete.common.ConcreteToast;
-import com.elytradev.concrete.network.Message;
-import com.elytradev.concrete.network.NetworkContext;
-import com.elytradev.concrete.network.annotation.field.MarshalledAs;
-import com.elytradev.concrete.network.annotation.type.ReceivedOn;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.gui.toasts.GuiToast;
+import net.minecraft.client.gui.toasts.IToast;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@ReceivedOn(Side.CLIENT)
-public class DisplayToastMessage extends Message {
+@SideOnly(Side.CLIENT)
+public class ConcreteToast implements IToast {
 
-	public String title;
-	public String subtitle;
-	@MarshalledAs("i64")
-	public long timing;
+	private ResourceLocation texture;
+	private String title;
+	private String subtitle;
+	private long timing;
+	private int titleColor;
+	private int subtitleColor;
+	private int textureX, textureY;
 
-	@MarshalledAs("i32")
-	public int titleColor;
-	@MarshalledAs("i32")
-	public int subtitleColor;
-
-	public String texture;
-	@MarshalledAs("i32")
-	public int textureX;
-	@MarshalledAs("i32")
-	public int textureY;
-
-	public DisplayToastMessage(NetworkContext ctx) {
-		super(ctx);
-	}
-
-	private DisplayToastMessage(NetworkContext ctx, @Nonnull String title,
-				@Nullable String subtitle, long timing, @Nonnull String texture,
-				int titleColor, int subtitleColor, int textureX, int textureY) {
-		super(ctx);
+	private ConcreteToast(@Nonnull String title, @Nullable String subtitle,
+				long timing, @Nonnull String texture, int titleColor,
+				int subtitleColor, int textureX, int textureY) {
 		this.title = title;
 		this.subtitle = subtitle;
 		this.timing = timing;
-		this.texture = texture;
-		this.titleColor  = titleColor;
+		this.texture = new ResourceLocation(texture);
+		this.titleColor = titleColor;
 		this.subtitleColor = subtitleColor;
 		this.textureX = textureX;
 		this.textureY = textureY;
@@ -82,20 +66,23 @@ public class DisplayToastMessage extends Message {
 		return new Builder(title);
 	}
 
+	@Nonnull
 	@Override
-	@SideOnly(Side.CLIENT)
-	protected void handle(EntityPlayer player) {
-		ConcreteToast toast = ConcreteToast.builder(title)
-				.setSubtitle(subtitle)
-				.setTiming(timing)
-				.setTexture(texture)
-				.setTitleColor(titleColor)
-				.setSubtitleColor(subtitleColor)
-				.setTextureX(textureX)
-				.setTextureY(textureY)
-				.create();
-		Minecraft.getMinecraft().getToastGui().add(toast);
+	public Visibility draw(@Nonnull GuiToast toastGui, long delta) {
+		toastGui.getMinecraft().getTextureManager().bindTexture(texture);
+		GlStateManager.color(1, 1, 1);
+		toastGui.drawTexturedModalRect(0, 0, textureX, textureY, 160, 32);
+
+		if (this.subtitle == null) {
+			toastGui.getMinecraft().fontRenderer.drawString(title, 30, 12, titleColor);
+		} else {
+			toastGui.getMinecraft().fontRenderer.drawString(title, 30, 7, titleColor);
+			toastGui.getMinecraft().fontRenderer.drawString(subtitle, 30, 18, subtitleColor);
+		}
+
+		return delta < timing ? Visibility.SHOW : Visibility.HIDE;
 	}
+
 
 	public static class Builder {
 		private String title;
@@ -152,9 +139,10 @@ public class DisplayToastMessage extends Message {
 		}
 
 
-		public DisplayToastMessage create(NetworkContext ctx) {
-			return new DisplayToastMessage(ctx, title, subtitle, timing,
-					texture, titleColor, subtitleColor, textureX, textureY);
+		public ConcreteToast create() {
+			return new ConcreteToast(title, subtitle, timing, texture,
+					titleColor, subtitleColor, textureX, textureY);
 		}
 	}
+
 }
