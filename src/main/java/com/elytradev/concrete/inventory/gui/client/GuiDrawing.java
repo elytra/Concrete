@@ -199,4 +199,8 @@ public final class GuiDrawing {
 	public static void drawString(String s, int x, int y, int color) {
 		Minecraft.getMinecraft().fontRenderer.drawString(s, x, y, color);
 	}
+
+	public static void drawTooltip(String s, int x, int y) {
+
+	}
 }
