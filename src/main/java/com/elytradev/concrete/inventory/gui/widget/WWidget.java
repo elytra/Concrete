@@ -162,7 +162,7 @@ public class WWidget {
 	}
 
 	/**
-	 * Adds information to this widgets tooltip. This requires a call to {@link #setRenderTooltip(boolean)
+	 * Adds information to this widget's tooltip. This requires a call to {@link #setRenderTooltip(boolean)
 	 * setRenderTooltip} (obviously passing in {@code true}), in order to enable the rendering of your tooltip.
 	 * @param information List containing all previous tooltip data.
 	 */

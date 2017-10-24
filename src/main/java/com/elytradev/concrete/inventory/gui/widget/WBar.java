@@ -101,7 +101,7 @@ public class WBar extends WWidget {
 		if (barSize <= 0) return;
 		
 		switch(direction) { //anonymous blocks in this switch statement are to sandbox variables
-		case UP: {
+			case UP: {
 				int left = x;
 				int top = y + getHeight();
 				top -= barSize;
