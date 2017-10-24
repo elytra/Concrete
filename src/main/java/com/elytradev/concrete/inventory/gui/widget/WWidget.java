@@ -30,8 +30,13 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WWidget {
 	private boolean valid = false;
@@ -40,6 +45,7 @@ public class WWidget {
 	private int y = 0;
 	private int width = 18;
 	private int height = 18;
+	private boolean renderTooltip;
 	
 	public void setLocation(int x, int y) {
 		this.x = x;
@@ -74,6 +80,14 @@ public class WWidget {
 	public void setParent(WPanel parent) {
 		this.parent = parent;
 	}
+
+	public boolean getRenderTooltip() {
+		return renderTooltip;
+	}
+
+	public void setRenderTooltip(boolean renderTooltip) {
+		this.renderTooltip = renderTooltip;
+	}
 	
 	/**
 	 * Draw this Widget at the specified coordinates. The coordinates provided are the top-level device coordinates of
@@ -97,6 +111,35 @@ public class WWidget {
 	@SideOnly(Side.CLIENT)
 	public void paintBackground(int x, int y) {
 	}
+
+	@SideOnly(Side.CLIENT)
+	public void paintForeground(int x, int y, int mouseX, int mouseY) {
+		if (renderTooltip && mouseX >= x && mouseX < x+getWidth() && mouseY >= y && mouseY < y+getHeight()) {
+			renderTooltip(mouseX-x+getX(),mouseY-y+getY() );
+		}
+	}
+
+	/**
+	 * Internal method to conditionally render tooltip data. This requires an overriden {@link #addInformation(List)
+	 * addInformation} method to insert data into the tooltip - without this, the method returns early, because no work
+	 * is needing to be done on an empty list.
+	 * @param tX The adjusted X coordinate at which to render the tooltip.
+	 * @param tY The adjusted X coordinate at which to render the tooltip.
+	 */
+	@SideOnly(Side.CLIENT)
+	protected void renderTooltip(int tX, int tY) {
+		List<String> info = new ArrayList<>();
+		addInformation(info);
+
+		if (info.size() == 0)
+			return;
+
+		Minecraft mc = Minecraft.getMinecraft();
+		int width = mc.displayWidth;
+		int height = mc.displayHeight;
+
+		GuiUtils.drawHoveringText(info, tX, tY, width, height, -1, mc.fontRenderer);
+	}
 	
 	public boolean isValid() {
 		return valid;
@@ -117,4 +160,13 @@ public class WWidget {
 	public void invalidate() {
 		valid = false;
 	}
+
+	/**
+	 * Adds information to this widgets tooltip. This requires a call to {@link #setRenderTooltip(boolean)
+	 * setRenderTooltip} (obviously passing in {@code true}), in order to enable the rendering of your tooltip.
+	 * @param information List containing all previous tooltip data.
+	 */
+	public void addInformation(List<String> information) {
+	}
+
 }

@@ -165,4 +165,11 @@ public class ConcreteGui extends GuiContainer {
 		//TODO: Change this to a label that lives in the rootPanel instead
 		fontRenderer.drawString(container.getLocalizedName(), guiLeft, guiTop, 0xFF404040);
 	}
+
+	@Override
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+		if (inventorySlots != null && this.container.getRootPanel() != null) {
+			this.container.getRootPanel().paintForeground(guiLeft, guiTop, mouseX, mouseY);
+		}
+	}
 }

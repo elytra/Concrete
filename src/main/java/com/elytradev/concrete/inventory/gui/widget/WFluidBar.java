@@ -37,11 +37,14 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.List;
+
 public class WFluidBar extends WWidget {
 	private final ResourceLocation bg;
 	private final ResourceLocation fg;
 	private final ConcreteFluidTank concreteFluidTank;
 	private final Direction direction;
+	private String tooltipLabel;
 
 	public WFluidBar(ResourceLocation bg, ConcreteFluidTank tank) {
 		this(bg, tank, Direction.UP);
@@ -60,6 +63,21 @@ public class WFluidBar extends WWidget {
 		this.fg = fg;
 		this.concreteFluidTank = tank;
 		this.direction = dir;
+	}
+
+	/**
+	 * Adds a tooltip to the WBFluidar.
+	 *
+	 * Formatting Guide: The tooltip label is passed into String.Format and can recieve two integers
+	 * (%d) - the first is the current level of the focused tank and the second is the
+	 * tank's capacity.
+	 * @param label String to render on the tooltip.
+	 * @return WFluidBar with tooltip enabled and set.
+	 */
+	public WFluidBar withTooltip(String label) {
+		this.setRenderTooltip(true);
+		this.tooltipLabel = label;
+		return this;
 	}
 
 	@Override
@@ -189,10 +207,13 @@ public class WFluidBar extends WWidget {
 		if(fg != null)
 			GuiDrawing.rect(fg, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
 
-		//GuiDrawing.rect(bar, x, y + (getHeight() - barHeight), getWidth(), barHeight, 0xFFFFFFFF);
+	}
 
-		//GuiDrawing.drawString("" + inventory.getField(field) + "/", x + 18, y + 9, 0xFF000000);
-		//GuiDrawing.drawString("" + inventory.getField(max) + "", x + 32, y + 9, 0xFF000000);*/
+	@Override
+	public void addInformation(List<String> information) {
+		int value = concreteFluidTank.getFluidAmount();
+		int valMax = concreteFluidTank.getCapacity();
+		information.add(String.format(tooltipLabel, value, valMax));
 	}
 
 	public static enum Direction {

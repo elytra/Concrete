@@ -30,10 +30,16 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WBar extends WWidget {
 	private final ResourceLocation bg;
@@ -42,12 +48,13 @@ public class WBar extends WWidget {
 	private final int max;
 	private final IInventory inventory;
 	private final Direction direction;
+	private boolean renderTooltip;
+	private String tooltipLabel;
 	
 	public WBar(ResourceLocation bg, ResourceLocation bar, IInventory inventory, int field, int maxfield) {
 		this(bg, bar, inventory, field, maxfield, Direction.UP);
 	}
-	
-	
+
 	public WBar(ResourceLocation bg, ResourceLocation bar, IInventory inventory, int field, int maxfield, Direction dir) {
 		this.bg = bg;
 		this.bar = bar;
@@ -55,6 +62,21 @@ public class WBar extends WWidget {
 		this.field = field;
 		this.max = maxfield;
 		this.direction = dir;
+	}
+
+	/**
+	 * Adds a tooltip to the WBar.
+	 *
+	 * Formatting Guide: The tooltip label is passed into String.Format and can recieve two integers
+	 * (%d) - the first is the current value of the bar's focused field, and the second is the
+	 * bar's focused maximum.
+	 * @param label String to render on the tooltip.
+	 * @return WBar with tooltip enabled and set.
+	 */
+	public WBar withTooltip(String label) {
+		this.setRenderTooltip(true);
+		this.tooltipLabel = label;
+		return this;
 	}
 	
 	@Override
@@ -80,36 +102,37 @@ public class WBar extends WWidget {
 		
 		switch(direction) { //anonymous blocks in this switch statement are to sandbox variables
 		case UP: {
-			int left = x;
-			int top = y + getHeight();
-			top -= barSize;
-			GuiDrawing.rect(bar, left, top, getWidth(), barSize, 0, 1 - percent, 1, 1, 0xFFFFFFFF);
-			break;
+				int left = x;
+				int top = y + getHeight();
+				top -= barSize;
+				GuiDrawing.rect(bar, left, top, getWidth(), barSize, 0, 1 - percent, 1, 1, 0xFFFFFFFF);
+				break;
+			}
+			case RIGHT: {
+				GuiDrawing.rect(bar, x, y, barSize, getHeight(), 0, 0, percent, 1, 0xFFFFFFFF);
+				break;
+			}
+			case DOWN: {
+				GuiDrawing.rect(bar, x, y, getWidth(), barSize, 0, 0, 1, percent, 0xFFFFFFFF);
+				break;
+			}
+			case LEFT: {
+				int left = x + getWidth();
+				int top = y;
+				left -= barSize;
+				GuiDrawing.rect(bar, left, top, barSize, getHeight(), 1 - percent, 0, 1, 1, 0xFFFFFFFF);
+				break;
+			}
 		}
-		case RIGHT: {
-			GuiDrawing.rect(bar, x, y, barSize, getHeight(), 0, 0, percent, 1, 0xFFFFFFFF);
-			break;
-		}
-		case DOWN: {
-			GuiDrawing.rect(bar, x, y, getWidth(), barSize, 0, 0, 1, percent, 0xFFFFFFFF);
-			break;
-		}
-		case LEFT: {
-			int left = x + getWidth();
-			int top = y;
-			left -= barSize;
-			GuiDrawing.rect(bar, left, top, barSize, getHeight(), 1 - percent, 0, 1, 1, 0xFFFFFFFF);
-			break;
-		}
-		}
-		
-		
-		//GuiDrawing.rect(bar, x, y + (getHeight() - barHeight), getWidth(), barHeight, 0xFFFFFFFF);
-		
-		//GuiDrawing.drawString("" + inventory.getField(field) + "/", x + 18, y + 9, 0xFF000000);
-		//GuiDrawing.drawString("" + inventory.getField(max) + "", x + 32, y + 9, 0xFF000000);
 	}
-	
+
+	@Override
+	public void addInformation(List<String> information) {
+		int value = inventory.getField(field);
+		int valMax = inventory.getField(max);
+		information.add(String.format(tooltipLabel, value, valMax));
+	}
+
 	public static enum Direction {
 		UP,
 		RIGHT,
