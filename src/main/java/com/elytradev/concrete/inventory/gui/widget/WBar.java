@@ -50,6 +50,7 @@ public class WBar extends WWidget {
 	private final Direction direction;
 	private boolean renderTooltip;
 	private String tooltipLabel;
+	private boolean invert;
 	
 	public WBar(ResourceLocation bg, ResourceLocation bar, IInventory inventory, int field, int maxfield) {
 		this(bg, bar, inventory, field, maxfield, Direction.UP);
@@ -78,6 +79,16 @@ public class WBar extends WWidget {
 		this.tooltipLabel = label;
 		return this;
 	}
+
+	/**
+	 * Inverts the WBar's operation - this is for inventories where the fields count _away_ from the
+	 * maximum rather than to it.
+	 * @return WBar with inverted handling.
+	 */
+	public WBar inverted() {
+		this.invert = true;
+		return this;
+	}
 	
 	@Override
 	public boolean canResize() {
@@ -88,8 +99,14 @@ public class WBar extends WWidget {
 	@Override
 	public void paintBackground(int x, int y) {
 		GuiDrawing.rect(bg, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
-		
-		float percent = inventory.getField(field) / (float) inventory.getField(max);
+
+		float percent = 0.0f;
+
+		if (!invert)
+		 	percent = inventory.getField(field) / (float) inventory.getField(max);
+		else
+			percent = (inventory.getField(max) - inventory.getField(field)) / (float) inventory.getField(max);
+
 		if (percent < 0) percent = 0f;
 		if (percent > 1) percent = 1f;
 		
