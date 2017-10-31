@@ -75,7 +75,7 @@ public final class GuiDrawing {
 	}
 	
 	/**
-	 * Draws an untextured rectangle of the specified RGB color. <strikethru>Alpha is always 1.0f.</strikethru>
+	 * Draws an untextured rectangle of the specified RGB color.
 	 */
 	public static void rect(int left, int top, int width, int height, int color) {
 		if (width <= 0) width = 1;
