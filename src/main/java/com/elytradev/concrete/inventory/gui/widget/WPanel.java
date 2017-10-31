@@ -68,7 +68,14 @@ public class WPanel extends WWidget {
 	public void layout() {
 		for(WWidget child : children) {
 			if (child instanceof WPanel) ((WPanel) child).layout();
+			expandToFit(child);
 		}
+	}
+	
+	protected void expandToFit(WWidget w) {
+		int pushRight = w.getX()+w.getWidth();
+		int pushDown =  w.getY()+w.getHeight();
+		this.setSize(Math.max(this.getWidth(), pushRight), Math.max(this.getHeight(), pushDown));
 	}
 	
 	@Override

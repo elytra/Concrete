@@ -30,7 +30,10 @@ package com.elytradev.concrete.inventory.gui;
 
 import com.elytradev.concrete.common.ShadingValidator;
 import com.elytradev.concrete.inventory.ValidatedSlot;
+import com.elytradev.concrete.inventory.gui.widget.WItemSlot;
 import com.elytradev.concrete.inventory.gui.widget.WPanel;
+import com.elytradev.concrete.inventory.gui.widget.WPlainPanel;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
@@ -38,6 +41,7 @@ import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -56,6 +60,9 @@ public class ConcreteContainer extends Container {
 	private final IInventory container;
 	private WPanel rootPanel;
 	private int[] syncFields = new int[0];
+	private boolean drawPanel = true;
+	private int panelColor = 0xFFC6C6C6;
+	private int titleColor = 0xFF404040;
 	
 	public ConcreteContainer(@Nonnull IInventory player, @Nullable IInventory container) {
 		this.playerInventory = player;
@@ -141,6 +148,8 @@ public class ConcreteContainer extends Container {
 	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+		if (rootPanel!=null && !rootPanel.isValid()) rootPanel.validate(this);
+
 		ItemStack srcStack = ItemStack.EMPTY;
 		Slot src = this.inventorySlots.get(index);
 		if (src != null && src.getHasStack()) {
@@ -167,6 +176,7 @@ public class ConcreteContainer extends Container {
 	
 	@Override
 	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+		if (rootPanel!=null && !rootPanel.isValid()) rootPanel.validate(this);
 		ItemStack result = super.slotClick(slotId, dragType, clickTypeIn, player);
 		return result;
 	}
@@ -248,7 +258,42 @@ public class ConcreteContainer extends Container {
 	}
 
 	public String getLocalizedName() {
-		
-		return container.getDisplayName().getUnformattedComponentText();
+		ITextComponent displayName = container.getDisplayName();
+		if (displayName==null) {
+			return "Container";
+		} else {
+			return displayName.getUnformattedComponentText();
+		}
+	}
+	
+	public boolean shouldDrawPanel() {
+		return drawPanel;
+	}
+	
+	public void setDrawPanel(boolean drawPanel) {
+		this.drawPanel = drawPanel;
+	}
+	
+	public int getColor() {
+		return this.panelColor;
+	}
+	
+	public void setColor(int color) {
+		this.panelColor = color;
+	}
+	
+	public int getTitleColor() {
+		return this.titleColor;
+	}
+	
+	public void setTitleColor(int color) {
+		this.titleColor = color;
+	}
+	
+	public WPanel createPlayerInventoryPanel() {
+		WPlainPanel inv = new WPlainPanel();
+		inv.add(WItemSlot.ofPlayerStorage(playerInventory), 0, 0);
+		inv.add(WItemSlot.of(playerInventory, 0, 9, 1), 0, 16*4 - 6);
+		return inv;
 	}
 }
