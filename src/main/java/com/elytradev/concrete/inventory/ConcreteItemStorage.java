@@ -88,7 +88,7 @@ public class ConcreteItemStorage extends ItemStackHandler implements IObservable
 	private final List<Runnable> listeners = Lists.newArrayList();
 	private final List<Predicate<ItemStack>> validators = Lists.newArrayList();
 	private final boolean[] extractMask;
-	private String name = null;
+	private String name = "Container";
 	
 	public ConcreteItemStorage(int slots) {
 		super(slots);

@@ -65,6 +65,22 @@ public class WWidget {
 		return y;
 	}
 	
+	public int getAbsoluteX() {
+		if (parent==null) {
+			return getX();
+		} else {
+			return getX() + parent.getAbsoluteX();
+		}
+	}
+	
+	public int getAbsoluteY() {
+		if (parent==null) {
+			return getY();
+		} else {
+			return getY() + parent.getAbsoluteY();
+		}
+	}
+	
 	public int getWidth() {
 		return width;
 	}
