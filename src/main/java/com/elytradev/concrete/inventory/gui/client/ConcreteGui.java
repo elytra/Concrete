@@ -31,6 +31,7 @@ package com.elytradev.concrete.inventory.gui.client;
 import java.io.IOException;
 
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
+import com.elytradev.concrete.inventory.gui.widget.WPanel;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -80,7 +81,6 @@ public class ConcreteGui extends GuiContainer {
 	
 	@Override
 	public void onGuiClosed() {
-		//System.out.println("onGuiClosed");
 		super.onGuiClosed();
 	}
 	
@@ -133,8 +133,12 @@ public class ConcreteGui extends GuiContainer {
 	@Override
 	public void setWorldAndResolution(Minecraft mc, int width, int height) {
 		super.setWorldAndResolution(mc, width, height);
-		//System.out.println("setWorldAndResolution:" + width + "x" + height);
 		
+		WPanel basePanel = container.getRootPanel();
+		if (basePanel!=null) {
+			xSize = basePanel.getWidth();
+			ySize = basePanel.getHeight();
+		}
 		guiLeft = (width  / 2) - (xSize / 2);
 		guiTop =  (height / 2) - (ySize / 2);
 		
@@ -143,7 +147,13 @@ public class ConcreteGui extends GuiContainer {
 	@Override
 	public void setGuiSize(int w, int h) {
 		super.setGuiSize(w, h);
-		//System.out.println("setGuiSize:" + w + "x" + h);
+		
+		WPanel basePanel = container.getRootPanel();
+		if (basePanel!=null) {
+			xSize = basePanel.getWidth();
+			ySize = basePanel.getHeight();
+		}
+		
 		guiLeft = (width  / 2) - (xSize / 2);
 		guiTop =  (height / 2) - (ySize / 2);
 		
@@ -154,16 +164,46 @@ public class ConcreteGui extends GuiContainer {
 	 * than relying on pre-baked textures that the programmer then needs to carefully match up their GUI to.
 	 */
 	
+	private int multiplyColor(int color, float amount) {
+		int a = color & 0xFF000000;
+		float r = (color >> 16 & 255) / 255.0F;
+		float g = (color >> 8  & 255) / 255.0F;
+		float b = (color       & 255) / 255.0F;
+		
+		r = Math.min(r*amount, 1.0f);
+		g = Math.min(g*amount, 1.0f);
+		b = Math.min(b*amount, 1.0f);
+		
+		int ir = (int)(r*255);
+		int ig = (int)(g*255);
+		int ib = (int)(b*255);
+		
+		return    a |
+				(ir << 16) |
+				(ig <<  8) |
+				 ib;
+	}
+	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GuiDrawing.drawGuiPanel(guiLeft - PADDING, guiTop - PADDING, xSize + ((PADDING - 1) * 2), ySize + ((PADDING - 1) * 2));
+		WPanel root = this.container.getRootPanel();
+		if (root==null) return;
 		
-		if (inventorySlots != null && this.container.getRootPanel() != null) {
-			this.container.getRootPanel().paintBackground(guiLeft, guiTop);
+		if (container.shouldDrawPanel()) {
+			int panelColor = container.getColor();
+			int shadowColor = multiplyColor(panelColor, 0.50f);
+			int hilightColor = multiplyColor(panelColor, 1.25f);
+			
+			GuiDrawing.drawGuiPanel(guiLeft - PADDING, guiTop - PADDING, xSize + ((PADDING - 1) * 2), ySize + ((PADDING - 1) * 2),
+					shadowColor, panelColor, hilightColor, 0xFF000000);
+		}
+		
+		if (inventorySlots != null && root != null) {
+			root.paintBackground(guiLeft, guiTop);
 		}
 		
 		//TODO: Change this to a label that lives in the rootPanel instead
-		fontRenderer.drawString(container.getLocalizedName(), guiLeft, guiTop, 0xFF404040);
+		fontRenderer.drawString(container.getLocalizedName(), guiLeft, guiTop, container.getTitleColor());
 	}
 
 	@Override

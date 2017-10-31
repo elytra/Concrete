@@ -75,12 +75,13 @@ public final class GuiDrawing {
 	}
 	
 	/**
-	 * Draws an untextured rectangle of the specified RGB color. Alpha is always 1.0f.
+	 * Draws an untextured rectangle of the specified RGB color. <strikethru>Alpha is always 1.0f.</strikethru>
 	 */
 	public static void rect(int left, int top, int width, int height, int color) {
 		if (width <= 0) width = 1;
 		if (height <= 0) height = 1;
 		
+		float a = (color >> 24 & 255) / 255.0F;
 		float r = (color >> 16 & 255) / 255.0F;
 		float g = (color >> 8 & 255) / 255.0F;
 		float b = (color & 255) / 255.0F;
@@ -89,7 +90,7 @@ public final class GuiDrawing {
 		GlStateManager.enableBlend();
 		GlStateManager.disableTexture2D();
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		GlStateManager.color(r, g, b, 1.0f);
+		GlStateManager.color(r, g, b, a);
 		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION); //I thought GL_QUADS was deprecated but okay, sure.
 		buffer.pos(left,         top + height, 0.0D).endVertex();
 		buffer.pos(left + width, top + height, 0.0D).endVertex();
@@ -112,6 +113,7 @@ public final class GuiDrawing {
 		if (width <= 0) width = 1;
 		if (height <= 0) height = 1;
 
+		float a = (color >> 24 & 255) / 255.0F;
 		float r = (color >> 16 & 255) / 255.0F;
 		float g = (color >> 8 & 255) / 255.0F;
 		float b = (color & 255) / 255.0F;
@@ -120,7 +122,7 @@ public final class GuiDrawing {
 		GlStateManager.enableBlend();
 		//GlStateManager.disableTexture2D();
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		GlStateManager.color(r, g, b, 1.0f);
+		GlStateManager.color(r, g, b, a);
 		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX); //I thought GL_QUADS was deprecated but okay, sure.
 		buffer.pos(left,         top + height, 0.0D).tex(tas.getInterpolatedU(u1), tas.getInterpolatedV(v2)).endVertex();
 		buffer.pos(left + width, top + height, 0.0D).tex(tas.getInterpolatedU(u2), tas.getInterpolatedV(v2)).endVertex();
@@ -188,13 +190,22 @@ public final class GuiDrawing {
 	 * @param panel			color of the panel area
 	 * @param bottomright	color of the bottom/right bevel
 	 */
+	/*
 	public static void drawBeveledPanel(int x, int y, int width, int height, int topleft, int panel, int bottomright) {
 		rect(x,             y,              width,     height,     0x8b8b8b); //Center panel
 		rect(x,             y,              width - 1, 1,          0x373737); //Top shadow
 		rect(x,             y + 1,          1,         height - 2, 0x373737); //Left shadow
 		rect(x + width - 1, y + 1,          1,         height - 1, 0xFFFFFF); //Right hilight
 		rect(x + 1,         y + height - 1, width - 1, 1,          0xFFFFFF); //Bottom hilight
+	}*/
+	public static void drawBeveledPanel(int x, int y, int width, int height, int topleft, int panel, int bottomright) {
+		rect(x,             y,              width,     height,     panel); //Center panel
+		rect(x,             y,              width - 1, 1,          topleft); //Top shadow
+		rect(x,             y + 1,          1,         height - 2, topleft); //Left shadow
+		rect(x + width - 1, y + 1,          1,         height - 1, bottomright); //Right hilight
+		rect(x + 1,         y + height - 1, width - 1, 1,          bottomright); //Bottom hilight
 	}
+	
 	
 	public static void drawString(String s, int x, int y, int color) {
 		Minecraft.getMinecraft().fontRenderer.drawString(s, x, y, color);
