@@ -148,6 +148,8 @@ public class ConcreteContainer extends Container {
 	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+		if (rootPanel!=null && !rootPanel.isValid()) rootPanel.validate(this);
+
 		ItemStack srcStack = ItemStack.EMPTY;
 		Slot src = this.inventorySlots.get(index);
 		if (src != null && src.getHasStack()) {
@@ -174,6 +176,7 @@ public class ConcreteContainer extends Container {
 	
 	@Override
 	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+		if (rootPanel!=null && !rootPanel.isValid()) rootPanel.validate(this);
 		ItemStack result = super.slotClick(slotId, dragType, clickTypeIn, player);
 		return result;
 	}
