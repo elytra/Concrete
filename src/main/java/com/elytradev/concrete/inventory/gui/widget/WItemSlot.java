@@ -43,6 +43,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class WItemSlot extends WWidget {
 	private final List<Slot> peers = Lists.newArrayList();
 	private IInventory inventory;
+	private ConcreteContainer container;
 	private int startIndex = 0;
 	private int slotsWide = 1;
 	private int slotsHigh = 1;
@@ -110,6 +111,7 @@ public class WItemSlot extends WWidget {
 	
 	@Override
 	public void createPeers(ConcreteContainer c) {
+		this.container = c;
 		peers.clear();
 		int index = startIndex;
 		
@@ -139,12 +141,21 @@ public class WItemSlot extends WWidget {
 	public void paintBackground(int x, int y) {
 		for (int xi = 0; xi < slotsWide; xi++) {
 			for (int yi = 0; yi < slotsHigh; yi++) {
+				int lo = GuiDrawing.colorAtOpacity(0x000000, 0.72f);
+				int bg = GuiDrawing.colorAtOpacity(0x000000, 0.29f);
+				int hi = GuiDrawing.colorAtOpacity(0xFFFFFF, 1.0f);
+				if (container!=null) {
+					lo = GuiDrawing.colorAtOpacity(0x000000, container.getBevelStrength());
+					bg = GuiDrawing.colorAtOpacity(0x000000, container.getBevelStrength()/2.4f);
+					hi = GuiDrawing.colorAtOpacity(0xFFFFFF, container.getBevelStrength());
+				}
+				
 				if (big) {
 					GuiDrawing.drawBeveledPanel((xi * 18) + x - 4, (yi * 18) + y - 4, 24, 24,
-							0x88000000, 0x22000000, 0x88FFFFFF);
+							lo, bg, hi);
 				} else {
 					GuiDrawing.drawBeveledPanel((xi * 18) + x - 1, (yi * 18) + y - 1, 18, 18,
-							0x88000000, 0x22000000, 0x88FFFFFF);
+							lo, bg, hi);
 				}
 			}
 		}
