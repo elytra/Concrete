@@ -25,7 +25,7 @@ apply plugin: 'maven'
 
 group = "com.elytradev"
 archivesBaseName = "Concrete"
-version = "0.3.3"
+version = "0.3.4"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -65,60 +65,60 @@ processResources {
 }
 
 jar {
-	classifier = 'all'
+	baseName = 'concrete-all'
 }
 
 task commonJar(type: Jar) {
-	classifier = 'common'
+	baseName = 'concrete-common'
 	from(sourceSets.main.output) {
 		include 'com/elytradev/concrete/common/**'
 	}
 }
 
 task blockJar(type: Jar) {
-	classifier = 'block'
+	baseName = 'concrete-block'
 	from(sourceSets.main.output) {
 		include 'com/elytradev/concrete/block/**'
 	}
 }
 
 task networkJar(type: Jar) {
-	classifier = 'network'
+	baseName = 'concrete-network'
 	from(sourceSets.main.output) {
 		include 'com/elytradev/concrete/network/**'
 	}
 }
 
 task reflectJar(type: Jar) {
-	classifier = 'reflect'
+	baseName = 'concrete-reflect'
 	from(sourceSets.main.output) {
 		include 'com/elytradev/concrete/reflect/**'
 	}
 }
 
 task inventoryJar(type: Jar) {
-	classifier = 'gui'
+	baseName = 'concrete-gui'
 	from(sourceSets.main.output) {
 		include 'com/elytradev/concrete/inventory/**'
 	}
 }
 
 task configJar(type: Jar) {
-	classifier = 'config'
+	baseName = 'concrete-config'
 	from(sourceSets.main.output) {
 		include 'com/elytradev/concrete/config/**'
 	}
 }
 
 task resgenJar(type: Jar) {
-	classifier = 'resgen'
+	baseName = 'concrete-resgen'
 	from(sourceSets.main.output) {
 		include 'com/elytradev/concrete/resgen/**'
 	}
 }
 
 task utilpacketsJar(type: Jar) {
-	classifier = 'utilpackets'
+	baseName = 'concrete-utilpackets'
 	from(sourceSets.main.output) {
 		include 'com/elytradev/concrete/utilpackets/**'
 	}
