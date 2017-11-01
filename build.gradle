@@ -21,7 +21,7 @@ plugins {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 group = "com.elytradev"
 archivesBaseName = "Concrete"
@@ -43,6 +43,7 @@ minecraft {
 	mappings = "snapshot_20170908"
 
 	runDir = "eclipse"
+	makeObfSourceJar = false
 }
 
 processResources {
@@ -137,6 +138,59 @@ reobf {
 
 artifacts {
 	archives commonJar, blockJar, networkJar, reflectJar, inventoryJar, configJar, resgenJar, utilpacketsJar
+}
+
+publishing {
+	publications {
+		common(MavenPublication) {
+			groupId 'com.elytradev.concrete'
+			artifactId 'concrete-common'
+			version project.version+'-SNAPSHOT'
+			artifact commonJar
+		}
+		block(MavenPublication) {
+			groupId 'com.elytradev.concrete'
+			artifactId 'concrete-block'
+			version project.version+'-SNAPSHOT'
+			artifact blockJar
+		}
+		inventory(MavenPublication) {
+			groupId 'com.elytradev.concrete'
+			artifactId 'concrete-inventory'
+			version project.version+'-SNAPSHOT'
+			artifact inventoryJar
+		}
+		network(MavenPublication) {
+			groupId 'com.elytradev.concrete'
+			artifactId 'concrete-network'
+			version project.version+'-SNAPSHOT'
+			artifact networkJar
+		}
+		resgen(MavenPublication) {
+			groupId 'com.elytradev.concrete'
+			artifactId 'concrete-resgen'
+			version project.version+'-SNAPSHOT'
+			artifact resgenJar
+		}
+		reflect(MavenPublication) {
+			groupId 'com.elytradev.concrete'
+			artifactId 'concrete-reflect'
+			version project.version+'-SNAPSHOT'
+			artifact reflectJar
+		}
+		config(MavenPublication) {
+			groupId 'com.elytradev.concrete'
+			artifactId 'concrete-config'
+			version project.version+'-SNAPSHOT'
+			artifact configJar
+		}
+		utilpackets(MavenPublication) {
+			groupId 'com.elytradev.concrete'
+			artifactId 'concrete-utilpackets'
+			version project.version+'-SNAPSHOT'
+			artifact utilpacketsJar
+		}
+	}
 }
 
 if (file('private.gradle').exists()) {
