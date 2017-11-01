@@ -99,9 +99,11 @@ public class WFluidBar extends WWidget {
 	public void paintBackground(int x, int y) {
 		GuiDrawing.rect(bg, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
 
-		if(concreteFluidTank.getFluid() == null)
+		if(concreteFluidTank.getFluid() == null) {
+			GuiDrawing.rect(fg, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
 			return;
-
+		}
+		
 		float percent = (float) concreteFluidTank.getFluidAmount() / (float) concreteFluidTank.getCapacity();
 		if (percent < 0) percent = 0f;
 		if (percent > 1) percent = 1f;
@@ -204,9 +206,9 @@ public class WFluidBar extends WWidget {
 			}
 		}
 
-		if(fg != null)
+		if(fg != null) {
 			GuiDrawing.rect(fg, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
-
+		}
 	}
 
 	@Override
