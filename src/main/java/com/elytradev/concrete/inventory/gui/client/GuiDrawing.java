@@ -214,4 +214,13 @@ public final class GuiDrawing {
 	public static void drawTooltip(String s, int x, int y) {
 
 	}
+	
+	public static int colorAtOpacity(int opaque, float opacity) {
+		if (opacity<0.0f) opacity=0.0f;
+		if (opacity>1.0f) opacity=1.0f;
+		
+		int a = (int)(opacity * 255.0f);
+		
+		return (opaque & 0xFFFFFF) | (a << 24);
+	}
 }

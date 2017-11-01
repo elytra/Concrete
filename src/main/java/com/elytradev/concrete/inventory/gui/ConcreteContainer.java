@@ -63,6 +63,7 @@ public class ConcreteContainer extends Container {
 	private boolean drawPanel = true;
 	private int panelColor = 0xFFC6C6C6;
 	private int titleColor = 0xFF404040;
+	private float bevelStrength = 0.72f;
 	
 	public ConcreteContainer(@Nonnull IInventory player, @Nullable IInventory container) {
 		this.playerInventory = player;
@@ -280,6 +281,18 @@ public class ConcreteContainer extends Container {
 	
 	public void setColor(int color) {
 		this.panelColor = color;
+	}
+	
+	/**
+	 * Accepts a number from 0 to 1, indicating how prominent the bevel on itemslots is, and the opacity of their
+	 * background.
+	 */
+	public void setBevelStrength(float strength) {
+		this.bevelStrength = strength;
+	}
+	
+	public float getBevelStrength() {
+		return this.bevelStrength;
 	}
 	
 	public int getTitleColor() {
