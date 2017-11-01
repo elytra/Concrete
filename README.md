@@ -1,5 +1,5 @@
-<img src="https://rawgit.com/elytra/Concrete/1.11.2/doc/emblem.svg" align="right" width="180px"/>
- 
+<img src="https://rawgit.com/elytra/Concrete/1.12.1/doc/emblem.svg" align="right" width="180px"/>
+
 # Concrete
 *A solid foundation for Elytra mods.*
 
@@ -90,11 +90,11 @@ artifacts {
 }
 
 dependencies {
-	deobfCompile 'com.elytradev:concrete:0.3.2:common'
-	shadow 'com.elytradev:concrete:0.3.2:common'
+	deobfCompile 'com.elytradev:concrete:0.3.4:common'
+	shadow 'com.elytradev:concrete:0.3.4:common'
 
-	deobfCompile 'com.elytradev:concrete:0.3.2:<module name>'
-	shadow 'com.elytradev:concrete:0.3.2:<module name>'
+	deobfCompile 'com.elytradev:concrete:0.3.4:<module name>'
+	shadow 'com.elytradev:concrete:0.3.4:<module name>'
 }
 ```
 
