@@ -65,7 +65,7 @@ plugins {
 
 repositories {
 	maven {
-		url = 'http://repo.elytradev.com'
+		url = 'https://repo.elytradev.com'
 	}
 }
 
@@ -90,16 +90,19 @@ artifacts {
 }
 
 dependencies {
-	deobfCompile 'com.elytradev:concrete:0.3.4:common'
-	shadow 'com.elytradev:concrete:0.3.4:common'
+	deobfCompile 'com.elytradev.concrete:concrete-common:0.3.4-SNAPSHOT'
+	shadow 'com.elytradev.concrete:concrete-common:0.3.4-SNAPSHOT'
 
-	deobfCompile 'com.elytradev:concrete:0.3.4:<module name>'
-	shadow 'com.elytradev:concrete:0.3.4:<module name>'
+	deobfCompile 'com.elytradev.concrete:concrete-<module name>:0.3.4-SNAPSHOT'
+	shadow 'com.elytradev.concrete:concrete-<module name>:0.3.4-SNAPSHOT'
 }
 ```
 
 Of course, any other method of shading will work too. The Gradle Shadow plugin
-is what we recommend, though.
+is what we recommend, though. (**Note**: Old versions of Gradle suck at SSL. If
+you get errors trying to download from our Maven repository, please make sure
+Gradle and Java are up-to-date. We enforce HTTPS redirects, so switching the
+URL to HTTP won't fix anything.)
 
 Alternatively, you can use the [Elytra Project Skeleton](https://github.com/elytra/skel),
 which is designed for Elytra mods, but should work for any mod project.
