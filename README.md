@@ -1,4 +1,4 @@
-<img src="https://rawgit.com/elytra/Concrete/1.11.2/doc/emblem.svg" align="right" width="180px"/>
+<img src="https://rawgit.com/elytra/Concrete/1.12.1/doc/emblem.svg" align="right" width="180px"/>
  
 # Concrete
 *A solid foundation for Elytra mods.*
@@ -65,7 +65,7 @@ plugins {
 
 repositories {
 	maven {
-		url = 'http://repo.elytradev.com'
+		url = 'https://repo.elytradev.com'
 	}
 }
 
@@ -99,7 +99,10 @@ dependencies {
 ```
 
 Of course, any other method of shading will work too. The Gradle Shadow plugin
-is what we recommend, though.
+is what we recommend, though. (**Note**: Old versions of Gradle suck at SSL. If
+you get errors trying to download from our Maven repository, please make sure
+Gradle and Java are up-to-date. We enforce HTTPS redirects, so switching the
+URL to HTTP won't fix anything.)
 
 Alternatively, you can use the [Elytra Project Skeleton](https://github.com/elytra/skel),
 which is designed for Elytra mods, but should work for any mod project.
