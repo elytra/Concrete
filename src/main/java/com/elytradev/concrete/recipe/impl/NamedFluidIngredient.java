@@ -28,51 +28,35 @@
 
 package com.elytradev.concrete.recipe.impl;
 
-import com.elytradev.concrete.recipe.ItemIngredient;
+import com.elytradev.concrete.recipe.FluidIngredient;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.fluids.FluidStack;
 
-public class ItemStackIngredient extends ItemIngredient {
-	private ItemStack item;
+public class NamedFluidIngredient extends FluidIngredient {
+	private String key;
+	private int amount;
 	
-	public ItemStackIngredient(ItemStack input) {
-		this.item = input;
-	}
-	
-	public ItemStack getItem() {
-		return item;
+	public NamedFluidIngredient(String key, int amount) {
+		this.key = key;
 	}
 	
 	@Override
-	public boolean apply(ItemStack input) {
-		return OreDictionary.itemMatches(item, input, false) && ItemStack.areItemStackTagsEqual(item, input);
+	public boolean apply(FluidStack input) {
+		return input.getFluid().getName().equals(key) &&
+			input.amount >= amount &&
+			(input.tag==null || input.tag.hasNoTags());
 	}
-	
+
 	@Override
 	public boolean equals(Object other) {
-		if (!(other instanceof ItemStackIngredient)) return false;
-		ItemStack a = item;
-		ItemStack b = ((ItemStackIngredient)other).item;
+		if (!(other instanceof NamedFluidIngredient)) return false;
 		
-		return OreDictionary.itemMatches(a, b, true) && ItemStack.areItemStackTagsEqual(a,b);
+		return this.key.equals(((NamedFluidIngredient)other).key) &&
+				this.amount==((NamedFluidIngredient)other).amount;
 	}
 	
 	@Override
 	public int hashCode() {
-		//SHOULD produce identical numbers for equals==true. Should. But it's kind of a weak guarantee.
-		int result = item.getItem().hashCode();
-		//The following not represented by equals!
-		//result *= 31;
-		//result ^= Integer.hashCode(item.getCount());
-		result *= 31;
-		result ^= Integer.hashCode(item.getItemDamage());
-		if (item.hasTagCompound()) {
-			result *= 31;
-			result ^= item.getTagCompound().hashCode();
-		}
-		
-		return result;
+		return (this.key.hashCode()*31) ^ Integer.hashCode(amount);
 	}
 }

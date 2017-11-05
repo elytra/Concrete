@@ -26,37 +26,40 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.recipe.impl;
+package com.elytradev.concrete.recipe;
 
-import com.elytradev.concrete.recipe.FluidIngredient;
-
-import net.minecraftforge.fluids.FluidStack;
-
-public class OreFluidIngredient extends FluidIngredient {
-	private String key;
+/**
+ * Reference IIngredient for RF. Any other kind of scalar ingredient will be nearly a carbon-copy of this one.
+ */
+public class RFIngredient implements IIngredient<Integer> {
 	private int amount;
 	
-	public OreFluidIngredient(String key, int amount) {
-		this.key = key;
+	public RFIngredient(int amount) {
+		this.amount = amount;
+	}
+	
+	public int getAmount() {
+		return amount;
 	}
 	
 	@Override
-	public boolean apply(FluidStack input) {
-		return input.getFluid().getName().equals(key) &&
-			input.amount >= amount &&
-			(input.tag==null || input.tag.hasNoTags());
+	public boolean apply(Integer input) {
+		return input>=amount;
 	}
 
 	@Override
+	public String getCategory() {
+		return "rf";
+	}
+	
+	@Override
 	public boolean equals(Object other) {
-		if (!(other instanceof OreFluidIngredient)) return false;
-		
-		return this.key.equals(((OreFluidIngredient)other).key) &&
-				this.amount==((OreFluidIngredient)other).amount;
+		return other instanceof RFIngredient &&
+				((RFIngredient)other).amount==amount;
 	}
 	
 	@Override
 	public int hashCode() {
-		return (this.key.hashCode()*31) ^ Integer.hashCode(amount);
+		return Integer.hashCode(amount);
 	}
 }
