@@ -104,6 +104,13 @@ task inventoryJar(type: Jar) {
 	}
 }
 
+task recipeJar(type: Jar) {
+	baseName = 'concrete-recipe'
+	from(sourceSets.main.output) {
+		include 'com/elytradev/concrete/recipe/**'
+	}
+}
+
 task configJar(type: Jar) {
 	baseName = 'concrete-config'
 	from(sourceSets.main.output) {
@@ -131,13 +138,14 @@ reobf {
 	networkJar { mappingType = 'SEARGE' }
 	reflectJar { mappingType = 'SEARGE' }
 	inventoryJar { mappingType = 'SEARGE' }
+	recipeJar { mappingType = 'SEARGE' }
 	configJar { mappingType = 'SEARGE' }
 	resgenJar { mappingType = 'SEARGE' }
 	utilpacketsJar { mappingType = 'SEARGE'}
 }
 
 artifacts {
-	archives commonJar, blockJar, networkJar, reflectJar, inventoryJar, configJar, resgenJar, utilpacketsJar
+	archives commonJar, blockJar, networkJar, reflectJar, inventoryJar, recipeJar, configJar, resgenJar, utilpacketsJar
 }
 
 publishing {
@@ -159,6 +167,12 @@ publishing {
 			artifactId 'concrete-inventory'
 			version project.version+'-SNAPSHOT'
 			artifact inventoryJar
+		}
+		recipe(MavenPublication) {
+			groupId 'com.elytradev.concrete'
+			artifactId 'concrete-recipe'
+			version project.version+'-SNAPSHOT'
+			artifact recipeJar
 		}
 		network(MavenPublication) {
 			groupId 'com.elytradev.concrete'
