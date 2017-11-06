@@ -31,25 +31,47 @@ package com.elytradev.concrete.recipe.impl;
 import java.util.Arrays;
 
 import com.elytradev.concrete.recipe.ItemIngredient;
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.items.IItemHandler;
 
+/**
+ * Represents a shaped recipe for a custom inventory grid. Small recipes will be recognized no matter where they're
+ * placed on the grid, and are optionally checked for horizontal mirroring.
+ * 
+ * <p>The caveat here is that this grid has a known, fixed width and height, and that the "matched" crafting area comes
+ * before any other slots in the inventory. For a 3x3 grid, that means slots 0-8 are reserved for matching, and slots 9+
+ * are ignored. Trying to match that 3x3 grid to an inventory smaller than 9 always reports no match, even if the recipe
+ * "fits" in the new grid size. Recipes specified as being larger than the grid will be clipped to the grid, and as such
+ * may match things they shouldn't because the differences are off its bottom and right edges.
+ * 
+ * <p>While this is meant to be a drop-in replacement for ShapedRecipes, please keep in mind that there is no common
+ * ancestry.
+ */
 public class ShapedInventoryRecipe extends InventoryGridRecipe {
 	protected ItemStack result;
 	protected int gridWidth = 1;
 	protected int gridHeight = 1;
 	protected ItemIngredient[] recipe;
 	protected ItemIngredient[] flipped = null;
+	protected ResourceLocation registryName;
 	
 	/**
-	 * Creates a new ShapedInventoryRecipe for some kind of crafting grid.
-	 * @param width        The width of the crafting area
-	 * @param height       The height of the crafting area
+	 * Creates a new ShapedInventoryRecipe for some kind of crafting grid. The recipe ingredients can optionally be
+	 * specified on a smaller grid for convenience, such as a 2x2 crafting recipe specified in 4 array elements instead
+	 * of 9. Trailing nulls can also be safely omitted, even if contained within the smaller recipe area.
+	 * 
+	 * @param result       The ItemStack this recipe produces
+	 * @param gridWidth    The width of the inventory you expect to match against.
+	 * @param gridHeight   The height of the inventory you expect to match against.
+	 * @param recipeWidth  The width of the recipe being passed in - can be gridWidth or smaller.
+	 * @param recipeHeight The height of the recipe being passed in - can be gridHeight or smaller.
 	 * @param alsoFlipped  True if the recipe should recognize the pattern if it's flipped horizontally.
-	 * @param recipe       The ingredients
+	 * @param recipe       The ingredients. This can be *any* number of elements, but elements past {@code recipeWidth*recipeHeight} will be ignored.
 	 */
 	public ShapedInventoryRecipe(ItemStack result, int gridWidth, int gridHeight, int recipeWidth, int recipeHeight, boolean alsoFlipped, ItemIngredient... recipe) {
 		this.result = result;
@@ -60,23 +82,29 @@ public class ShapedInventoryRecipe extends InventoryGridRecipe {
 			for(int x=0; x<gridWidth; x++) {
 				int index = y*gridWidth+x;
 				int recipeIndex = y*recipeWidth+x;
+				if (x>=recipeWidth || y>=recipeHeight) continue;
 				if (recipeIndex>=recipe.length) continue;
 				this.recipe[index] = recipe[recipeIndex];
 			}
 		}
 		this.recipe = snug(this.recipe, gridWidth, gridHeight, (it)->false);
-		if (alsoFlipped) this.flipped = snug(flip(recipe,gridWidth,gridHeight), gridWidth, gridHeight, (it)->false);
+		if (alsoFlipped) this.flipped = snug(flip(this.recipe,gridWidth,gridHeight), gridWidth, gridHeight, (it)->false);
 	}
 	
-	public ShapedInventoryRecipe(ItemStack result, ItemIngredient item) {
-		this(result, 1, 1, 1, 1, false, item);
-	}
-	
+	/**
+	 * Creates a new ShapedInventoryRecipe to match one ingredient being placed into the grid. For performance reasons,
+	 * consider using {@link ShapelessInventoryRecipe} instead.
+	 * 
+	 * @param result       The ItemStack this recipe produces
+	 * @param width        The width of the inventory you expect to match against.
+	 * @param height       The height of the inventory you expect to match against.     
+	 * @param item         The ingredient that activates this recipe
+	 */
 	public ShapedInventoryRecipe(ItemStack result, int width, int height, ItemIngredient item) {
 		this(result, width, height, 1, 1, false, item);
 	}
 	
-	private static <T> T[] snug(T[] ts, int wid, int hit, Predicate<T> isEmpty) {
+	public static <T> T[] snug(T[] ts, int wid, int hit, Predicate<T> isEmpty) {
 		T[] result = Arrays.copyOf(ts, ts.length);
 		//Find the origin x and y
 		int minX = wid;
@@ -94,22 +122,30 @@ public class ShapedInventoryRecipe extends InventoryGridRecipe {
 			}
 		}
 		
-		//Now that we have the offsets, snug everything up
+		//Now that we have the offsets, snug everything up and turn empties into nulls
 		for(int y=0; y<hit; y++) {
 			for(int x=0; x<wid; x++) {
 				int srci = (y+minY)*wid+(x+minX);
 				int dsti = y*wid+x;
 				if (dsti>=result.length) continue;
-				if (srci>=ts.length) result[dsti] = null;
+				if (srci>=ts.length) {
+					result[dsti] = null;
+					continue;
+				}
 				
-				result[dsti] = ts[srci];
+				T t = ts[srci];
+				if (t==null || isEmpty.apply(t)) {
+					result[dsti] = null;
+				} else {
+					result[dsti] = ts[srci];
+				}
 			}
 		}
 		
 		return result;
 	}
 	
-	private static <T> T[] flip(T[] ts, int wid, int hit) {
+	public static <T> T[] flip(T[] ts, int wid, int hit) {
 		T[] result = Arrays.copyOf(ts, ts.length);
 		for(int y=0; y<hit; y++) {
 			for(int x=0; x<wid; x++) {
@@ -120,49 +156,114 @@ public class ShapedInventoryRecipe extends InventoryGridRecipe {
 		}
 		return result;
 	}
-	
+
 	@Override
-	public boolean matches(ItemStackHandler handler) {
-		ItemStack[] slots = new ItemStack[gridWidth*gridHeight]; 
-		for(int i=0; i<slots.length; i++) {
-			if (i>=handler.getSlots()) break;
-			slots[i] = handler.getStackInSlot(i);
-		}
-		slots = snug(slots, gridWidth, gridHeight, ItemStack::isEmpty);
+	public boolean matches(IItemHandler inventory) {
+		//TODO: Find translation
+		int tx = 0;
+		int ty = 0;
 		
-		return apply(recipe, slots) ||
-				((flipped==null)?false:apply(flipped,slots));
+		if (!apply(recipe, inventory.getSlots(), tx, ty, inventory::getStackInSlot, (it)->inventory.extractItem(it, 1, true), false)) return false;
+		
+		if (flipped!=null) {
+			if (!apply(flipped, inventory.getSlots(), tx, ty, inventory::getStackInSlot, (it)->inventory.extractItem(it, 1, true), false)) return false;
+		}
+		
+		return true;
 	}
 	
 	@Override
 	public boolean matches(IInventory inventory) {
-		ItemStack[] slots = new ItemStack[gridWidth*gridHeight]; 
-		for(int i=0; i<slots.length; i++) {
-			if (i>=inventory.getSizeInventory()) break;
-			slots[i] = inventory.getStackInSlot(i);
-		}
-		slots = snug(slots, gridWidth, gridHeight, ItemStack::isEmpty);
+		//TODO: Find translation
+		int tx = 0;
+		int ty = 0;
 		
-		return apply(recipe, slots) ||
-				((flipped==null)?false:apply(flipped,slots));
+		if (!apply(recipe, inventory.getSizeInventory(), tx, ty, inventory::getStackInSlot, (it)->inventory.decrStackSize(it, 1), false)) return false;
+		
+		if (flipped!=null) {
+			if (!apply(flipped, inventory.getSizeInventory(), tx, ty, inventory::getStackInSlot, (it)->inventory.decrStackSize(it, 1), false)) return false;
+		}
+		
+		return true;
 	}
-	
-	protected boolean apply(ItemIngredient[] ingredients, ItemStack... slots) {
-		if (slots.length<ingredients.length) return false;
+
+	protected boolean apply(
+			ItemIngredient[] ingredients,
+			int numSlots,
+			int translateX,
+			int translateY,
+			Function<Integer,ItemStack> slotInspector,
+			Function<Integer,ItemStack> slotExtractor,
+			boolean doConsume) {
+		
+		//Always test-flight a recipe before extracting. Test-flight is extremely cheap.
+		if (doConsume && !apply(ingredients, numSlots, translateX, translateY, slotInspector, slotExtractor, false)) return false;
+		
+		if (numSlots<ingredients.length) return false;
 		
 		for(int i=0; i<ingredients.length; i++) {
 			if (ingredients[i]==null) {
-				if (slots[i]!=null && !slots[i].isEmpty()) return false;
+				ItemStack stack = slotInspector.apply(i);
+				if (stack!=null && !stack.isEmpty()) return false;
 			} else {
-				if (!ingredients[i].apply(slots[i])) return false;
+				ItemStack stack = slotInspector.apply(i);
+				if (!ingredients[i].apply(stack)) return false;
+				if (doConsume) {
+					ItemStack extracted = slotExtractor.apply(i);
+					if (extracted==null || extracted.isEmpty()) return false;
+				}
 			}
 		}
 		return true;
 	}
-
+	
+	public int getGridWidth() { return gridWidth; }
+	public int getGridHeight() { return gridHeight; }
+	
+	/**
+	 * Gets the output of this recipe. If possible, use {@link #getOutput(IInventory)} or {@link #getOutput(IItemHandler)}
+	 * instead, so that appropriate NBT can be added based on the ingredients.
+	 */
 	@Override
 	public ItemStack getOutput() {
 		return result;
 	}
+
+	@Override
+	public boolean consumeIngredients(IItemHandler inventory, boolean doConsume) {
+		//TODO: Find translation
+		int tx = 0;
+		int ty = 0;
+		
+		return apply(recipe, inventory.getSlots(), tx, ty, inventory::getStackInSlot, (it)->inventory.extractItem(it, 1, !doConsume), doConsume);
+	}
+
+	@Override
+	public boolean consumeIngredients(IInventory inventory, boolean doConsume) {
+		//TODO: Find translation
+		int tx = 0;
+		int ty = 0;
+		
+		return apply(recipe, inventory.getSizeInventory(), tx, ty, inventory::getStackInSlot, (it)->inventory.decrStackSize(it, 1), doConsume);
+	}
+
+	
+	
+	@Override
+	public InventoryGridRecipe setRegistryName(ResourceLocation name) {
+		this.registryName = name;
+		return this;
+	}
+
+	@Override
+	public ResourceLocation getRegistryName() {
+		return registryName;
+	}
+
+	@Override
+	public Class<InventoryGridRecipe> getRegistryType() {
+		return InventoryGridRecipe.class;
+	}
+	
 	
 }

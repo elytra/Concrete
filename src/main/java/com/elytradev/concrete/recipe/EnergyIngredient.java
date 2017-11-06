@@ -29,12 +29,12 @@
 package com.elytradev.concrete.recipe;
 
 /**
- * Reference IIngredient for RF. Any other kind of scalar ingredient will be nearly a carbon-copy of this one.
+ * Reference IIngredient for energy (FE, FU, RF, Dk, T). Any other kind of scalar ingredient will be nearly a carbon-copy of this one.
  */
-public class RFIngredient implements IIngredient<Integer> {
+public class EnergyIngredient implements IIngredient<Integer> {
 	private int amount;
 	
-	public RFIngredient(int amount) {
+	public EnergyIngredient(int amount) {
 		this.amount = amount;
 	}
 	
@@ -49,13 +49,13 @@ public class RFIngredient implements IIngredient<Integer> {
 
 	@Override
 	public String getCategory() {
-		return "rf";
+		return "energy";
 	}
 	
 	@Override
 	public boolean equals(Object other) {
-		return other instanceof RFIngredient &&
-				((RFIngredient)other).amount==amount;
+		return other instanceof EnergyIngredient &&
+				((EnergyIngredient)other).amount==amount;
 	}
 	
 	@Override

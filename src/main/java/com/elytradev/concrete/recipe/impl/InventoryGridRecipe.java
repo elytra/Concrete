@@ -32,9 +32,37 @@ import com.elytradev.concrete.recipe.ICustomRecipe;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.IItemHandler;
 
-public abstract class InventoryGridRecipe implements ICustomRecipe<ItemStack> {
-	abstract boolean matches(ItemStackHandler handler);
-	abstract boolean matches(IInventory inventory);
+public abstract class InventoryGridRecipe implements ICustomRecipe<InventoryGridRecipe, ItemStack> {
+	public abstract boolean matches(IItemHandler inventory);
+	public abstract boolean matches(IInventory inventory);
+	
+	public ItemStack getOutput(IItemHandler inventory) {
+		return getOutput();
+	}
+	
+	public ItemStack getOutput(IInventory inventory) {
+		return getOutput();
+	}
+	
+	/**
+	 * Consumes all ingredients needed to make this recipe. Must only be called with {@code doConsume=true} *after* the
+	 * recipe output has been obtained, so that the recipe can apply any required NBT to the output stack based on ingredients.
+	 * @param inventory   The inventory holding the ingredients which this recipe is turning into an output stack
+	 * @param doConsume   True if the recipe should proceed with deleting items, otherwise this method will merely check
+	 *                    to make sure deleting items would be possible.
+	 * @return            True if deleting items was (or would be) successful.
+	 */
+	public abstract boolean consumeIngredients(IItemHandler inventory, boolean doConsume);
+	
+	/**
+	 * Consumes all ingredients needed to make this recipe. Must only be called with {@code doConsume=true} *after* the
+	 * recipe output has been obtained, so that the recipe can apply any required NBT to the output stack based on ingredients.
+	 * @param inventory   The inventory holding the ingredients which this recipe is turning into an output stack
+	 * @param doConsume   True if the recipe should proceed with deleting items, otherwise this method will merely check
+	 *                    to make sure deleting items would be possible.
+	 * @return            True if deleting items was (or would be) successful.
+	 */
+	public abstract boolean consumeIngredients(IInventory inventory, boolean doConsume);
 }

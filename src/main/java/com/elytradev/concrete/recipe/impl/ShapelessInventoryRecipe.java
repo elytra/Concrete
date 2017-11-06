@@ -35,11 +35,13 @@ import com.elytradev.concrete.recipe.ItemIngredient;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.items.IItemHandler;
 
 public class ShapelessInventoryRecipe extends InventoryGridRecipe {
 	private List<ItemIngredient> input = new ArrayList<>();
 	private ItemStack output;
+	private ResourceLocation registryName;
 	
 	public ShapelessInventoryRecipe(ItemStack output, ItemIngredient... ingredients) {
 		for(ItemIngredient item : ingredients) input.add(item);
@@ -51,7 +53,7 @@ public class ShapelessInventoryRecipe extends InventoryGridRecipe {
 	}
 
 	@Override
-	public boolean matches(ItemStackHandler handler) {
+	public boolean matches(IItemHandler handler) {
 		List<ItemIngredient> toFind = new ArrayList<>(input);
 		
 		for(int i=0; i<handler.getSlots(); i++) {
@@ -86,6 +88,65 @@ public class ShapelessInventoryRecipe extends InventoryGridRecipe {
 			toFind.remove(found);
 		}
 		return toFind.isEmpty(); //We have ingredients in the recipe that aren't in the handler
+	}
+
+	@Override
+	public boolean consumeIngredients(IItemHandler inventory, boolean doConsume) {
+		List<ItemIngredient> toFind = new ArrayList<>(input);
+		
+		for(int i=0; i<inventory.getSlots(); i++) {
+			ItemStack stack = inventory.getStackInSlot(i);
+			ItemIngredient found = null;
+			for(ItemIngredient ingredient : toFind) {
+				if (ingredient.apply(stack)) {
+					found = ingredient;
+					if (inventory.extractItem(i, 1, !doConsume).isEmpty()) {
+						//We tried to extract something and came up empty-handed, but we might be able to pick it up from a different slot.
+						found = null;
+					} else {
+						break;
+					}
+				}
+			}
+			if (found!=null) toFind.remove(found);
+		}
+		return toFind.isEmpty();
+	}
+
+	@Override
+	public boolean consumeIngredients(IInventory inventory, boolean doConsume) {
+		List<ItemIngredient> toFind = new ArrayList<>(input);
+		
+		for(int i=0; i<inventory.getSizeInventory(); i++) {
+			ItemStack stack = inventory.getStackInSlot(i);
+			ItemIngredient found = null;
+			for(ItemIngredient ingredient : toFind) {
+				if (ingredient.apply(stack)) {
+					found = ingredient;
+					if (doConsume) {
+						inventory.decrStackSize(i, 1);
+					}
+				}
+			}
+			if (found!=null) toFind.remove(found);
+		}
+		return toFind.isEmpty();
+	}
+
+	@Override
+	public InventoryGridRecipe setRegistryName(ResourceLocation name) {
+		this.registryName = name;
+		return this;
+	}
+
+	@Override
+	public ResourceLocation getRegistryName() {
+		return this.registryName;
+	}
+
+	@Override
+	public Class<InventoryGridRecipe> getRegistryType() {
+		return InventoryGridRecipe.class;
 	}
 
 }

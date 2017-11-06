@@ -28,10 +28,13 @@
 
 package com.elytradev.concrete.recipe;
 
+import net.minecraftforge.registries.IForgeRegistryEntry;
+
 /**
  * Common ancestor for all recipes
- * @param <O> the output type for this kind of recipe
+ * @param <R> the base class for this category of recipe (like {@code Enum<E extends Enum>})
+ * @param <O> the output type for this category of recipe
  */
-public interface ICustomRecipe<O> {
+public interface ICustomRecipe<R extends ICustomRecipe<R,O>, O> extends IForgeRegistryEntry<R> {
 	O getOutput();
 }

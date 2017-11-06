@@ -26,19 +26,50 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.recipe;
+package com.elytradev.concrete.recipe.impl;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.elytradev.concrete.recipe.ICustomRecipe;
+
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.items.IItemHandler;
 
 /**
- * 
- * @param <R> the type of Recipe this registry manages
+ * Springboard for custom recipes which include a crafting component and want to accommodate both shaped/shapeless logic.
  */
-public abstract class RecipeRegistry<R extends ICustomRecipe<?>> {
-	protected Set<R> registered = new HashSet<>();
+public abstract class HybridInventoryRecipe implements ICustomRecipe<HybridInventoryRecipe, ItemStack> {
+	protected ResourceLocation registryName;
+	protected ItemStack output;
+	protected InventoryGridRecipe gridRecipe;
 	
-	public void register(R recipe) {
-		registered.add(recipe);
+	public HybridInventoryRecipe(ItemStack output, InventoryGridRecipe plan) {
+		this.output = output;
+		this.gridRecipe = plan;
 	}
+	
+	@Override
+	public HybridInventoryRecipe setRegistryName(ResourceLocation name) {
+		this.registryName = name;
+		return this;
+	}
+
+	@Override
+	public ResourceLocation getRegistryName() {
+		return this.registryName;
+	}
+
+	@Override
+	public ItemStack getOutput() {
+		return output;
+	}
+	
+	public ItemStack getOutput(IInventory inventory) {
+		return gridRecipe.getOutput(inventory);
+	}
+	
+	public ItemStack getOutput(IItemHandler inventory) {
+		return gridRecipe.getOutput(inventory);
+	}
+
 }

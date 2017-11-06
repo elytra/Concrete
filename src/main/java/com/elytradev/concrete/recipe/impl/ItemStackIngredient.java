@@ -30,7 +30,6 @@ package com.elytradev.concrete.recipe.impl;
 
 import com.elytradev.concrete.recipe.ItemIngredient;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -47,6 +46,7 @@ public class ItemStackIngredient extends ItemIngredient {
 	
 	@Override
 	public boolean apply(ItemStack input) {
+		if (item==null || input==null) return false;
 		return OreDictionary.itemMatches(item, input, false) && ItemStack.areItemStackTagsEqual(item, input);
 	}
 	
@@ -74,5 +74,10 @@ public class ItemStackIngredient extends ItemIngredient {
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public String toString() {
+		return item.toString();
 	}
 }
