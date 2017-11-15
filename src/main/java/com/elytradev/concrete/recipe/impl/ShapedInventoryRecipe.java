@@ -159,32 +159,27 @@ public class ShapedInventoryRecipe extends InventoryGridRecipe {
 
 	@Override
 	public boolean matches(IItemHandler inventory) {
-		//TODO: Find translation
-		int tx = 0;
-		int ty = 0;
+		Vec2i translation = findTranslation(inventory.getSlots(), inventory::getStackInSlot, ItemStack::isEmpty);
 		
-		if (!apply(recipe, inventory.getSlots(), tx, ty, inventory::getStackInSlot, (it)->inventory.extractItem(it, 1, true), false)) return false;
-		
+		if (apply(recipe, inventory.getSlots(), translation.x, translation.y, inventory::getStackInSlot, (it)->inventory.extractItem(it, 1, true), false)) return true;
 		if (flipped!=null) {
-			if (!apply(flipped, inventory.getSlots(), tx, ty, inventory::getStackInSlot, (it)->inventory.extractItem(it, 1, true), false)) return false;
+			if (apply(flipped, inventory.getSlots(), translation.x, translation.y, inventory::getStackInSlot, (it)->inventory.extractItem(it, 1, true), false)) return true;
 		}
 		
-		return true;
+		return false;
 	}
 	
 	@Override
 	public boolean matches(IInventory inventory) {
-		//TODO: Find translation
-		int tx = 0;
-		int ty = 0;
+		Vec2i translation = findTranslation(inventory.getSizeInventory(), inventory::getStackInSlot, ItemStack::isEmpty);
 		
-		if (!apply(recipe, inventory.getSizeInventory(), tx, ty, inventory::getStackInSlot, (it)->inventory.decrStackSize(it, 1), false)) return false;
+		if (apply(recipe, inventory.getSizeInventory(), translation.x, translation.y, inventory::getStackInSlot, (it)->inventory.decrStackSize(it, 1), false)) return true;
 		
 		if (flipped!=null) {
-			if (!apply(flipped, inventory.getSizeInventory(), tx, ty, inventory::getStackInSlot, (it)->inventory.decrStackSize(it, 1), false)) return false;
+			if (apply(flipped, inventory.getSizeInventory(), translation.x, translation.y, inventory::getStackInSlot, (it)->inventory.decrStackSize(it, 1), false)) return true;
 		}
 		
-		return true;
+		return false;
 	}
 
 	protected boolean apply(
@@ -201,20 +196,51 @@ public class ShapedInventoryRecipe extends InventoryGridRecipe {
 		
 		if (numSlots<ingredients.length) return false;
 		
-		for(int i=0; i<ingredients.length; i++) {
-			if (ingredients[i]==null) {
-				ItemStack stack = slotInspector.apply(i);
-				if (stack!=null && !stack.isEmpty()) return false;
-			} else {
-				ItemStack stack = slotInspector.apply(i);
-				if (!ingredients[i].apply(stack)) return false;
-				if (doConsume) {
-					ItemStack extracted = slotExtractor.apply(i);
-					if (extracted==null || extracted.isEmpty()) return false;
+		for(int y=0; y<gridHeight; y++) {
+			for(int x=0; x<gridWidth; x++) {
+				int srcIndex = y*gridWidth+x;
+				int destIndex = (y+translateY)*gridWidth + (x+translateX);
+				if (destIndex>=numSlots || srcIndex>=ingredients.length) continue;
+				if (ingredients[srcIndex]==null) {
+					ItemStack stack = slotInspector.apply(destIndex);
+					if (stack!=null && !stack.isEmpty()) return false;
+				} else {
+					ItemStack stack = slotInspector.apply(destIndex);
+					if (!ingredients[srcIndex].apply(stack)) return false;
+					if (doConsume) {
+						ItemStack extracted = slotExtractor.apply(destIndex);
+						if (extracted==null || extracted.isEmpty()) return false;
+					}
 				}
+				
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Finds the translation required to snug this set of Ts to the upper-left corner.
+	 * 
+	 * The inventory being inspected must be gridWidth*gridHeight slots, arranged in the same way as the recipe.
+	 * 
+	 */
+	protected <T> Vec2i findTranslation(int numSlots, Function<Integer, T> slotInspector, Predicate<T> isEmpty) {
+		Vec2i result = new Vec2i(gridWidth, gridHeight);
+		
+		for(int y=0; y<gridHeight; y++) {
+			for(int x=0; x<gridWidth; x++) {
+				int index = y*gridWidth+x;
+				if (index>=numSlots) continue;
+				T t = slotInspector.apply(index);
+				if (t==null || isEmpty.apply(t)) continue;
+				
+				//This is solid recipe area.
+				result.x = Math.min(result.x, x);
+				result.y = Math.min(result.y, y);
+			}
+		}
+		
+		return result;
 	}
 	
 	public int getGridWidth() { return gridWidth; }
@@ -231,20 +257,16 @@ public class ShapedInventoryRecipe extends InventoryGridRecipe {
 
 	@Override
 	public boolean consumeIngredients(IItemHandler inventory, boolean doConsume) {
-		//TODO: Find translation
-		int tx = 0;
-		int ty = 0;
+		Vec2i translation = findTranslation(inventory.getSlots(), inventory::getStackInSlot, ItemStack::isEmpty);
 		
-		return apply(recipe, inventory.getSlots(), tx, ty, inventory::getStackInSlot, (it)->inventory.extractItem(it, 1, !doConsume), doConsume);
+		return apply(recipe, inventory.getSlots(), translation.x, translation.y, inventory::getStackInSlot, (it)->inventory.extractItem(it, 1, !doConsume), doConsume);
 	}
 
 	@Override
 	public boolean consumeIngredients(IInventory inventory, boolean doConsume) {
-		//TODO: Find translation
-		int tx = 0;
-		int ty = 0;
+		Vec2i translation = findTranslation(inventory.getSizeInventory(), inventory::getStackInSlot, ItemStack::isEmpty);
 		
-		return apply(recipe, inventory.getSizeInventory(), tx, ty, inventory::getStackInSlot, (it)->inventory.decrStackSize(it, 1), doConsume);
+		return apply(recipe, inventory.getSizeInventory(), translation.x, translation.y, inventory::getStackInSlot, (it)->inventory.decrStackSize(it, 1), doConsume);
 	}
 
 	
@@ -265,5 +287,22 @@ public class ShapedInventoryRecipe extends InventoryGridRecipe {
 		return InventoryGridRecipe.class;
 	}
 	
-	
+	private static class Vec2i {
+		public int x;
+		public int y;
+		
+		public Vec2i() {
+			this(0,0);
+		}
+		
+		public Vec2i(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+		
+		@Override
+		public String toString() {
+			return "{x:"+x+", y:"+y+"}";
+		}
+	}
 }

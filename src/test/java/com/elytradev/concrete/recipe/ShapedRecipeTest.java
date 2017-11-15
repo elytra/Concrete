@@ -102,7 +102,7 @@ public class ShapedRecipeTest {
 	}
 	
 	@Test
-	public void recognizeStoneAxeRecipe() {
+	public void recognizeRecipes() {
 		Bootstrap.register();
 		Item stone = new Item().setUnlocalizedName("stone");
 		Item stick = new Item().setUnlocalizedName("stick");
@@ -122,5 +122,22 @@ public class ShapedRecipeTest {
 		storage.setStackInSlot(5, new ItemStack(stone));
 		storage.setStackInSlot(7, new ItemStack(stick));
 		Assert.assertTrue(stoneAxe.matches(storage));
+		
+		Item chisel = new Item();
+		
+		ShapedInventoryRecipe stoneChisel = new ShapedInventoryRecipe(new ItemStack(chisel), 3, 3, 2, 2, true,
+				null,    s,
+				l,    null
+				);
+		
+		Assert.assertFalse(stoneChisel.matches(storage));
+		
+		ConcreteItemStorage chiselStorage = new ConcreteItemStorage(9);
+		storage.setStackInSlot(4, new ItemStack(stone));
+		storage.setStackInSlot(8, new ItemStack(stick));
+		
+		Assert.assertTrue(stoneChisel.matches(chiselStorage));
 	}
+	
+
 }
