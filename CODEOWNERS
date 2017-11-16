@@ -7,6 +7,8 @@
 /src/main/java/com/elytradev/concrete/inventory/ValidatedFluidTankWrapper.java @falkreon @CalmBit
 /src/main/java/com/elytradev/concrete/inventory/gui/widget/WFluidBar.java @falkreon @CalmBit
 
+/src/main/java/com/elytradev/concrete/recipe @falkreon
+
 /src/main/java/com/elytradev/concrete/block @jamierocks
 /src/main/java/com/elytradev/concrete/config @darkevilmac
 /src/main/java/com/elytradev/concrete/network @unascribed
