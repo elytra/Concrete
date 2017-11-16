@@ -70,4 +70,9 @@ public class FluidStackIngredient extends FluidIngredient {
 		}
 		return result;
 	}
+
+	@Override
+	public int getAmount() {
+		return (stack==null) ? 0 : stack.amount;
+	}
 }

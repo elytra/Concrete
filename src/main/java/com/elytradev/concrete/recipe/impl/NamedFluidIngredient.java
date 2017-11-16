@@ -59,4 +59,9 @@ public class NamedFluidIngredient extends FluidIngredient {
 	public int hashCode() {
 		return (this.key.hashCode()*31) ^ Integer.hashCode(amount);
 	}
+
+	@Override
+	public int getAmount() {
+		return amount;
+	}
 }
