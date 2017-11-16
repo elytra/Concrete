@@ -39,6 +39,8 @@ public abstract class FluidIngredient implements IIngredient<FluidStack> {
 	public String getCategory() {
 		return "fluid";
 	}
+	
+	public abstract int getAmount();
 
 	/** Creates a new IIngredient matching the provided FluidStack's fluid and NBT, and having any amount as long as
 	 * it's greater than or equal to the provided stack. */
