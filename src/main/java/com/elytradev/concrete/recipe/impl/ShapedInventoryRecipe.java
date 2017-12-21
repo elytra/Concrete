@@ -160,7 +160,7 @@ public class ShapedInventoryRecipe extends InventoryGridRecipe {
 	@Override
 	public boolean matches(IItemHandler inventory) {
 		Vec2i translation = findTranslation(inventory.getSlots(), inventory::getStackInSlot, ItemStack::isEmpty);
-		
+		if (translation.x>=gridWidth || translation.y>=gridHeight) return false;
 		if (apply(recipe, inventory.getSlots(), translation.x, translation.y, inventory::getStackInSlot, (it)->inventory.extractItem(it, 1, true), false)) return true;
 		if (flipped!=null) {
 			if (apply(flipped, inventory.getSlots(), translation.x, translation.y, inventory::getStackInSlot, (it)->inventory.extractItem(it, 1, true), false)) return true;
@@ -172,7 +172,7 @@ public class ShapedInventoryRecipe extends InventoryGridRecipe {
 	@Override
 	public boolean matches(IInventory inventory) {
 		Vec2i translation = findTranslation(inventory.getSizeInventory(), inventory::getStackInSlot, ItemStack::isEmpty);
-		
+		if (translation.x>=gridWidth || translation.y>=gridHeight) return false;
 		if (apply(recipe, inventory.getSizeInventory(), translation.x, translation.y, inventory::getStackInSlot, (it)->inventory.decrStackSize(it, 1), false)) return true;
 		
 		if (flipped!=null) {
