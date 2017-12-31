@@ -2,7 +2,7 @@
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2017:
- * 	William Thompson (unascribed),
+ * 	Una Thompson (unascribed),
  * 	Isaac Ellingson (Falkreon),
  * 	Jamie Mansfield (jamierocks),
  * 	and contributors
