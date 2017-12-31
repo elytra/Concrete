@@ -33,6 +33,7 @@ import com.elytradev.concrete.inventory.ValidatedSlot;
 import com.elytradev.concrete.inventory.gui.widget.WItemSlot;
 import com.elytradev.concrete.inventory.gui.widget.WPanel;
 import com.elytradev.concrete.inventory.gui.widget.WPlainPanel;
+import com.elytradev.concrete.inventory.gui.widget.WWidget;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -308,5 +309,25 @@ public class ConcreteContainer extends Container {
 		inv.add(WItemSlot.ofPlayerStorage(playerInventory), 0, 0);
 		inv.add(WItemSlot.of(playerInventory, 0, 9, 1), 0, 16*4 - 6);
 		return inv;
+	}
+
+	@Nullable
+	public WWidget doMouseUp(int x, int y, int state) {
+		if (rootPanel!=null) return rootPanel.onMouseUp(x, y, state);
+		return null;
+	}
+	
+	@Nullable
+	public WWidget doMouseDown(int x, int y, int button) {
+		if (rootPanel!=null) return rootPanel.onMouseDown(x, y, button);
+		return null;
+	}
+	
+	public void doMouseDrag(int x, int y, int button) {
+		if (rootPanel!=null) rootPanel.onMouseDrag(x, y, button);
+	}
+	
+	public void doClick(int x, int y, int button) {
+		if (rootPanel!=null) rootPanel.onClick(x, y, button);
 	}
 }
