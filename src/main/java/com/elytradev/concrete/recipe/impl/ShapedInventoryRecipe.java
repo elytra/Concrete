@@ -225,7 +225,7 @@ public class ShapedInventoryRecipe extends InventoryGridRecipe {
 	 * 
 	 */
 	protected <T> Vec2i findTranslation(int numSlots, Function<Integer, T> slotInspector, Predicate<T> isEmpty) {
-		Vec2i result = new Vec2i(gridWidth, gridHeight);
+		Vec2i result = new Vec2i(Integer.MAX_VALUE, Integer.MAX_VALUE);
 		
 		for(int y=0; y<gridHeight; y++) {
 			for(int x=0; x<gridWidth; x++) {
