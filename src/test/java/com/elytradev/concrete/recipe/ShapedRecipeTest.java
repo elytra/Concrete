@@ -131,10 +131,9 @@ public class ShapedRecipeTest {
 				);
 		
 		Assert.assertFalse(stoneChisel.matches(storage));
-		
 		ConcreteItemStorage chiselStorage = new ConcreteItemStorage(9);
-		storage.setStackInSlot(4, new ItemStack(stone));
-		storage.setStackInSlot(8, new ItemStack(stick));
+		chiselStorage.setStackInSlot(4, new ItemStack(stone));
+		chiselStorage.setStackInSlot(8, new ItemStack(stick));
 		
 		Assert.assertTrue(stoneChisel.matches(chiselStorage));
 	}
