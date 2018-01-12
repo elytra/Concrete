@@ -42,7 +42,7 @@ public class WAnimation extends WWidget {
     private int frameTime;
     private long lastFrame;
 
-    public WAnimation(ResourceLocation[] animLocs, int frameTime) {
+    public WAnimation(int frameTime, ResourceLocation[] animLocs) {
         //an array of ResourceLocations for each frame. Should be put in in order, of course.
         this.animLocs = animLocs;
         //number of milliseconds each animation frame should be. Remember, 1 tick = 50 ms.
