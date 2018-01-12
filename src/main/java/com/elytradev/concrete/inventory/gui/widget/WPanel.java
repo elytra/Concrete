@@ -2,7 +2,7 @@
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2017:
- * 	William Thompson (unascribed),
+ * 	Una Thompson (unascribed),
  * 	Isaac Ellingson (Falkreon),
  * 	Jamie Mansfield (jamierocks),
  * 	and contributors
@@ -76,6 +76,67 @@ public class WPanel extends WWidget {
 		int pushRight = w.getX()+w.getWidth();
 		int pushDown =  w.getY()+w.getHeight();
 		this.setSize(Math.max(this.getWidth(), pushRight), Math.max(this.getHeight(), pushDown));
+	}
+	
+	@Override
+	public WWidget onMouseUp(int x, int y, int button) {
+		if (children.isEmpty()) return super.onMouseUp(x, y, button);
+		for(int i=children.size()-1; i>=0; i--) { //Backwards so topmost widgets get priority
+			WWidget child = children.get(i);
+			if (    x>=child.getX() &&
+					y>=child.getY() &&
+					x<child.getX()+child.getWidth() &&
+					y<child.getY()+child.getHeight()) {
+				return child.onMouseUp(x-child.getX(), y-child.getY(), button);
+			}
+		}
+		return super.onMouseUp(x, y, button);
+	}
+	
+	@Override
+	public WWidget onMouseDown(int x, int y, int button) {
+		if (children.isEmpty()) return super.onMouseDown(x, y, button);
+		for(int i=children.size()-1; i>=0; i--) { //Backwards so topmost widgets get priority
+			WWidget child = children.get(i);
+			if (    x>=child.getX() &&
+					y>=child.getY() &&
+					x<child.getX()+child.getWidth() &&
+					y<child.getY()+child.getHeight()) {
+				return child.onMouseDown(x-child.getX(), y-child.getY(), button);
+			}
+		}
+		return super.onMouseDown(x, y, button);
+	}
+	
+	@Override
+	public void onMouseDrag(int x, int y, int button) {
+		if (children.isEmpty()) return;
+		for(int i=children.size()-1; i>=0; i--) { //Backwards so topmost widgets get priority
+			WWidget child = children.get(i);
+			if (    x>=child.getX() &&
+					y>=child.getY() &&
+					x<child.getX()+child.getWidth() &&
+					y<child.getY()+child.getHeight()) {
+				child.onMouseDrag(x-child.getX(), y-child.getY(), button);
+				return; //Only send the message to the first valid recipient
+			}
+		}
+		super.onMouseDrag(x, y, button);
+	}
+	
+	@Override
+	public void onClick(int x, int y, int button) {
+		if (children.isEmpty()) return;
+		for(int i=children.size()-1; i>=0; i--) { //Backwards so topmost widgets get priority
+			WWidget child = children.get(i);
+			if (    x>=child.getX() &&
+					y>=child.getY() &&
+					x<child.getX()+child.getWidth() &&
+					y<child.getY()+child.getHeight()) {
+				child.onClick(x-child.getX(), y-child.getY(), button);
+				return; //Only send the message to the first valid recipient
+			}
+		}
 	}
 	
 	@Override

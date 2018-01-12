@@ -90,11 +90,11 @@ artifacts {
 }
 
 dependencies {
-	deobfCompile 'com.elytradev.concrete:concrete-common:0.3.4-SNAPSHOT'
-	shadow 'com.elytradev.concrete:concrete-common:0.3.4-SNAPSHOT'
+	deobfCompile 'com.elytradev.concrete:concrete-common:0.3.6-SNAPSHOT'
+	shadow 'com.elytradev.concrete:concrete-common:0.3.6-SNAPSHOT'
 
-	deobfCompile 'com.elytradev.concrete:concrete-<module name>:0.3.4-SNAPSHOT'
-	shadow 'com.elytradev.concrete:concrete-<module name>:0.3.4-SNAPSHOT'
+	deobfCompile 'com.elytradev.concrete:concrete-<module name>:0.3.6-SNAPSHOT'
+	shadow 'com.elytradev.concrete:concrete-<module name>:0.3.6-SNAPSHOT'
 }
 ```
 

@@ -2,7 +2,7 @@
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2017:
- * 	William Thompson (unascribed),
+ * 	Una Thompson (unascribed),
  * 	Isaac Ellingson (Falkreon),
  * 	Jamie Mansfield (jamierocks),
  * 	and contributors
@@ -32,6 +32,7 @@ import java.io.IOException;
 
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.gui.widget.WPanel;
+import com.elytradev.concrete.inventory.gui.widget.WWidget;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -40,6 +41,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 public class ConcreteGui extends GuiContainer {
 	public static final int PADDING = 8;
 	private final ConcreteContainer container;
+	private WWidget lastResponder = null;
 	
 	public ConcreteGui(ConcreteContainer container) {
 		super(container);
@@ -107,17 +109,31 @@ public class ConcreteGui extends GuiContainer {
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
+		int containerX = mouseX-guiLeft;
+		int containerY = mouseY-guiTop;
+		if (containerX<0 || containerY<0 || containerX>=width || containerY>=height) return;
+		lastResponder = container.doMouseDown(containerX, containerY, mouseButton);
 	}
 	
 	
 	@Override
-	protected void mouseReleased(int mouseX, int mouseY, int state) {
+	protected void mouseReleased(int mouseX, int mouseY, int state) { //Testing shows that STATE IS ACTUALLY BUTTON
 		super.mouseReleased(mouseX, mouseY, state);
+		int containerX = mouseX-guiLeft;
+		int containerY = mouseY-guiTop;
+		if (containerX<0 || containerY<0 || containerX>=width || containerY>=height) return;
+		WWidget responder = container.doMouseUp(containerX, containerY, state);
+		if (responder!=null && responder==lastResponder) container.doClick(containerX, containerY, state);
+		lastResponder = null;
 	}
 	
 	@Override
 	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
 		super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+		int containerX = mouseX-guiLeft;
+		int containerY = mouseY-guiTop;
+		if (containerX<0 || containerY<0 || containerX>=width || containerY>=height) return;
+		container.doMouseDrag(containerX, containerY, clickedMouseButton);
 	}
 	
 	@Override
