@@ -42,7 +42,7 @@ public class WAnimation extends WWidget {
     private int frameTime;
     private long lastFrame;
 
-    public WAnimation(ResourceLocation[] animLocs, Integer frameTime) {
+    public WAnimation(ResourceLocation[] animLocs, int frameTime) {
         //an array of ResourceLocations for each frame. Should be put in in order, of course.
         this.animLocs = animLocs;
         //number of milliseconds each animation frame should be. Remember, 1 tick = 50 ms.
@@ -60,6 +60,9 @@ public class WAnimation extends WWidget {
         //grab the system time at the very start of the frame.
         long now = System.nanoTime() / 1_000_000L;
 
+        //check bounds so the ResourceLocation isn't passed a bad number
+        boolean inBounds = (currentFrame >= 0) && (currentFrame < animLocs.length);
+        if (!inBounds) currentFrame = 0;
         //assemble and draw the frame calculated last iteration.
         ResourceLocation currentFrameTex = animLocs[currentFrame];
         GuiDrawing.rect(currentFrameTex, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
@@ -69,11 +72,11 @@ public class WAnimation extends WWidget {
         currentFrameTime += elapsed;
         if (currentFrameTime >= frameTime) {
             currentFrame++;
+            //if we've hit the end of the animation, go back to the beginning
+            if (currentFrame >= animLocs.length - 1) {
+                currentFrame = 0;
+            }
             currentFrameTime = 0;
-        }
-        //if we've hit the end of the animation, go back to the beginning
-        if (currentFrame >= animLocs.length) {
-            currentFrame = 0;
         }
 
         //frame is over; this frame is becoming the last frame so write the time to lastFrame
