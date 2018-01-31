@@ -60,6 +60,7 @@ internal class ExampleRulesEngine : RulesEngine<ExampleRulesEngine.ExampleContex
 
 
     /**
+     * ===THIS FUNCTION IS OPTIONAL===
      * This is the structure of the default predicate parser, which, if defined, is used for any predicates that do not
      * have a recognized prefix character.  Note the type signature is the same as individual predicate parsers.
      *
@@ -122,6 +123,7 @@ internal class ExampleRulesEngine : RulesEngine<ExampleRulesEngine.ExampleContex
     }
 
     /**
+     * ===THIS FUNCTION IS OPTIONAL===
      * @return A list of any variable names for interesting numbers, which can be referenced in the inequality
      * comparison operator.  Any collection type is allowed but iteration order must correspond to the interesting
      * numbers array.
@@ -130,6 +132,7 @@ internal class ExampleRulesEngine : RulesEngine<ExampleRulesEngine.ExampleContex
     private val interestingNumbers = setOf("it")
 
     /**
+     * ===THIS FUNCTION IS OPTIONAL===
      * @param from some context
      * @return populated array of interesting numbers, corresponding positionally to the variable names in
      * interestingNumberList.
@@ -137,6 +140,18 @@ internal class ExampleRulesEngine : RulesEngine<ExampleRulesEngine.ExampleContex
     override fun genInterestingNumbers(from: ExampleRulesEngine.ExampleContext): DoubleArray {
         return doubleArrayOf(from.theInt.toDouble())
     }
+
+    /**
+     * ===THIS FUNCTION IS OPTIONAL===
+     * @return a string to populate newly generated rules files with instead of the empty string
+     * Consider providing sensible default rules or documentation on your format!
+     */
+    override fun genDefaultRules() = """
+        # Predicates: /x: tests divisibility by x.  x: tests divisibility by x.
+        # Effects: x: adds x.
+        divsix [ /2 /3 ]
+        0 %divsix /5 -> 30
+    """
 }
 
 internal class ExampleMod {
