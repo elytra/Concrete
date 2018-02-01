@@ -13,8 +13,11 @@ dependent mod itself.
 Contains small utility classes that most Concrete mods will want to use, as well
 as features shared between all modules.
 
+**All Concrete modules depend on Common.** If a module happens to work without
+Common, it may stop working at any time without notice.
+
 ### Block
-Contains a functional builder for Block classes.
+Contains a fluent builder for Block classes.
 
 ### Inventory
 Contains a Predicate-based validated IItemHandler, and associated IInventory.
@@ -50,6 +53,14 @@ module.
 
 Contains a set of pre-baked Message implementations, for painless use
 with a NetworkContext from the Network package.
+
+### RulesEngine
+**Depends on [Forgelin](https://minecraft.curseforge.com/projects/shadowfacts-forgelin)**
+
+Adds a rules engine that provides an extensible configuration format for
+allowing highly configurable cause-and-effect behaviors that wouldn't be
+possible with a traditional config file, but in a more streamlined and
+efficient manner than open-ended scripting.
 
 ## Depending on Concrete
 
@@ -90,11 +101,11 @@ artifacts {
 }
 
 dependencies {
-	deobfCompile 'com.elytradev.concrete:concrete-common:0.3.6-SNAPSHOT'
-	shadow 'com.elytradev.concrete:concrete-common:0.3.6-SNAPSHOT'
+	deobfCompile 'com.elytradev.concrete:concrete-common:0.3.7-SNAPSHOT'
+	shadow 'com.elytradev.concrete:concrete-common:0.3.7-SNAPSHOT'
 
-	deobfCompile 'com.elytradev.concrete:concrete-<module name>:0.3.6-SNAPSHOT'
-	shadow 'com.elytradev.concrete:concrete-<module name>:0.3.6-SNAPSHOT'
+	deobfCompile 'com.elytradev.concrete:concrete-<module name>:0.3.7-SNAPSHOT'
+	shadow 'com.elytradev.concrete:concrete-<module name>:0.3.7-SNAPSHOT'
 }
 ```
 

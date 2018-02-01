@@ -1,10 +1,11 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2017:
+ * Copyright (c) 2016-2018:
  * 	Una Thompson (unascribed),
  * 	Isaac Ellingson (Falkreon),
  * 	Jamie Mansfield (jamierocks),
+ * 	Alex Ponebshek (capitalthree),
  * 	and contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
