@@ -28,7 +28,7 @@ apply plugin: 'maven-publish'
 
 group = "com.elytradev"
 archivesBaseName = "Concrete"
-version = "0.3.7"
+version = "0.3.8"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
