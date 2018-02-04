@@ -44,8 +44,8 @@ internal fun errMessage(ln: Int, m: String) = "Error on line $ln: $m"
 
 
 internal class Rule<X: EvaluationContext> {
-    val predicates = Predicates<X>()
-    val effects = mutableListOf<Effect<X>>()
+    val predicates: Predicates<X> = mutableListOf()
+    val effects: MutableList<Effect<X>> = mutableListOf()
 }
 
 
@@ -86,7 +86,7 @@ internal class RulesLevel<X: EvaluationContext>(private val engine: RulesEngine<
 
         while (!s.hasNext(arrowPattern)) {
             if (!s.hasNext()) return "No arrow (\"->\") in rule line"
-            rule.predicates.add(ctx, s.next()) ?.let{return it}
+            rule.predicates.parseAndAdd(ctx, s.next()) ?.let{return it}
         }
         s.next()
 
@@ -117,7 +117,7 @@ internal class RulesAggregator<X: EvaluationContext>(private val engine: RulesEn
         if (ctx.tags.contains(tagname)) return errMessage(ln_, "Duplicate tag \"$tagname\"")
         var ln = ln_
         var line = line_
-        val predicateses = mutableListOf(Predicates<X>())
+        val predicateses: MutableList<Predicates<X>> = mutableListOf(mutableListOf())
 
         while (true) {
             while (!line.hasNext()) {
@@ -125,13 +125,13 @@ internal class RulesAggregator<X: EvaluationContext>(private val engine: RulesEn
                 val lineIndexed = lines.next()
                 ln = lineIndexed.index + 1
                 line = Scanner(fluffSpecialDelimiters(lineIndexed.value))
-                if (!predicateses.last().isEmpty()) predicateses.add(Predicates<X>())
+                if (!predicateses.last().isEmpty()) predicateses.add(mutableListOf())
             }
 
             val token = line.next()
             when (token) {
                 "," -> {
-                    if (!predicateses.last().isEmpty()) predicateses.add(Predicates<X>())
+                    if (!predicateses.last().isEmpty()) predicateses.add(mutableListOf())
                 }
                 "]" -> {
                     if (line.hasNext()) return errMessage(ln, "\"]\" must appear at the end of a line")
@@ -141,7 +141,7 @@ internal class RulesAggregator<X: EvaluationContext>(private val engine: RulesEn
                     return null
                 }
                 else -> {
-                    predicateses.last().add(ctx, token) ?.let{return errMessage(ln, it)}
+                    predicateses.last().parseAndAdd(ctx, token) ?.let{return errMessage(ln, it)}
                 }
             }
         }
