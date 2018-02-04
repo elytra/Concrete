@@ -33,22 +33,13 @@ import com.elytradev.concrete.common.Either
 import java.util.function.Predicate
 
 
-internal class Predicates<X: EvaluationContext> {
-    val predicates = mutableListOf<Predicate<X>>()
-
-    fun add(ctx: ParseContext<X>, s: String): String? = ctx.predicate(s).map(
-            {
-                predicates.add(it)
-                null
-            },
-            {it}
+typealias Predicates<X> = MutableList<Predicate<X>>
+internal fun <X: EvaluationContext>Predicates<X>.parseAndAdd(ctx: ParseContext<X>, s: String) =
+    ctx.predicate(s).map(
+        {add(it); null},
+        {it}
     )
-
-    fun isEmpty() = predicates.isEmpty()
-
-    fun test(ctx: X) = predicates.all{it.test(ctx)}
-}
-
+internal fun <X>Predicates<X>.test(ctx: X) = all{it.test(ctx)}
 
 private val DUMMY_TAG = listOf<Nothing>()
 internal class TagPredicate<X: EvaluationContext>(val name: String): Predicate<X> {
