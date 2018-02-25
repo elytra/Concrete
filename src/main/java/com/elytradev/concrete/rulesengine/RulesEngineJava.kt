@@ -27,47 +27,16 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory;
+package com.elytradev.concrete.rulesengine
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import com.elytradev.concrete.common.Either
+import java.util.function.Function
+import java.util.function.Predicate
 
-import javax.annotation.Nonnull;
+abstract class RulesEngineJava<X : EvaluationContext> : RulesEngine<X>() {
+    override fun getDomainPredicates(): Map<Char, Function1<String, Either<Predicate<X>, String>>> {
+        return jDomainPredicates().mapValues { it.value::apply } // yes intellij very suspicious
+    }
 
-public class ValidatedItemHandlerView implements IItemHandler {
-	private final ConcreteItemStorage delegate;
-	
-	public ValidatedItemHandlerView(ConcreteItemStorage delegate) {
-		this.delegate = delegate;
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-		if (!delegate.getValidator(slot).test(stack)) return stack;
-		else return delegate.insertItem(slot, stack, simulate);
-	}
-
-	@Override
-	public int getSlots() {
-		return delegate.getSlots();
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack getStackInSlot(int slot) {
-		return delegate.getStackInSlot(slot);
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		if (!delegate.getCanExtract(slot)) return ItemStack.EMPTY;
-		return delegate.extractItem(slot, amount, simulate);
-	}
-
-	@Override
-	public int getSlotLimit(int slot) {
-		return delegate.getSlotLimit(slot);
-	}
+    abstract fun jDomainPredicates(): Map<Char, Function<String, Either<Predicate<X>, String>>>
 }
