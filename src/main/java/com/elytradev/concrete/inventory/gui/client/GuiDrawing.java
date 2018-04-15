@@ -141,7 +141,7 @@ public final class GuiDrawing {
 	 * Draws a beveled, round rectangle that is substantially similar to default Minecraft UI panels.
 	 */
 	public static void drawGuiPanel(int x, int y, int width, int height) {
-		drawGuiPanel(x, y, width, height, 0x555555, 0xC6C6C6, 0xFFFFFF, 0x000000);
+		drawGuiPanel(x, y, width, height, 0xFF555555, 0xFFC6C6C6, 0xFFFFFFFF, 0xFF000000);
 	}
 	
 	
@@ -171,14 +171,14 @@ public final class GuiDrawing {
 	 * Draws a default-sized recessed itemslot panel
 	 */
 	public static void drawBeveledPanel(int x, int y) {
-		drawBeveledPanel(x, y, 18, 18, 0x373737, 0x8b8b8b, 0xFFFFFF);
+		drawBeveledPanel(x, y, 18, 18, 0xFF373737, 0xFF8b8b8b, 0xFFFFFFFF);
 	}
 	
 	/**
 	 * Draws a default-color recessed itemslot panel of variable size
 	 */
 	public static void drawBeveledPanel(int x, int y, int width, int height) {
-		drawBeveledPanel(x, y, width, height, 0x373737, 0x8b8b8b, 0xFFFFFF);
+		drawBeveledPanel(x, y, width, height, 0xFF373737, 0xFF8b8b8b, 0xFFFFFFFF);
 	}
 	
 	/**
