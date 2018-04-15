@@ -141,9 +141,7 @@ public final class GuiDrawing {
 	 * Draws a beveled, round rectangle that is substantially similar to default Minecraft UI panels.
 	 */
 	public static void drawGuiPanel(int x, int y, int width, int height) {
-		// For the purposes of Java's weird love-hate relationship with unsigned integers,
-		// -1 functions as 0xFFFFFFFF - full alpha + full white.
-		drawGuiPanel(x, y, width, height, 0xFF555555, 0xFFC6C6C6, -1, 0xFF000000);
+		drawGuiPanel(x, y, width, height, 0xFF555555, 0xFFC6C6C6, 0xFFFFFFFF, 0xFF000000);
 	}
 	
 	
@@ -173,7 +171,7 @@ public final class GuiDrawing {
 	 * Draws a default-sized recessed itemslot panel
 	 */
 	public static void drawBeveledPanel(int x, int y) {
-		drawBeveledPanel(x, y, 18, 18, 0x373737, 0x8b8b8b, 0xFFFFFF);
+		drawBeveledPanel(x, y, 18, 18, 0xFF373737, 0xFF8b8b8b, 0xFFFFFFFF);
 	}
 	
 	/**
@@ -182,7 +180,7 @@ public final class GuiDrawing {
 	public static void drawBeveledPanel(int x, int y, int width, int height) {
 		// For the purposes of Java's weird love-hate relationship with unsigned integers,
 		// -1 functions as 0xFFFFFFFF - full alpha + full white.
-		drawBeveledPanel(x, y, width, height, 0xFF373737, 0xFF8b8b8b, -1);
+		drawBeveledPanel(x, y, width, height, 0xFF373737, 0xFF8b8b8b, 0xFFFFFFFF);
 	}
 	
 	/**
