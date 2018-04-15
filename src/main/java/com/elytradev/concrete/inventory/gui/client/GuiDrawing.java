@@ -178,8 +178,6 @@ public final class GuiDrawing {
 	 * Draws a default-color recessed itemslot panel of variable size
 	 */
 	public static void drawBeveledPanel(int x, int y, int width, int height) {
-		// For the purposes of Java's weird love-hate relationship with unsigned integers,
-		// -1 functions as 0xFFFFFFFF - full alpha + full white.
 		drawBeveledPanel(x, y, width, height, 0xFF373737, 0xFF8b8b8b, 0xFFFFFFFF);
 	}
 	
