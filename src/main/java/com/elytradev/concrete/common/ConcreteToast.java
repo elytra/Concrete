@@ -84,7 +84,7 @@ public class ConcreteToast implements IToast {
 		return delta < timing ? Visibility.SHOW : Visibility.HIDE;
 	}
 
-
+	@SideOnly(Side.CLIENT)
 	public static class Builder {
 		private String title;
 		private String subtitle;

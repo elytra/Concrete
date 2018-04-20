@@ -1,6 +1,8 @@
-<img src="https://rawgit.com/elytra/Concrete/1.12.1/doc/emblem.svg" align="right" width="180px"/>
+<img src="doc/emblem.svg" align="right" width="180px"/>
 
 # Concrete
+![Maven version](https://img.shields.io/maven-metadata/v/https/repo.elytradev.com/com/elytradev/concrete/concrete-common/maven-metadata.xml.svg?style=for-the-badge)
+
 *A solid foundation for Elytra mods.*
 
 Concrete is a varied set of useful *stuff* that is designed to be shaded into a
@@ -23,6 +25,10 @@ Contains a fluent builder for Block classes.
 Contains a Predicate-based validated IItemHandler, and associated IInventory.
 Also contains extremely useful replacements for Container and GuiContainer.
 
+### Reflect
+Contains a set of method invokers, field accessors, and class instanciators that
+take advantage of MethodHandles when they are available.
+
 ### Network
 **Depends on Reflect**
 
@@ -39,10 +45,6 @@ kinds of block and item models. Done without ASM and without any nasty hacks.
 It's strongly recommended to put a README.md in your models/block and models/item
 assets directory explaining your use of ResGen. An example is provided in
 `doc/resgen-README.md`.
-
-### Reflect
-Contains a set of method invokers, field accessors, and class instanciators that
-take advantage of MethodHandles when they are available.
 
 ### Config
 Adds a dead-simple annotation-based configuration system, similar to the Network
@@ -61,6 +63,11 @@ Adds a rules engine that provides an extensible configuration format for
 allowing highly configurable cause-and-effect behaviors that wouldn't be
 possible with a traditional config file, but in a more streamlined and
 efficient manner than open-ended scripting.
+
+### Anim
+Adds a system for putting smoothly animated textures onto the faces of tile
+entities, decoupled from the vanilla texture animation system. The animations
+are defined in JSON and are overridable by resource packs.
 
 ## Depending on Concrete
 
@@ -101,11 +108,11 @@ artifacts {
 }
 
 dependencies {
-	deobfCompile 'com.elytradev.concrete:concrete-common:0.3.7-SNAPSHOT'
-	shadow 'com.elytradev.concrete:concrete-common:0.3.7-SNAPSHOT'
+	deobfCompile 'com.elytradev.concrete:concrete-common:<version>'
+	shadow 'com.elytradev.concrete:concrete-common:<version>'
 
-	deobfCompile 'com.elytradev.concrete:concrete-<module name>:0.3.7-SNAPSHOT'
-	shadow 'com.elytradev.concrete:concrete-<module name>:0.3.7-SNAPSHOT'
+	deobfCompile 'com.elytradev.concrete:concrete-<module name>:<version>'
+	shadow 'com.elytradev.concrete:concrete-<module name>:<version>'
 }
 ```
 
