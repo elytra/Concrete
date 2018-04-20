@@ -29,6 +29,11 @@ apply plugin: 'maven-publish'
 group = "com.elytradev"
 archivesBaseName = "Concrete"
 version = "0.4"
+def versionSuffix = '-SNAPSHOT'
+if (System.env.BUILD_NUMBER) {
+	versionSuffix = ''
+	version = version+'.'+System.env.BUILD_NUMBER
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -167,11 +172,6 @@ reobf {
 
 artifacts {
 	archives commonJar, blockJar, networkJar, reflectJar, inventoryJar, recipeJar, configJar, resgenJar, utilpacketsJar, rulesengineJar, animJar
-}
-
-def versionSuffix = '-SNAPSHOT'
-if (System.env.BUILD_NUMBER) {
-	versionSuffix = '.'+System.env.BUILD_NUMBER
 }
 
 publishing {

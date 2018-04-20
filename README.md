@@ -1,7 +1,7 @@
 <img src="doc/emblem.svg" align="right" width="180px"/>
 
 # Concrete
-![Maven version](https://img.shields.io/maven-metadata/v/https/repo.elytradev.com/com/elytradev/concrete/concrete-common/maven-metadata.xml.svg?style=for-the-badge)
+![Maven version](https://img.shields.io/maven-metadata/v/https/repo.elytradev.com/com/elytradev/concrete/concrete-common/maven-metadata.xml.svg)
 
 *A solid foundation for Elytra mods.*
 
