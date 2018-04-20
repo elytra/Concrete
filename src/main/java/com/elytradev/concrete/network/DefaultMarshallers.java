@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import com.elytradev.concrete.common.ConcreteLog;
+import com.elytradev.concrete.common.MoreByteBufUtils;
 import com.elytradev.concrete.network.exception.BadMessageException;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -142,11 +143,19 @@ public final class DefaultMarshallers {
 	
 	
 	/**
-	 * Protobuf variable sized integer.
+	 * Protobuf variable sized integer. Not efficient for negative numbers.
 	 * <p>
 	 * Aliases: varint
 	 */
 	public static final Marshaller<? extends Number> VARINT = new VarIntMarshaller();
+	
+	/**
+	 * Protobuf variable sized integer, ZigZag encoding. Efficient for negative
+	 * and positive numbers.
+	 * <p>
+	 * Aliases: varint-zigzag, zigzag
+	 */
+	public static final Marshaller<? extends Number> VARINT_ZIGZAG = new VarIntZigZagMarshaller();
 	
 	
 	/**
@@ -202,6 +211,7 @@ public final class DefaultMarshallers {
 		put(DOUBLE, "f64", "double");
 		
 		put(VARINT, "varint");
+		put(VARINT_ZIGZAG, "varint-zigzag", "zigzag");
 		
 		put(NBT, "nbt");
 		
@@ -279,6 +289,20 @@ public final class DefaultMarshallers {
 
 	}
 	
+	private static class VarIntZigZagMarshaller implements Marshaller<Number> {
+
+		@Override
+		public Number unmarshal(ByteBuf in) {
+			return MoreByteBufUtils.readZigZagVarInt(in, 5);
+		}
+
+		@Override
+		public void marshal(ByteBuf out, Number t) {
+			MoreByteBufUtils.writeZigZagVarInt(out, t.intValue(), 5);
+		}
+
+	}
+	
 	private static class EnumMarshaller<T extends Enum<T>> implements Marshaller<T> {
 		private final Class<T> clazz;
 		private final T[] constants;
@@ -348,7 +372,7 @@ public final class DefaultMarshallers {
 		
 		@Override
 		public void marshal(ByteBuf out, Character t) {
-			out.writeChar((int) t);
+			out.writeChar(t);
 		}
 		
 	}
