@@ -237,7 +237,7 @@ publishing {
 			artifact rulesengineJar
 		}
 		anim(MavenPublication) {
-			groupId 'com.elytradev.anim'
+			groupId 'com.elytradev.concrete'
 			artifactId 'concrete-anim'
 			version project.version+versionSuffix
 			artifact animJar
