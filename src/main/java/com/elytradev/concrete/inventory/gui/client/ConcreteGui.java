@@ -219,8 +219,9 @@ public class ConcreteGui extends GuiContainer {
 			root.paintBackground(guiLeft, guiTop);
 		}
 		
-		//TODO: Change this to a label that lives in the rootPanel instead
-		fontRenderer.drawString(container.getLocalizedName(), guiLeft, guiTop, container.getTitleColor());
+		if (container.getLocalizedName()!=null) {
+			fontRenderer.drawString(container.getLocalizedName(), guiLeft, guiTop, container.getTitleColor());
+		}
 	}
 
 	@Override
