@@ -31,26 +31,21 @@ package com.elytradev.concrete.inventory.gui.widget;
 
 import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class WBar extends WWidget {
-	private final ResourceLocation bg;
-	private final ResourceLocation bar;
-	private final int field;
-	private final int max;
-	private final IInventory inventory;
-	private final Direction direction;
-	private boolean renderTooltip;
-	private String tooltipLabel;
+	protected final ResourceLocation bg;
+	protected final ResourceLocation bar;
+	protected final int field;
+	protected final int max;
+	protected final IInventory inventory;
+	protected final Direction direction;
+	protected String tooltipLabel;
 	
 	public WBar(ResourceLocation bg, ResourceLocation bar, IInventory inventory, int field, int maxfield) {
 		this(bg, bar, inventory, field, maxfield, Direction.UP);

@@ -37,11 +37,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WAnimation extends WWidget {
 
-	private int currentFrame= 0;
-	private long currentFrameTime = 0;
-	private ResourceLocation[] animLocs;
-	private int frameTime;
-	private long lastFrame;
+	protected int currentFrame= 0;
+	protected long currentFrameTime = 0;
+	protected ResourceLocation[] animLocs;
+	protected int frameTime;
+	protected long lastFrame;
 
 	public WAnimation(int frameTime, ResourceLocation... animLocs) {
 		//an array of ResourceLocations for each frame. Should be put in in order, of course.
