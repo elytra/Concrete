@@ -28,7 +28,7 @@ apply plugin: 'maven-publish'
 
 group = "com.elytradev"
 archivesBaseName = "Concrete"
-version = "0.4"
+version = "0.5"
 def versionSuffix = '-SNAPSHOT'
 if (System.env.BUILD_NUMBER) {
 	versionSuffix = ''
