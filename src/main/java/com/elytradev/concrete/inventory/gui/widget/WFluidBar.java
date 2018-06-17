@@ -214,6 +214,7 @@ public class WFluidBar extends WWidget {
 
 	@Override
 	public void addInformation(List<String> information) {
+		if (tooltipLabel == null) return;
 		int value = concreteFluidTank.getFluidAmount();
 		int valMax = concreteFluidTank.getCapacity();
 		String fluidName = "";

@@ -126,7 +126,7 @@ public class WBar extends WWidget {
 	public void addInformation(List<String> information) {
 		int value = inventory.getField(field);
 		int valMax = inventory.getField(max);
-		information.add(String.format(tooltipLabel, value, valMax));
+		if (tooltipLabel != null) information.add(String.format(tooltipLabel, value, valMax));
 	}
 
 	public static enum Direction {
