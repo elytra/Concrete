@@ -34,14 +34,17 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.List;
+
 /**
- * A widget for buttons that don't need to sync anything to server. For any block intera tion, it's highly reccommended
+ * A widget for buttons that don't need to sync anything to server. For any block interaction, it's highly reccommended
  * you use a heavyweight peer instead so you can save state!
  */
 public class WClientButton extends WSwappableImage {
-	protected boolean enabled;
+	protected boolean enabled = true;
 	protected Runnable onClick;
 	protected ResourceLocation disabledImage;
+	public String tooltipLabel;
 	
 	public boolean isEnabled() {
 		return enabled;
@@ -53,6 +56,12 @@ public class WClientButton extends WSwappableImage {
 	
 	public void setOnClick(Runnable r) {
 		this.onClick = r;
+	}
+
+	public WClientButton(ResourceLocation enabledImage, ResourceLocation disabledImage, Runnable onClick) {
+		this.image = enabledImage;
+		this.disabledImage = disabledImage;
+		this.onClick = onClick;
 	}
 	
 	@Override
@@ -74,5 +83,16 @@ public class WClientButton extends WSwappableImage {
 				//No disabled image, so draw nothing
 			}
 		}
+	}
+
+	public WClientButton withTooltip(String label) {
+		this.setRenderTooltip(true);
+		this.tooltipLabel = label;
+		return this;
+	}
+
+	@Override
+	public void addInformation(List<String> information) {
+		information.add(tooltipLabel);
 	}
 }
