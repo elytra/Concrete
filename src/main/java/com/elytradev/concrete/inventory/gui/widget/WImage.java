@@ -36,7 +36,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WImage extends WWidget {
-	private final ResourceLocation texture;
+	protected final ResourceLocation texture;
 	
 	public WImage(ResourceLocation loc) {
 		this.texture = loc;

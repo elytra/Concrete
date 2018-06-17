@@ -44,11 +44,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 
 public class WFluidBar extends WWidget {
-	private final ResourceLocation bg;
-	private final ResourceLocation fg;
-	private final ConcreteFluidTank concreteFluidTank;
-	private final Direction direction;
-	private String tooltipLabel;
+	protected final ResourceLocation bg;
+	protected final ResourceLocation fg;
+	protected final ConcreteFluidTank concreteFluidTank;
+	protected final Direction direction;
+	protected String tooltipLabel;
 
 	public WFluidBar(ResourceLocation bg, ConcreteFluidTank tank) {
 		this(bg, tank, Direction.UP);

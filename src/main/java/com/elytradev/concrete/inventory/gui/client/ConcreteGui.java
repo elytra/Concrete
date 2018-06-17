@@ -41,8 +41,8 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 
 public class ConcreteGui extends GuiContainer {
 	public static final int PADDING = 8;
-	private final ConcreteContainer container;
-	private WWidget lastResponder = null;
+	protected final ConcreteContainer container;
+	protected WWidget lastResponder = null;
 	
 	public ConcreteGui(ConcreteContainer container) {
 		super(container);
@@ -219,8 +219,9 @@ public class ConcreteGui extends GuiContainer {
 			root.paintBackground(guiLeft, guiTop);
 		}
 		
-		//TODO: Change this to a label that lives in the rootPanel instead
-		fontRenderer.drawString(container.getLocalizedName(), guiLeft, guiTop, container.getTitleColor());
+		if (container.getLocalizedName()!=null) {
+			fontRenderer.drawString(container.getLocalizedName(), guiLeft, guiTop, container.getTitleColor());
+		}
 	}
 
 	@Override

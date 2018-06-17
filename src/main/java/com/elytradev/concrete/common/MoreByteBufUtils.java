@@ -27,41 +27,33 @@
  * SOFTWARE.
  */
 
-package com.elytradev.concrete.inventory.gui.widget;
+package com.elytradev.concrete.common;
 
-import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
-import net.minecraft.inventory.IInventory;
+import io.netty.buffer.ByteBuf;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
-public class WFieldedLabel extends WLabel {
-	protected final IInventory inventory;
-	protected final int field;
-	protected final int fieldMax;
+public class MoreByteBufUtils {
 
-	public WFieldedLabel(IInventory inventory, int field, int fieldMax, String format, int color) {
-		super(format, color);
-		this.inventory = inventory;
-		this.field = field;
-		this.fieldMax = fieldMax;
+	static {
+		ShadingValidator.ensureShaded();
 	}
-
-	public WFieldedLabel(IInventory inventory, int field, int fieldMax, String format) {
-		this(inventory, field, fieldMax, format, DEFAULT_TEXT_COLOR);
+	
+	public static int toZigZag(int val) {
+		return (val << 1) ^ (val >> 31);
 	}
-
-	public WFieldedLabel(IInventory inventory, int field, String format, int color) {
-		this(inventory, field, -1, format, color);
+	
+	public static int fromZigZag(int val) {
+		return (val >> 1) ^ (-(val & 1));
 	}
-
-	public WFieldedLabel(IInventory inventory, int field, String format) {
-		this(inventory, field, -1, format);
+	
+	public static void writeZigZagVarInt(ByteBuf out, int val, int maxSize) {
+		ByteBufUtils.writeVarInt(out, toZigZag(val), maxSize);
 	}
-
-	@Override
-	public void paintBackground(int x, int y) {
-		String formatted = text.replaceAll("%f", Integer.toString(inventory.getField(field)));
-		if(fieldMax != -1) {
-			formatted = formatted.replaceAll("%m", Integer.toString(inventory.getField(fieldMax)));
-		}
-		GuiDrawing.drawString(formatted, x, y, color);
+	
+	public static int readZigZagVarInt(ByteBuf in, int maxSize) {
+		return fromZigZag(ByteBufUtils.readVarInt(in, maxSize));
 	}
+	
+	private MoreByteBufUtils() {}
+	
 }

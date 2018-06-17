@@ -29,58 +29,50 @@
 
 package com.elytradev.concrete.inventory.gui.widget;
 
-import com.elytradev.concrete.inventory.gui.client.GuiDrawing;
-import com.elytradev.concrete.inventory.gui.widget.WWidget;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.ResourceLocation;
 
-import net.minecraft.inventory.IInventory;
-
-public class WLabel extends WWidget {
-	public static final int DEFAULT_TEXT_COLOR = 0x404040;
-	protected String text;
-	protected int color;
+/**
+ * A widget for buttons that don't need to sync anything to server. For any block intera tion, it's highly reccommended
+ * you use a heavyweight peer instead so you can save state!
+ */
+public class WClientButton extends WSwappableImage {
+	protected boolean enabled;
+	protected Runnable onClick;
+	protected ResourceLocation disabledImage;
 	
-	protected IInventory inventory;
-	protected int field1 = -1;
-	protected int field2 = -1;
-	
-	public WLabel(String text, int color) {
-		this.text = text;
-		this.color = color;
+	public boolean isEnabled() {
+		return enabled;
 	}
 	
-	public WLabel(String text) {
-		this(text, DEFAULT_TEXT_COLOR);
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 	
-	public WLabel withFields(IInventory inv, int field1, int field2) {
-		this.inventory = inv;
-		this.field1 = field1;
-		this.field2 = field2;
-		return this;
+	public void setOnClick(Runnable r) {
+		this.onClick = r;
+	}
+	
+	@Override
+	public void onClick(int x, int y, int button) {
+		if (enabled) {
+			Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+			if (onClick!=null) onClick.run();
+		}
 	}
 	
 	@Override
 	public void paintBackground(int x, int y) {
-		int field1Contents = 0;
-		int field2Contents = 0;
-		if (inventory!=null) {
-			if (field1>=0) {
-				field1Contents = inventory.getField(field1);
-			}
-			
-			if (field2>=0) {
-				field2Contents = inventory.getField(field2);
+		if (enabled) {
+			super.paintBackground(x, y);
+		} else {
+			if (disabledImage!=null) {
+				rect(image, x, y, getWidth(), getHeight(), 0,0,1,1);
+			} else {
+				//No disabled image, so draw nothing
 			}
 		}
-		
-		@SuppressWarnings("deprecation")
-		String formatted = net.minecraft.util.text.translation.I18n.translateToLocalFormatted(text, field1Contents, field2Contents);
-		
-		GuiDrawing.drawString(formatted, x, y, color);
-	}
-
-	@Override
-	public boolean canResize() {
-		return false;
 	}
 }

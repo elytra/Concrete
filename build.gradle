@@ -1,6 +1,6 @@
 buildscript {
-    ext.kotlin_version = '1.2.21'
-    repositories {
+	ext.kotlin_version = '1.2.21'
+	repositories {
 		mavenCentral()
 		jcenter()
 		maven {
@@ -14,8 +14,8 @@ buildscript {
 	}
 	dependencies {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+	}
 }
 
 plugins {
@@ -28,7 +28,12 @@ apply plugin: 'maven-publish'
 
 group = "com.elytradev"
 archivesBaseName = "Concrete"
-version = "0.3.8"
+version = "0.5"
+def versionSuffix = '-SNAPSHOT'
+if (System.env.BUILD_NUMBER) {
+	versionSuffix = ''
+	version = version+'.'+System.env.BUILD_NUMBER
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -40,7 +45,7 @@ configurations {
 dependencies {
 	deploy 'org.apache.maven.wagon:wagon-ssh:2.10'
 	testCompile 'junit:junit:4.12'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+	compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 minecraft {
@@ -144,6 +149,13 @@ task rulesengineJar(type: Jar) {
 	}
 }
 
+task animJar(type: Jar) {
+	baseName = 'concrete-anim'
+	from(sourceSets.main.output) {
+		include 'com/elytradev/concrete/anim/**'
+	}
+}
+
 reobf {
 	commonJar { mappingType = 'SEARGE' }
 	blockJar { mappingType = 'SEARGE' }
@@ -155,10 +167,11 @@ reobf {
 	resgenJar { mappingType = 'SEARGE' }
 	utilpacketsJar { mappingType = 'SEARGE'}
 	rulesengineJar { mappingType = 'SEARGE'}
+	animJar { mappingType = 'SEARGE'}
 }
 
 artifacts {
-	archives commonJar, blockJar, networkJar, reflectJar, inventoryJar, recipeJar, configJar, resgenJar, utilpacketsJar, rulesengineJar
+	archives commonJar, blockJar, networkJar, reflectJar, inventoryJar, recipeJar, configJar, resgenJar, utilpacketsJar, rulesengineJar, animJar
 }
 
 publishing {
@@ -166,62 +179,68 @@ publishing {
 		common(MavenPublication) {
 			groupId 'com.elytradev.concrete'
 			artifactId 'concrete-common'
-			version project.version+'-SNAPSHOT'
+			version project.version+versionSuffix
 			artifact commonJar
 		}
 		block(MavenPublication) {
 			groupId 'com.elytradev.concrete'
 			artifactId 'concrete-block'
-			version project.version+'-SNAPSHOT'
+			version project.version+versionSuffix
 			artifact blockJar
 		}
 		inventory(MavenPublication) {
 			groupId 'com.elytradev.concrete'
 			artifactId 'concrete-inventory'
-			version project.version+'-SNAPSHOT'
+			version project.version+versionSuffix
 			artifact inventoryJar
 		}
 		recipe(MavenPublication) {
 			groupId 'com.elytradev.concrete'
 			artifactId 'concrete-recipe'
-			version project.version+'-SNAPSHOT'
+			version project.version+versionSuffix
 			artifact recipeJar
 		}
 		network(MavenPublication) {
 			groupId 'com.elytradev.concrete'
 			artifactId 'concrete-network'
-			version project.version+'-SNAPSHOT'
+			version project.version+versionSuffix
 			artifact networkJar
 		}
 		resgen(MavenPublication) {
 			groupId 'com.elytradev.concrete'
 			artifactId 'concrete-resgen'
-			version project.version+'-SNAPSHOT'
+			version project.version+versionSuffix
 			artifact resgenJar
 		}
 		reflect(MavenPublication) {
 			groupId 'com.elytradev.concrete'
 			artifactId 'concrete-reflect'
-			version project.version+'-SNAPSHOT'
+			version project.version+versionSuffix
 			artifact reflectJar
 		}
 		config(MavenPublication) {
 			groupId 'com.elytradev.concrete'
 			artifactId 'concrete-config'
-			version project.version+'-SNAPSHOT'
+			version project.version+versionSuffix
 			artifact configJar
 		}
 		utilpackets(MavenPublication) {
 			groupId 'com.elytradev.concrete'
 			artifactId 'concrete-utilpackets'
-			version project.version+'-SNAPSHOT'
+			version project.version+versionSuffix
 			artifact utilpacketsJar
 		}
 		rulesengine(MavenPublication) {
 			groupId 'com.elytradev.concrete'
 			artifactId 'concrete-rulesengine'
-			version project.version+'-SNAPSHOT'
+			version project.version+versionSuffix
 			artifact rulesengineJar
+		}
+		anim(MavenPublication) {
+			groupId 'com.elytradev.concrete'
+			artifactId 'concrete-anim'
+			version project.version+versionSuffix
+			artifact animJar
 		}
 	}
 }
@@ -230,15 +249,15 @@ if (file('private.gradle').exists()) {
 	apply from: 'private.gradle'
 }
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+	kotlinOptions {
+		jvmTarget = "1.8"
+	}
 }
 compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+	kotlinOptions {
+		jvmTarget = "1.8"
+	}
 }
