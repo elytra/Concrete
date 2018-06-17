@@ -227,7 +227,7 @@ public class WFluidBar extends WWidget {
 			}
 		} catch (Throwable t) {
 			//Not catching this is a hard crash if we have a bad format string. This is at least playable.
-			information.add(tooltipLabel);
+			if (tooltipLabel != null) information.add(tooltipLabel);
 		}
 	}
 

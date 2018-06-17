@@ -93,6 +93,6 @@ public class WClientButton extends WSwappableImage {
 
 	@Override
 	public void addInformation(List<String> information) {
-		information.add(tooltipLabel);
+		if (tooltipLabel != null) information.add(tooltipLabel);
 	}
 }
