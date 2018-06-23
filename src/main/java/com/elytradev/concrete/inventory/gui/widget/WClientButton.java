@@ -78,7 +78,7 @@ public class WClientButton extends WSwappableImage {
 			super.paintBackground(x, y);
 		} else {
 			if (disabledImage!=null) {
-				rect(image, x, y, getWidth(), getHeight(), 0,0,1,1);
+				rect(disabledImage, x, y, getWidth(), getHeight(), 0,0,1,1);
 			} else {
 				//No disabled image, so draw nothing
 			}
