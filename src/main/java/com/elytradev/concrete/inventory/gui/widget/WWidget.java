@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WWidget {
-	private boolean valid = false;
+	protected boolean valid = false;
 	protected WPanel parent;
 	private int x = 0;
 	private int y = 0;

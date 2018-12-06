@@ -43,7 +43,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class WPanel extends WWidget {
 	protected final List<WWidget> children = Lists.newArrayList();
-	protected boolean valid;
 	
 	@Override
 	public void createPeers(ConcreteContainer c) {
