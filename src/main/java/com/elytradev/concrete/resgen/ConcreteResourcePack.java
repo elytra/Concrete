@@ -214,10 +214,10 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 			ResourceLocation location = nameToLocation(name);
 			try {
 				BiMap<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation> customModelsMap = getCustomModels();
-				String resourcePath = location.getResourcePath();
+				String resourcePath = location.getPath();
 				resourcePath = resourcePath.substring(resourcePath.lastIndexOf("/") + 1);
 				resourcePath = resourcePath.substring(0, resourcePath.lastIndexOf("."));
-				String domain = location.getResourceDomain();
+				String domain = location.getNamespace();
 				location = new ModelResourceLocation(domain + ":" + resourcePath, isLocation(name, "/models/item/") ? "inventory" : "normal");
 				if (customModelsMap.inverse().containsKey(location))
 					return customModelsMap.inverse().get(location).getLeft().get();
@@ -238,10 +238,10 @@ public class ConcreteResourcePack extends AbstractResourcePack {
 		ResourceLocation location = nameToLocation(name);
 		try {
 			BiMap<Pair<IRegistryDelegate<Item>, Integer>, ModelResourceLocation> customModelsMap = getCustomModels();
-			String resourcePath = location.getResourcePath();
+			String resourcePath = location.getPath();
 			resourcePath = resourcePath.substring(resourcePath.lastIndexOf("/") + 1);
 			resourcePath = resourcePath.substring(0, resourcePath.lastIndexOf("."));
-			String domain = location.getResourceDomain();
+			String domain = location.getNamespace();
 			location = new ModelResourceLocation(domain + ":" + resourcePath, isLocation(name, "/models/item/") ? "inventory" : "normal");
 			if (customModelsMap.inverse().containsKey(location))
 				return customModelsMap.inverse().get(location).getRight();

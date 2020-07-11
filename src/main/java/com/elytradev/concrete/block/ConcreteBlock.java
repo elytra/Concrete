@@ -83,7 +83,7 @@ public final class ConcreteBlock extends Block {
 		this.expDropBehaviour = expDropBehaviour;
 
 		this.setRegistryName(identifier);
-		this.setUnlocalizedName(Loader.instance().activeModContainer().getModId().toLowerCase() + "." + identifier);
+		this.setTranslationKey(Loader.instance().activeModContainer().getModId().toLowerCase() + "." + identifier);
 	}
 
 	@Override
@@ -129,11 +129,11 @@ public final class ConcreteBlock extends Block {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public BlockRenderLayer getBlockLayer() {
+	public BlockRenderLayer getRenderLayer() {
 		if (this.concreteTranslucent) {
 			return BlockRenderLayer.TRANSLUCENT;
 		} else {
-			return super.getBlockLayer();
+			return super.getRenderLayer();
 		}
 	}
 
