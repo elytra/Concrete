@@ -247,7 +247,7 @@ public abstract class Message {
 		if (side.isServer()) wrongSide();
 		if (world instanceof WorldServer) {
 			WorldServer srv = (WorldServer) world;
-			Chunk c = srv.getChunkFromBlockCoords(pos);
+			Chunk c = srv.getChunk(pos);
 			if (srv.getPlayerChunkMap().contains(c.x, c.z)) {
 				List<Packet<INetHandlerPlayClient>> packets = toClientboundVanillaPackets();
 				for (EntityPlayerMP ep : world.getPlayers(EntityPlayerMP.class, Predicates.alwaysTrue())) {

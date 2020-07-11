@@ -105,8 +105,8 @@ public class ShapedRecipeTest {
 	@Test
 	public void recognizeRecipes() {
 		Bootstrap.register();
-		Item stone = new Item().setUnlocalizedName("stone");
-		Item stick = new Item().setUnlocalizedName("stick");
+		Item stone = new Item().setTranslationKey("stone");
+		Item stick = new Item().setTranslationKey("stick");
 		Item axe = new Item();
 		ItemIngredient s = ItemIngredient.of(stone);
 		ItemIngredient l = ItemIngredient.of(stick);

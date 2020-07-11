@@ -92,7 +92,7 @@ public class ItemModelResourceProvider extends ResourceProvider {
 
 		// Try to return a block model file if this is an ItemBlock.
 		if (Block.getBlockFromItem(itemFromLocation) != Blocks.AIR) {
-			if (itemFromLocation.getRegistryName().getResourcePath().equals(itemID)) {
+			if (itemFromLocation.getRegistryName().getPath().equals(itemID)) {
 				try {
 					String blockName = name.replace("/item/", "/block/");
 					// Checks if we can use an existing block model or if we need to gen our own.

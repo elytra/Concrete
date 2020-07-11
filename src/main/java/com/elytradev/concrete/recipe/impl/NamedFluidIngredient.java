@@ -45,7 +45,7 @@ public class NamedFluidIngredient extends FluidIngredient {
 	public boolean apply(FluidStack input) {
 		return input.getFluid().getName().equals(key) &&
 			input.amount >= amount &&
-			(input.tag==null || input.tag.hasNoTags());
+			(input.tag==null || input.tag.isEmpty());
 	}
 
 	@Override
